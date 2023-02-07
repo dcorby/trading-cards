@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.tradingcards.R
 
-class MainFragment : Fragment() {
+class ExampleFragment : Fragment() {
 
     // this is just a dummy fragment created by Android Studio
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = ExampleFragment()
     }
 
     private lateinit var viewModel: MainViewModel
@@ -28,7 +28,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_example, container, false)
     }
 
 }

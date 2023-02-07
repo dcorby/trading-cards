@@ -7,49 +7,77 @@
     app:startDestination="@id/MainFragment">
 
     <!-- Register Fragments -->
-    <!-- ChooseFragment -->
+    <!-- CreateDesignFragment -->
     <fragment
-        android:id="@+id/ChooseFragment"
-        android:name="com.example.tradingcards.ui.main.ChooseFragment"
-        tools:layout="@layout/fragment_main">
+        android:id="@+id/CreateDesignFragment"
+        android:name="com.example.tradingcards.ui.main.CreateDesignFragment"
+        tools:layout="@layout/fragment_create_design">
     </fragment>
 
-    <!-- CreateFragment -->
+    <!-- CreateSetFragment -->
     <fragment
-        android:id="@+id/CreateFragment"
-        android:name="com.example.tradingcards.ui.main.CreateFragment"
-        tools:layout="@layout/fragment_create">
+        android:id="@+id/CreateSetFragment"
+        android:name="com.example.tradingcards.ui.main.CreateSetFragment"
+        tools:layout="@layout/fragment_create_set">
     </fragment>
 
-    <!-- DesignFragment -->
+    <!-- DisplayBackFragment -->
     <fragment
-        android:id="@+id/DesignFragment"
-        android:name="com.example.tradingcards.ui.main.DesignFragment"
-        tools:layout="@layout/fragment_design">
+        android:id="@+id/DisplayBackFragment"
+        android:name="com.example.tradingcards.ui.main.DisplayBackFragment"
+        tools:layout="@layout/fragment_display_back">
     </fragment>
 
-    <!-- MainFragment -->
+    <!-- DisplayFrontFragment -->
+    <fragment
+        android:id="@+id/DisplayFrontFragment"
+        android:name="com.example.tradingcards.ui.main.DisplayFrontFragment"
+        tools:layout="@layout/fragment_display_front">
+    </fragment>
+
+    <!-- DisplaySetFragment -->
+    <fragment
+        android:id="@+id/DisplaySetFragment"
+        android:name="com.example.tradingcards.ui.main.DisplaySetFragment"
+        tools:layout="@layout/fragment_display_set">
+    </fragment>
+
+    <!-- EditDesignFragment -->
+    <fragment
+        android:id="@+id/EditDesignFragment"
+        android:name="com.example.tradingcards.ui.main.EditDesignFragment"
+        tools:layout="@layout/fragment_edit_design">
+    </fragment>
+
+    <!-- ExampleFragment -->
     <!-- This is a dummy fragment and the startDestination. But the actual
          start destination is set in MainActivity.kt
     -->
     <fragment
-        android:id="@+id/MainFragment"
-        android:name="com.example.tradingcards.ui.main.MainFragment"
-        tools:layout="@layout/fragment_main">
+        android:id="@+id/ExampleFragment"
+        android:name="com.example.tradingcards.ui.main.ExampleFragment"
+        tools:layout="@layout/fragment_example">
     </fragment>
 
-    <!-- SetFragment -->
+    <!-- SearchPlayersFragment -->
     <fragment
-        android:id="@+id/SetFragment"
-        android:name="com.example.tradingcards.ui.main.SetFragment"
-        tools:layout="@layout/fragment_set">
+        android:id="@+id/SearchPlayersFragment"
+        android:name="com.example.tradingcards.ui.main.SearchPlayersFragment"
+        tools:layout="@layout/fragment_search_players">
     </fragment>
 
-    <!-- SetupFragment -->
+    <!-- SelectImageFragment -->
     <fragment
-        android:id="@+id/SetupFragment"
-        android:name="com.example.tradingcards.ui.main.SetupFragment"
-        tools:layout="@layout/fragment_setup">
+        android:id="@+id/SelectImageFragment"
+        android:name="com.example.tradingcards.ui.main.SelectImageFragment"
+        tools:layout="@layout/fragment_select_image">
+    </fragment>
+
+    <!-- SelectSetFragment -->
+    <fragment
+        android:id="@+id/SelectSetFragment"
+        android:name="com.example.tradingcards.ui.main.SelectSetFragment"
+        tools:layout="@layout/fragment_select_set">
     </fragment>
 
 </navigation>
