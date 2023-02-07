@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/MainFragment">
+
+    <!-- Register Fragments -->
+    <!-- ChooseFragment -->
+    <fragment
+        android:id="@+id/ChooseFragment"
+        android:name="com.example.tradingcards.ui.main.ChooseFragment"
+        tools:layout="@layout/fragment_main">
+    </fragment>
+
+    <!-- CreateFragment -->
+    <fragment
+        android:id="@+id/CreateFragment"
+        android:name="com.example.tradingcards.ui.main.CreateFragment"
+        tools:layout="@layout/fragment_create">
+    </fragment>
+
+    <!-- DesignFragment -->
+    <fragment
+        android:id="@+id/DesignFragment"
+        android:name="com.example.tradingcards.ui.main.DesignFragment"
+        tools:layout="@layout/fragment_design">
+    </fragment>
+
+    <!-- MainFragment -->
+    <!-- This is a dummy fragment and the startDestination. But the actual
+         start destination is set in MainActivity.kt
+    -->
+    <fragment
+        android:id="@+id/MainFragment"
+        android:name="com.example.tradingcards.ui.main.MainFragment"
+        tools:layout="@layout/fragment_main">
+    </fragment>
+
+    <!-- SetFragment -->
+    <fragment
+        android:id="@+id/SetFragment"
+        android:name="com.example.tradingcards.ui.main.SetFragment"
+        tools:layout="@layout/fragment_set">
+    </fragment>
+
+    <!-- SetupFragment -->
+    <fragment
+        android:id="@+id/SetupFragment"
+        android:name="com.example.tradingcards.ui.main.SetupFragment"
+        tools:layout="@layout/fragment_setup">
+    </fragment>
+
+</navigation>
