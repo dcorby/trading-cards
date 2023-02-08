@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
 import com.example.tradingcards.SetItem
-import com.example.tradingcards.SetItemsAdapter
+import com.example.tradingcards.adapters.SetsAdapter
 import com.example.tradingcards.databinding.FragmentSetBinding
 import java.io.File
 
@@ -19,7 +18,7 @@ class SetFragment : Fragment() {
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var setItemsAdapter: SetItemsAdapter
+    lateinit var setsAdapter: SetsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,9 +31,9 @@ class SetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setItemsAdapter = SetItemsAdapter { setItem -> adapterOnClick(setItem) }
+        setsAdapter = SetsAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
-        recyclerView.adapter = setItemsAdapter
+        recyclerView.adapter = setsAdapter
 
         val rootDir = File(requireContext().filesDir, "")
         val files = rootDir.listFiles()

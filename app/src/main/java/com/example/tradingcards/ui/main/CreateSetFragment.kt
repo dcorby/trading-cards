@@ -1,10 +1,12 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -12,6 +14,9 @@ import com.example.tradingcards.R
 import com.example.tradingcards.databinding.FragmentCreateSetBinding
 import com.example.tradingcards.viewmodels.CreateSetViewModel
 import java.io.File
+
+// adb shell
+// run-as com.example.tradingcards
 
 class CreateSetFragment : Fragment() {
 
@@ -39,7 +44,7 @@ class CreateSetFragment : Fragment() {
         viewModel.directory = arguments?.getString("directory", "") ?: ""
 
         binding.name.setText(viewModel.name, TextView.BufferType.EDITABLE)
-        binding.name.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        binding.name.addTextChangedListener {
             viewModel.name = binding.name.text.toString()
         }
 
@@ -53,7 +58,6 @@ class CreateSetFragment : Fragment() {
         val file = File(pathStr)
         if (!file.exists()) {
             file.mkdirs()
-
             val bundle = Bundle()
             bundle.putString("directory", file.parent?.toString() ?: "")
             val navController =

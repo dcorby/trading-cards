@@ -34,7 +34,6 @@
         </Button>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/list_parent"
         android:visibility="gone"
@@ -61,35 +60,40 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="create"
-                android:textSize="8sp">
+                android:textSize="8sp"
+                android:layout_margin="2dp">
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="rename"
-                android:textSize="8sp">
+                android:textSize="8sp"
+                android:layout_margin="2dp">
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="copy"
-                android:textSize="8sp">
+                android:textSize="8sp"
+                android:layout_margin="2dp">
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="move"
-                android:textSize="8sp">
+                android:textSize="8sp"
+                android:layout_margin="2dp">
             </Button>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="delete"
-                android:textSize="8sp">
+                android:textSize="8sp"
+                android:layout_margin="2dp">
             </Button>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

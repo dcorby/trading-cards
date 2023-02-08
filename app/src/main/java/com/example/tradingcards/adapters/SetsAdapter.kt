@@ -1,4 +1,4 @@
-package com.example.tradingcards
+package com.example.tradingcards.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.R
+import com.example.tradingcards.SetItem
 
-class SetItemsAdapter(private val onClick: (SetItem) -> Unit) :
-    ListAdapter<SetItem, SetItemsAdapter.SetItemViewHolder>(SetItemDiffCallback) {
+class SetsAdapter(private val onClick: (SetItem) -> Unit) :
+    ListAdapter<SetItem, SetsAdapter.SetItemViewHolder>(SetItemDiffCallback) {
 
     inner class SetItemViewHolder(setItemView: View,
                                    val onClick: (SetItem) -> Unit) : RecyclerView.ViewHolder(setItemView) {
