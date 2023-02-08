@@ -1,4 +1,4 @@
-package com.example.tradingcards
+package com.example.tradingcards.items
 
 // A representation of a card or set within a list
 // cardId will be the auto-increment SQLite value

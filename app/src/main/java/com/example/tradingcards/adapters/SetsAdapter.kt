@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
-import com.example.tradingcards.SetItem
+import com.example.tradingcards.items.SetItem
 
 class SetsAdapter(private val onClick: (SetItem) -> Unit) :
     ListAdapter<SetItem, SetsAdapter.SetItemViewHolder>(SetItemDiffCallback) {
@@ -18,7 +18,7 @@ class SetsAdapter(private val onClick: (SetItem) -> Unit) :
                                    val onClick: (SetItem) -> Unit) : RecyclerView.ViewHolder(setItemView) {
 
         private val setItemView = setItemView
-        private val setItemTextView: TextView = setItemView.findViewById(R.id.set_item_text_view)
+        private val setItemTextView: TextView = setItemView.findViewById(R.id.text_view)
 
         /* Bind data to view */
         fun bind(setItem: SetItem) {
@@ -31,7 +31,7 @@ class SetsAdapter(private val onClick: (SetItem) -> Unit) :
 
     /* Creates and inflates view and returns SetItemViewHolder */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.set_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_set, parent, false)
         return SetItemViewHolder(view, onClick)
     }
 

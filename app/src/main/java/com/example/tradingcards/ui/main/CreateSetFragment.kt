@@ -10,8 +10,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
+import com.example.tradingcards.adapters.LocationsAdapter
 import com.example.tradingcards.databinding.FragmentCreateSetBinding
+import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.viewmodels.CreateSetViewModel
 import java.io.File
 
@@ -23,6 +26,7 @@ class CreateSetFragment : Fragment() {
     private var _binding: FragmentCreateSetBinding? = null
     private val binding get() = _binding!!
 
+    lateinit var locationsAdapter: LocationsAdapter
     private lateinit var viewModel: CreateSetViewModel
 
     override fun onCreateView(
@@ -41,21 +45,48 @@ class CreateSetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Get the directory
         viewModel.directory = arguments?.getString("directory", "") ?: ""
 
-        binding.name.setText(viewModel.name, TextView.BufferType.EDITABLE)
-        binding.name.addTextChangedListener {
-            viewModel.name = binding.name.text.toString()
+        // Get the path
+        val parts = listOf(requireContext().filesDir.absolutePath, viewModel.directory, viewModel.name)
+        val path: String = parts.filter { !it.equals("") }.joinToString("/")
+        viewModel.path = path
+
+        // Get the name, listen for edits
+        binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
+        binding.nameEditText.addTextChangedListener {
+            viewModel.name = binding.nameEditText.text.toString()
         }
 
+        // Get the locations
+        val locationItems = getLocationItems()
+        locationsAdapter = LocationsAdapter { locationItem -> adapterOnClick(locationItem) }
+        val recyclerView: RecyclerView = binding.locationRecyclerView
+        recyclerView.adapter = locationsAdapter
+        locationsAdapter.submitList(locationItems)
+
+        // Create
         binding.create.setOnClickListener {
             createSet()
         }
     }
 
+    private fun adapterOnClick(locationItem: LocationItem) {
+
+    }
+
+    private fun getLocationItems() : MutableList<LocationItem> {
+        val locationItems = mutableListOf<LocationItem>()
+        val file = File(viewModel.path).walkTopDown().forEach {
+            val locationItem = LocationItem(it.absolutePath)
+            locationItems.add(locationItem)
+        }
+        return locationItems
+    }
+
     private fun createSet() {
-        val pathStr: String = requireContext().filesDir.absolutePath + "/" + viewModel.name
-        val file = File(pathStr)
+        val file = File(viewModel.path)
         if (!file.exists()) {
             file.mkdirs()
             val bundle = Bundle()

@@ -6,4 +6,5 @@ class CreateSetViewModel : ViewModel() {
 
     var name = ""
     var directory = ""
+    var path = ""
 }

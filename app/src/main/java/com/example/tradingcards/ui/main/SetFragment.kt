@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
-import com.example.tradingcards.SetItem
+import com.example.tradingcards.items.SetItem
 import com.example.tradingcards.adapters.SetsAdapter
 import com.example.tradingcards.databinding.FragmentSetBinding
 import java.io.File
