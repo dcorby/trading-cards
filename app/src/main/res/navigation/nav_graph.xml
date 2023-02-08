@@ -19,6 +19,9 @@
         android:id="@+id/CreateSetFragment"
         android:name="com.example.tradingcards.ui.main.CreateSetFragment"
         tools:layout="@layout/fragment_create_set">
+        <action
+            android:id="@+id/action_CreateSetFragment_to_SetFragment"
+            app:destination="@id/SetFragment" />
     </fragment>
 
     <!-- DisplayBackFragment -->
