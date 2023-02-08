@@ -35,13 +35,6 @@
         tools:layout="@layout/fragment_display_front">
     </fragment>
 
-    <!-- DisplaySetFragment -->
-    <fragment
-        android:id="@+id/DisplaySetFragment"
-        android:name="com.example.tradingcards.ui.main.DisplaySetFragment"
-        tools:layout="@layout/fragment_display_set">
-    </fragment>
-
     <!-- EditDesignFragment -->
     <fragment
         android:id="@+id/EditDesignFragment"
@@ -78,6 +71,9 @@
         android:id="@+id/SetFragment"
         android:name="com.example.tradingcards.ui.main.SetFragment"
         tools:layout="@layout/fragment_set">
+        <action
+            android:id="@+id/action_SetFragment_to_CreateSetFragment"
+            app:destination="@id/CreateSetFragment" />
     </fragment>
 
 </navigation>

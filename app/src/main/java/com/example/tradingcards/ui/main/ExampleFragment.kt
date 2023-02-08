@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.tradingcards.R
+import com.example.tradingcards.viewmodels.ExampleViewModel
 
 class ExampleFragment : Fragment() {
 
@@ -16,11 +17,11 @@ class ExampleFragment : Fragment() {
         fun newInstance() = ExampleFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: ExampleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ExampleViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

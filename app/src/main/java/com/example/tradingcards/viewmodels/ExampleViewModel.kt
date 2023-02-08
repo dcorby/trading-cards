@@ -1,8 +1,8 @@
-package com.example.tradingcards.ui.main
+package com.example.tradingcards.viewmodels
 
 import androidx.lifecycle.ViewModel
 
-class MainViewModel : ViewModel() {
+class ExampleViewModel : ViewModel() {
 
     lateinit var playerName: String
     lateinit var playerNumber: String

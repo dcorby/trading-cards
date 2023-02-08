@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.R
 import com.example.tradingcards.SetItem
 import com.example.tradingcards.SetItemsAdapter
 import com.example.tradingcards.databinding.FragmentSetBinding
@@ -14,10 +16,10 @@ import java.io.File
 
 class SetFragment : Fragment() {
 
-    lateinit var setItemsAdapter: SetItemsAdapter
-
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
+
+    lateinit var setItemsAdapter: SetItemsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,12 @@ class SetFragment : Fragment() {
             binding.listParent.visibility = View.VISIBLE
         } else {
             binding.gettingStarted.visibility = View.VISIBLE
+        }
+
+        binding.create.setOnClickListener {
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
         }
     }
 
