@@ -18,19 +18,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main)
-        //if (savedInstanceState == null) {
-        //    supportFragmentManager.beginTransaction()
-        //        .replace(R.id.container, MainFragment.newInstance())
-        //        .commitNow()
-        //}
+        setContentView(binding.root)
 
-        // Always land user on SelectSetFragment, and show a message to
         val haveSets = false
         val startDestinationId = if (haveSets) {
-            R.id.SelectSetFragment
+            R.id.SetFragment
         } else {
-            R.id.SelectSetFragment
+            R.id.SetFragment
         }
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
