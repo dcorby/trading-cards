@@ -8,11 +8,13 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+    <!--
     <androidx.appcompat.widget.Toolbar
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:background="@color/blue1"
         android:id="@+id/toolbar" />
+        -->
 
     <include layout="@layout/content_main" />
 
