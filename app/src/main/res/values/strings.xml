@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TradingCards</string>
+
+    <string-array name="text_mappings">
+        <item>Name</item>
+        <item>Position</item>
+        <item>Team Mascot</item>
+        <item>Team Full Name</item>
+        <item>Team Logo</item>
+    </string-array>
 </resources>

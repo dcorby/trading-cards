@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_CreateSetFragment_to_SetFragment"
             app:destination="@id/SetFragment" />
+        <action
+            android:id="@+id/action_CreateSetFragment_to_CreateDesignFragment"
+            app:destination="@id/CreateDesignFragment" />
     </fragment>
 
     <!-- DisplayBackFragment -->

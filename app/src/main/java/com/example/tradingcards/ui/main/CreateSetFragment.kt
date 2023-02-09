@@ -91,7 +91,7 @@ class CreateSetFragment : Fragment() {
         ).build()
         locationsAdapter.tracker = tracker
 
-        // Watch for selections
+        // Watch for location selection
         tracker.addObserver(
             object : SelectionTracker.SelectionObserver<String>() {
                 override fun onSelectionChanged() {
@@ -104,8 +104,18 @@ class CreateSetFragment : Fragment() {
             })
         tracker.select("/")
 
-        // Create
-        binding.create.setOnClickListener {
+        // Create design
+        binding.createDesign.setOnClickListener {
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_CreateSetFragment_to_CreateDesignFragment)
+        }
+
+
+        // Select design
+
+        // Create set
+        binding.createSet.setOnClickListener {
             createSet()
         }
     }
