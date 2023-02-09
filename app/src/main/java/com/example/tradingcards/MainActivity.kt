@@ -2,6 +2,7 @@ package com.example.tradingcards
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toolbar
 import androidx.navigation.findNavController
 import com.example.tradingcards.databinding.ActivityMainBinding
 
@@ -30,5 +31,9 @@ class MainActivity : AppCompatActivity() {
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
         navGraph.setStartDestination(startDestinationId)
         navController.setGraph(navGraph, null)
+    }
+
+    fun setTitle() {
+
     }
 }

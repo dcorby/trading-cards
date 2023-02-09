@@ -5,6 +5,6 @@ import androidx.lifecycle.ViewModel
 class CreateSetViewModel : ViewModel() {
 
     var name = ""
-    var directory = ""
-    var path = ""
+    var currentDirectory = ""
+    var absolutePath = ""
 }
