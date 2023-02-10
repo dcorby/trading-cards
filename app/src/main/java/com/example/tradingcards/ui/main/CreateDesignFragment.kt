@@ -1,11 +1,14 @@
 package com.example.tradingcards.ui.main
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import androidx.core.view.contains
 import androidx.core.view.marginLeft
@@ -14,6 +17,9 @@ import androidx.fragment.app.Fragment
 import com.example.tradingcards.CircleView
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.skydoves.colorpickerview.listeners.ColorListener
+import kotlin.properties.Delegates
+
+const val CIRCLE_RADIUS = 10
 
 class CreateDesignFragment : Fragment() {
 
@@ -21,29 +27,19 @@ class CreateDesignFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var activeView: RelativeLayout
+    private lateinit var origin: Pair<Int, Int>
 
+    private val circleRadius = 10
     private lateinit var anchors: Anchors
     class Anchors(context: Context) {
         val left = CircleView(context)
         val top = CircleView(context)
         val right = CircleView(context)
         val bottom = CircleView(context)
-        val leftParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        val topParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        val rightParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        val bottomParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
+        val leftParams = RelativeLayout.LayoutParams(CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2)
+        val topParams = RelativeLayout.LayoutParams(CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2)
+        val rightParams = RelativeLayout.LayoutParams(CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2)
+        val bottomParams = RelativeLayout.LayoutParams(CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2)
     }
 
     override fun onAttach(context: Context) {
@@ -72,10 +68,9 @@ class CreateDesignFragment : Fragment() {
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
-            //val rectangleView = layoutInflater.inflate(R.layout.rectangle, binding.designView, false) as RelativeLayout
             val rectangleView = RelativeLayout(requireContext())
             val params = RelativeLayout.LayoutParams(100, 100)
-            params.setMargins(100, 100, 0, 0)
+            params.setMargins(origin.first, origin.second, 0, 0)
             rectangleView.setBackgroundColor(Color.parseColor(getRandomColor()));
             rectangleView.layoutParams = params
             activeView = rectangleView
@@ -88,7 +83,24 @@ class CreateDesignFragment : Fragment() {
             //val linearLayout: LinearLayout = findViewById(R.id.linearLayout)
             //linearLayout.setBackgroundColor(color)
         })
+
+        // Get designView clicks, which will deactivate activeView
+        binding.designView.setOnClickListener {
+        }
+
+        // Get the designView width and height
+        // https://stackoverflow.com/questions/3591784/views-getwidth-and-getheight-returns-0
+        binding.designView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                origin = Pair(
+                    binding.designView.width / 2 - 50,
+                    binding.designView.height / 2 - 50
+                )
+            }
+        })
     }
+
 
     private fun drawAnchors() {
 
@@ -119,23 +131,24 @@ class CreateDesignFragment : Fragment() {
             }
 
             // left
-            anchors.leftParams.leftMargin = activeView.marginLeft - 10
-            anchors.leftParams.topMargin = activeView.marginTop + (activeView.height / 2) - 10
+            anchors.leftParams.leftMargin = activeView.marginLeft - CIRCLE_RADIUS
+            anchors.leftParams.topMargin = activeView.marginTop + (activeView.height / 2) - CIRCLE_RADIUS
             anchors.left.layoutParams = anchors.leftParams
 
+
             // top
-            anchors.topParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - 10
-            anchors.topParams.topMargin = activeView.marginTop - 10
+            anchors.topParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - CIRCLE_RADIUS
+            anchors.topParams.topMargin = activeView.marginTop - CIRCLE_RADIUS
             anchors.top.layoutParams = anchors.topParams
 
             // right
-            anchors.rightParams.leftMargin = activeView.marginLeft + activeView.width - 10
-            anchors.rightParams.topMargin = activeView.marginTop + (activeView.height / 2) - 10
+            anchors.rightParams.leftMargin = activeView.marginLeft + activeView.width - CIRCLE_RADIUS
+            anchors.rightParams.topMargin = activeView.marginTop + (activeView.height / 2) - CIRCLE_RADIUS
             anchors.right.layoutParams = anchors.rightParams
 
             // bottom
-            anchors.bottomParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - 10
-            anchors.bottomParams.topMargin = activeView.marginTop + activeView.height - 10
+            anchors.bottomParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - CIRCLE_RADIUS
+            anchors.bottomParams.topMargin = activeView.marginTop + activeView.height - CIRCLE_RADIUS
             anchors.bottom.layoutParams = anchors.bottomParams
         }
     }
