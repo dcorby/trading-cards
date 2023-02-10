@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.view.MotionEvent
 import android.view.View
 
 class CircleView(context: Context?) : View(context) {
@@ -17,5 +18,9 @@ class CircleView(context: Context?) : View(context) {
         val paint = Paint()
         paint.setColor(Color.parseColor("#0000FF"))
         canvas.drawCircle(10.toFloat(), 10.toFloat(), 10.toFloat(), paint)
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return super.onTouchEvent(event)
     }
 }

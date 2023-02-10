@@ -1,12 +1,11 @@
 package com.example.tradingcards.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.RelativeLayout
 import androidx.core.view.contains
 import androidx.core.view.marginLeft
@@ -92,42 +91,61 @@ class CreateDesignFragment : Fragment() {
     }
 
     private fun drawAnchors() {
-        // Check whether the circles have been added
-        val isInit = !binding.designView.contains(anchors.left)
-        if (isInit) {
-            Log.v("TEST", "init'ing drawAnchors()")
-            binding.designView.addView(anchors.left)
-            //binding.designView.addView(anchors.top)
-            //binding.designView.addView(anchors.right)
-            //binding.designView.addView(anchors.bottom)
+
+        val onTouchListener = object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                val x = event?.x
+                anchors.rightParams.leftMargin = 300
+                anchors.right.layoutParams = anchors.rightParams
+                return true
+            }
         }
 
-        // left
-        anchors.leftParams.leftMargin = activeView.marginLeft
-        anchors.leftParams.topMargin = activeView.marginTop + (activeView.height / 2)
-        anchors.left.layoutParams = anchors.leftParams
-        Log.v("TEST", "left activeView.ehgith = ${activeView.height}")
-        Log.v("TEST", "left leftMargin = ${activeView.marginLeft}")
-        Log.v("TEST", "left topMargin = ${activeView.marginTop + (activeView.height / 2)}")
+        /* "anything you post to the queue will happen after the layout pass"
+           https://stackoverflow.com/questions/3591784/views-getwidth-and-getheight-returns-0
+         */
+        binding.designView.post {
+            // Check whether the circles have been added
+            val isInit = !binding.designView.contains(anchors.left)
+            if (isInit) {
+                binding.designView.addView(anchors.left)
+                binding.designView.addView(anchors.top)
+                binding.designView.addView(anchors.right)
+                binding.designView.addView(anchors.bottom)
+                anchors.left.setOnTouchListener(onTouchListener)
+                anchors.top.setOnTouchListener(onTouchListener)
+                anchors.right.setOnTouchListener(onTouchListener)
+                anchors.bottom.setOnTouchListener(onTouchListener)
+            }
 
-        // top
-//        anchors.topParams.leftMargin = activeView.marginLeft + (activeView.width / 2)
-//        anchors.topParams.topMargin = activeView.marginTop
-//        anchors.top.layoutParams = anchors.topParams
-//
-//        // right
-//        anchors.rightParams.leftMargin = activeView.marginLeft + activeView.width
-//        anchors.rightParams.topMargin = activeView.marginTop + (activeView.height / 2)
-//        anchors.right.layoutParams = anchors.rightParams
-//
-//        // bottom
-//        anchors.bottomParams.leftMargin = activeView.marginLeft + (activeView.width / 2)
-//        anchors.bottomParams.topMargin = activeView.marginTop + activeView.height
-//        anchors.bottom.layoutParams = anchors.bottomParams
+            // left
+            anchors.leftParams.leftMargin = activeView.marginLeft - 10
+            anchors.leftParams.topMargin = activeView.marginTop + (activeView.height / 2) - 10
+            anchors.left.layoutParams = anchors.leftParams
+
+            // top
+            anchors.topParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - 10
+            anchors.topParams.topMargin = activeView.marginTop - 10
+            anchors.top.layoutParams = anchors.topParams
+
+            // right
+            anchors.rightParams.leftMargin = activeView.marginLeft + activeView.width - 10
+            anchors.rightParams.topMargin = activeView.marginTop + (activeView.height / 2) - 10
+            anchors.right.layoutParams = anchors.rightParams
+
+            // bottom
+            anchors.bottomParams.leftMargin = activeView.marginLeft + (activeView.width / 2) - 10
+            anchors.bottomParams.topMargin = activeView.marginTop + activeView.height - 10
+            anchors.bottom.layoutParams = anchors.bottomParams
+        }
     }
 
     private fun getRandomColor() : String {
         val colors = listOf<String>("#DFFF00", "#FFBF00", "#FF7F50", "#DE3163", "#9FE2BF", "#40E0D0", "#6495ED", "#CCCCFF", "#FFA500", "#EEE8AA", "#FF00FF", "#6A5ACD", "#90EE90", "#808000")
         return colors.random()
+    }
+
+    private fun onTouchListener(v: View, event: MotionEvent) {
+
     }
 }
