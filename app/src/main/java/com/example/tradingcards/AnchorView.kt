@@ -2,16 +2,15 @@ package com.example.tradingcards
 
 import android.content.Context
 import android.graphics.Canvas
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
-import androidx.core.view.marginLeft
-import androidx.core.view.marginTop
 
 class AnchorView: RelativeLayout {
 
     lateinit var rectangleView: RectangleView
+    // Setting this.layoutParams fails per smartcast issue. Get a reference
+    lateinit var params: LayoutParams
 
     constructor(context: Context?) : super(context!!) {
         this.setOnTouchListener(onTouchListener)
@@ -29,7 +28,7 @@ class AnchorView: RelativeLayout {
     }
 
     fun show() {
-        val params = LayoutParams(20, 20)
+        params = LayoutParams(20, 20)
         var leftMargin = 0
         var topMargin = 0
         when(this.tag.toString()) {
@@ -64,36 +63,20 @@ class AnchorView: RelativeLayout {
         // https://stackoverflow.com/questions/7892853/how-to-use-correct-dragging-of-a-view-on-android/18806475#18806475
         var prevX = 0
         var prevY = 0
-        override fun onTouch(anchorView: View?, event: MotionEvent?): Boolean {
-            if (anchorView == null || event == null) { return false }
-            val direction = anchorView.tag
-            val anchorParams = anchorView.layoutParams as LayoutParams
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            if (v == null || event == null) { return false }
+            val direction = this@AnchorView.tag
+            //val anchorParams = anchorView.layoutParams as LayoutParams
             val rectangleView = this@AnchorView.rectangleView
             val rectangleParams = rectangleView.layoutParams as LayoutParams
 
-            TODO: RE-POSITION THE OTHER AXIS ANCHORS
             when (event.action) {
                 MotionEvent.ACTION_MOVE -> {
-                    if (direction == "top" || direction == "bottom") {
-                        // Get the diff
-                        val diff = event.rawY.toInt() - prevY
-                        // Move the anchor
-                        anchorParams.topMargin += diff
-                        prevY = event.rawY.toInt()
-                        // Move the rect
-                        if (direction == "top") {
-                            rectangleParams.topMargin += diff
-                            rectangleParams.height += diff*-1
-                        }
-                        if (direction == "bottom") {
-                            rectangleParams.height += diff
-                        }
-                    }
                     if (direction == "left" || direction == "right") {
                         // Get the diff
                         val diff = event.rawX.toInt() - prevX
                         // Move the anchor
-                        anchorParams.leftMargin += diff
+                        params.leftMargin += diff
                         prevX = event.rawX.toInt()
                         // Move the rect
                         if (direction == "left") {
@@ -104,17 +87,33 @@ class AnchorView: RelativeLayout {
                             rectangleParams.width += diff
                         }
                     }
-                    anchorView.layoutParams = anchorParams
+                    if (direction == "top" || direction == "bottom") {
+                        // Get the diff
+                        val diff = event.rawY.toInt() - prevY
+                        // Move the anchor
+                        params.topMargin += diff
+                        prevY = event.rawY.toInt()
+                        // Move the rect
+                        if (direction == "top") {
+                            rectangleParams.topMargin += diff
+                            rectangleParams.height += diff*-1
+                        }
+                        if (direction == "bottom") {
+                            rectangleParams.height += diff
+                        }
+                        rectangleView.anchors.left.layoutParams
+                    }
+                    this@AnchorView.layoutParams = params
                     rectangleView.layoutParams = rectangleParams
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
                     if (direction == "top" || direction == "bottom") {
-                        anchorParams.topMargin += event.rawY.toInt() - prevY
+                        params.topMargin += event.rawY.toInt() - prevY
                     }
                     if (direction == "left" || direction == "right") {
-                        anchorParams.leftMargin += event.rawX.toInt() - prevX
-                        anchorView.layoutParams = anchorParams
+                        params.leftMargin += event.rawX.toInt() - prevX
+                        this@AnchorView.layoutParams = params
                     }
                     return true
                 }
@@ -124,12 +123,14 @@ class AnchorView: RelativeLayout {
                     prevY = event.rawY.toInt()
 
                     // little confused about bottom/right margins and the values??
-                    anchorParams.bottomMargin = -2 * anchorView.height
-                    anchorParams.rightMargin = -2 * anchorView.width
-                    anchorView.layoutParams = anchorParams
+                    params.bottomMargin = -2 * this@AnchorView.height
+                    params.rightMargin = -2 * this@AnchorView.width
+                    this@AnchorView.layoutParams = params
+
                     rectangleParams.bottomMargin = -2 * rectangleParams.height
                     rectangleParams.rightMargin = -2 * rectangleParams.width
                     rectangleView.layoutParams = rectangleParams
+
                     return true
                 }
             }
