@@ -43,10 +43,14 @@ class CreateDesignFragment : Fragment() {
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
             val rectangleView = RectangleView(requireContext())
-            rectangleView.show(origin)
             activeView = rectangleView
             binding.designView.addView(rectangleView)
             rectangleView.show(origin)
+            rectangleView.anchors.show()
+            binding.designView.addView(rectangleView.anchors.left)
+            binding.designView.addView(rectangleView.anchors.top)
+            binding.designView.addView(rectangleView.anchors.right)
+            binding.designView.addView(rectangleView.anchors.bottom)
         }
 
         // Init the color picker

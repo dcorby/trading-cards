@@ -6,7 +6,6 @@
     android:id="@+id/create_design_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     android:padding="16dp"
     tools:context=".ui.main.CreateDesignFragment">
 
@@ -15,7 +14,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/border_black"
-        android:clipChildren="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/controls_view"
         app:layout_constraintEnd_toEndOf="parent"
