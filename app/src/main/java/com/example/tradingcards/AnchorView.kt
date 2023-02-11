@@ -63,6 +63,7 @@ class AnchorView: RelativeLayout {
         // https://stackoverflow.com/questions/7892853/how-to-use-correct-dragging-of-a-view-on-android/18806475#18806475
         var prevX = 0
         var prevY = 0
+        val MIN_DIM = 5
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
             val direction = this@AnchorView.tag
@@ -75,33 +76,40 @@ class AnchorView: RelativeLayout {
                     if (direction == "left" || direction == "right") {
                         // Get the diff
                         val diff = event.rawX.toInt() - prevX
+                        // Move the rect
+                        if (direction == "left") {
+                            val width = rectangleParams.width + diff*-1
+                            if (width < MIN_DIM) { return false }
+                            rectangleParams.leftMargin += diff
+                            rectangleParams.width = width
+                        }
+                        if (direction == "right") {
+                            val width = rectangleParams.width + diff
+                            if (width < MIN_DIM) { return false }
+                            rectangleParams.width = width
+                        }
                         // Move the anchor
                         params.leftMargin += diff
                         prevX = event.rawX.toInt()
-                        // Move the rect
-                        if (direction == "left") {
-                            rectangleParams.leftMargin += diff
-                            rectangleParams.width += diff*-1
-                        }
-                        if (direction == "right") {
-                            rectangleParams.width += diff
-                        }
                     }
                     if (direction == "top" || direction == "bottom") {
                         // Get the diff
                         val diff = event.rawY.toInt() - prevY
+                        // Move the rect
+                        if (direction == "top") {
+                            val height = rectangleParams.height + diff*-1
+                            if (height < MIN_DIM) { return false }
+                            rectangleParams.topMargin += diff
+                            rectangleParams.height = height
+                        }
+                        if (direction == "bottom") {
+                            val height = rectangleParams.height + diff
+                            if (height < MIN_DIM) { return false }
+                            rectangleParams.height = height
+                        }
                         // Move the anchor
                         params.topMargin += diff
                         prevY = event.rawY.toInt()
-                        // Move the rect
-                        if (direction == "top") {
-                            rectangleParams.topMargin += diff
-                            rectangleParams.height += diff*-1
-                        }
-                        if (direction == "bottom") {
-                            rectangleParams.height += diff
-                        }
-                        rectangleView.anchors.left.layoutParams
                     }
                     this@AnchorView.layoutParams = params
                     rectangleView.layoutParams = rectangleParams
