@@ -91,6 +91,10 @@ class AnchorView: RelativeLayout {
                         // Move the anchor
                         params.leftMargin += diff
                         prevX = event.rawX.toInt()
+                        // Move the perpendicular anchors
+                        val left = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
+                        rectangleView.anchors.top.params.leftMargin = left
+                        rectangleView.anchors.bottom.params.leftMargin = left
                     }
                     if (direction == "top" || direction == "bottom") {
                         // Get the diff
@@ -110,6 +114,10 @@ class AnchorView: RelativeLayout {
                         // Move the anchor
                         params.topMargin += diff
                         prevY = event.rawY.toInt()
+                        // Move the perpendicular anchors
+                        val top = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                        rectangleView.anchors.left.params.topMargin = top
+                        rectangleView.anchors.right.params.topMargin = top
                     }
                     this@AnchorView.layoutParams = params
                     rectangleView.layoutParams = rectangleParams
