@@ -6,6 +6,7 @@ import android.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.tradingcards.databinding.ActivityMainBinding
 
@@ -31,8 +32,15 @@ class MainActivity : AppCompatActivity() {
             R.id.SetFragment
         }
 
-        // Not required with toolbar
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // Required below, to use action bar
+        // + supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // + setupActionBarWithNavController(navController)
+        // - setSupportActionBar(binding.toolbar)
+        // - setTitle("Home")
+        // - NavigationUI.setupWithNavController(binding.toolbar, navController)
+        // Then in themes.xml
+        // - <item name="windowActionBar">false</item>
+        // - <item name="windowNoTitle">true</item>
 
         setSupportActionBar(binding.toolbar)
         setTitle("Home") // first screen ignores nav_graph.xml
