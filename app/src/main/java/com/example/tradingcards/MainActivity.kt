@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toolbar
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.tradingcards.databinding.ActivityMainBinding
 
 // TODO: Add a drawer with link visible from top-level fragments
@@ -27,13 +30,20 @@ class MainActivity : AppCompatActivity() {
         } else {
             R.id.SetFragment
         }
+
+        // Not required with toolbar
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setSupportActionBar(binding.toolbar)
+        setTitle("Home") // first screen ignores nav_graph.xml
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
         navGraph.setStartDestination(startDestinationId)
         navController.setGraph(navGraph, null)
-    }
+        NavigationUI.setupWithNavController(binding.toolbar, navController)
 
-    fun setTitle() {
-
+        // don't need this
+        //val appBarConfiguration = AppBarConfiguration(navGraph)
+        //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 }

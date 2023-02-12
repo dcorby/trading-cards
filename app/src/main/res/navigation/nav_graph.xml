@@ -11,14 +11,16 @@
     <fragment
         android:id="@+id/CreateDesignFragment"
         android:name="com.example.tradingcards.ui.main.CreateDesignFragment"
-        tools:layout="@layout/fragment_create_design">
+        tools:layout="@layout/fragment_create_design"
+        android:label="CreateDesignFragment">
     </fragment>
 
     <!-- CreateSetFragment -->
     <fragment
         android:id="@+id/CreateSetFragment"
         android:name="com.example.tradingcards.ui.main.CreateSetFragment"
-        tools:layout="@layout/fragment_create_set">
+        tools:layout="@layout/fragment_create_set"
+        android:label="CreateSetFragment">
         <action
             android:id="@+id/action_CreateSetFragment_to_SetFragment"
             app:destination="@id/SetFragment" />
@@ -31,21 +33,24 @@
     <fragment
         android:id="@+id/DisplayBackFragment"
         android:name="com.example.tradingcards.ui.main.DisplayBackFragment"
-        tools:layout="@layout/fragment_display_back">
+        tools:layout="@layout/fragment_display_back"
+        android:label="DisplayBackFragment">
     </fragment>
 
     <!-- DisplayFrontFragment -->
     <fragment
         android:id="@+id/DisplayFrontFragment"
         android:name="com.example.tradingcards.ui.main.DisplayFrontFragment"
-        tools:layout="@layout/fragment_display_front">
+        tools:layout="@layout/fragment_display_front"
+        android:label="DisplayFrontFragment">
     </fragment>
 
     <!-- EditDesignFragment -->
     <fragment
         android:id="@+id/EditDesignFragment"
         android:name="com.example.tradingcards.ui.main.EditDesignFragment"
-        tools:layout="@layout/fragment_edit_design">
+        tools:layout="@layout/fragment_edit_design"
+        android:label="EditDesignFragment">
     </fragment>
 
     <!-- ExampleFragment -->
@@ -55,28 +60,32 @@
     <fragment
         android:id="@+id/ExampleFragment"
         android:name="com.example.tradingcards.ui.main.ExampleFragment"
-        tools:layout="@layout/fragment_example">
+        tools:layout="@layout/fragment_example"
+        android:label="ExampleFragment">
     </fragment>
 
     <!-- SearchPlayersFragment -->
     <fragment
         android:id="@+id/SearchPlayersFragment"
         android:name="com.example.tradingcards.ui.main.SearchPlayersFragment"
-        tools:layout="@layout/fragment_search_players">
+        tools:layout="@layout/fragment_search_players"
+        android:label="SearchPlayersFragment">
     </fragment>
 
     <!-- SelectImageFragment -->
     <fragment
         android:id="@+id/SelectImageFragment"
         android:name="com.example.tradingcards.ui.main.SelectImageFragment"
-        tools:layout="@layout/fragment_select_image">
+        tools:layout="@layout/fragment_select_image"
+        android:label="SelectImageFragment">
     </fragment>
 
     <!-- SetFragment -->
     <fragment
         android:id="@+id/SetFragment"
         android:name="com.example.tradingcards.ui.main.SetFragment"
-        tools:layout="@layout/fragment_set">
+        tools:layout="@layout/fragment_set"
+        android:label="SetFragment">
         <action
             android:id="@+id/action_SetFragment_to_CreateSetFragment"
             app:destination="@id/CreateSetFragment" />

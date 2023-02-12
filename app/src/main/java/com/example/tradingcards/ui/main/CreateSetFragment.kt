@@ -44,13 +44,13 @@ class CreateSetFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(CreateSetViewModel::class.java)
+
+        // Set title
+        //requireActivity().title = "Create Set"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Set the title
-        requireActivity().title = "Create Set"
 
         // Get the directory
         viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
@@ -110,7 +110,6 @@ class CreateSetFragment : Fragment() {
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_CreateDesignFragment)
         }
-
 
         // Select design
 

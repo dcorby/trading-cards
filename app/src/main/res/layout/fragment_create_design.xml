@@ -30,9 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-
-        <!-- Click to add a view. Default view has a light blue border that goes away
-        when color is != #FFFFFF. Long press to delete -->
         <Button
             android:id="@+id/rectangle"
             android:layout_width="0dp"
@@ -40,21 +37,24 @@
             android:text="Rect"
             android:layout_weight="1">
         </Button>
-
         <com.skydoves.colorpickerview.ColorPickerView
             android:id="@+id/color_picker"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1" />
-
-        <!-- Long press to delete -->
         <Spinner
             android:id="@+id/text_mappings"
             android:entries="@array/text_mappings"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1" />
-
+        <Button
+            android:id="@+id/save"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Save"
+            android:layout_weight="1">
+        </Button>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

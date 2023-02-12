@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.RelativeLayout
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.example.tradingcards.RectangleView
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.skydoves.colorpickerview.listeners.ColorListener
-
-const val CIRCLE_RADIUS = 10
 
 class CreateDesignFragment : Fragment() {
 
@@ -32,13 +30,13 @@ class CreateDesignFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //viewModel = ViewModelProvider(this).get(CreateDesignViewModel::class.java)
+
+        // Set title
+        //requireActivity().title = "Create Design"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Set the title
-        requireActivity().title = "Create Design"
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
@@ -66,7 +64,7 @@ class CreateDesignFragment : Fragment() {
         binding.designView.setOnClickListener {
         }
 
-        // Get the designView width and height
+        // Get the designView width and height, in order to size added rectangleViews
         // https://stackoverflow.com/questions/3591784/views-getwidth-and-getheight-returns-0
         binding.designView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -77,5 +75,11 @@ class CreateDesignFragment : Fragment() {
                 )
             }
         })
+
+        // Save the view
+        binding.save.setOnClickListener {
+            val children = binding.designView.children
+
+        }
     }
 }

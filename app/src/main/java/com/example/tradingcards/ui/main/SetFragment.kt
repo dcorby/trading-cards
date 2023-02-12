@@ -48,6 +48,8 @@ class SetFragment : Fragment() {
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
         }
+
+        //requireActivity().title = "Set"
     }
 
     private fun adapterOnClick(setItem: SetItem) {
