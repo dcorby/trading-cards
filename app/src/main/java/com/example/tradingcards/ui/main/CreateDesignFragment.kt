@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ class CreateDesignFragment : Fragment() {
     private var _binding: FragmentCreateDesignBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var activeView: RectangleView
+    lateinit var activeView: RectangleView
     private lateinit var origin: Pair<Int, Int>
 
     override fun onCreateView(
@@ -40,14 +41,14 @@ class CreateDesignFragment : Fragment() {
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
-            val rectangleView = RectangleView(requireContext())
+            val rectangleView = RectangleView(requireContext(), this)
             if (this::activeView.isInitialized) {
                 activeView.anchors.hide()
             }
             activeView = rectangleView
             binding.designView.addView(rectangleView)
             rectangleView.show(origin)
-            rectangleView.anchors.show()
+            rectangleView.anchors.show(true)
             binding.designView.addView(rectangleView.anchors.left)
             binding.designView.addView(rectangleView.anchors.top)
             binding.designView.addView(rectangleView.anchors.right)
@@ -60,8 +61,9 @@ class CreateDesignFragment : Fragment() {
             //linearLayout.setBackgroundColor(color)
         })
 
-        // Get designView clicks, which will deactivate activeView
+        // Get designView clicks, which will hide activeView anchors
         binding.designView.setOnClickListener {
+            activeView.anchors.hide()
         }
 
         // Get the designView width and height, in order to size added rectangleViews

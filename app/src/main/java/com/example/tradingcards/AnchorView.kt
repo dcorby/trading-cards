@@ -18,41 +18,41 @@ class AnchorView: RelativeLayout {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        //val paint = Paint()
-        //paint.setColor(Color.parseColor("#0000FF"))
-        //canvas.drawRect(20.toFloat(), 20.toFloat(), 20.toFloat(), 20.toFloat(), paint)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return super.onTouchEvent(event)
     }
 
-    fun show() {
-        params = LayoutParams(20, 20)
-        var leftMargin = 0
-        var topMargin = 0
-        when(this.tag.toString()) {
-            "left" -> {
-                // Need to use params.height, not height, since not drawn yet
-                leftMargin = rectangleView.params.leftMargin - 10
-                topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+    fun show(init: Boolean) {
+        if (init) {
+            params = LayoutParams(20, 20)
+            var leftMargin = 0
+            var topMargin = 0
+            when (this.tag.toString()) {
+                "left" -> {
+                    // Need to use params.height, not height, since not drawn yet
+                    leftMargin = rectangleView.params.leftMargin - 10
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                }
+                "top" -> {
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
+                    topMargin = rectangleView.params.topMargin - 10
+                }
+                "right" -> {
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width - 10
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                }
+                "bottom" -> {
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height - 10
+                }
             }
-            "top" -> {
-                leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
-                topMargin = rectangleView.params.topMargin - 10
-            }
-            "right" -> {
-                leftMargin = rectangleView.params.leftMargin + rectangleView.params.width - 10
-                topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
-            }
-            "bottom" -> {
-                leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
-                topMargin = rectangleView.params.topMargin + rectangleView.params.height - 10
-            }
+            params.leftMargin = leftMargin
+            params.topMargin = topMargin
+            this.layoutParams = params
         }
-        params.leftMargin = leftMargin
-        params.topMargin = topMargin
-        this.layoutParams = params
+        this.visibility = View.VISIBLE
     }
 
     fun hide() {
