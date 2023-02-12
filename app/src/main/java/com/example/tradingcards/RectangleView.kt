@@ -33,7 +33,8 @@ class RectangleView: RelativeLayout {
 
     constructor(context: Context?) : super(context!!) {
         anchors = Anchors(context)
-        this.setBackgroundColor(resources.getColor(R.color.blue2))
+        //this.setBackgroundColor(resources.getColor(R.color.blue2))
+        this.setBackgroundColor(Color.parseColor(Utils.getRandomHexCode()))
         anchors.left.tag = "left"
         anchors.top.tag = "top"
         anchors.right.tag = "right"

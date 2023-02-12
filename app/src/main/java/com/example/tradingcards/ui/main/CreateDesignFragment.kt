@@ -43,6 +43,9 @@ class CreateDesignFragment : Fragment() {
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
             val rectangleView = RectangleView(requireContext())
+            if (this::activeView.isInitialized) {
+                activeView.anchors.hide()
+            }
             activeView = rectangleView
             binding.designView.addView(rectangleView)
             rectangleView.show(origin)

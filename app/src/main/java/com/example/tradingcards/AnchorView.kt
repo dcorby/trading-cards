@@ -56,7 +56,7 @@ class AnchorView: RelativeLayout {
     }
 
     fun hide() {
-
+        this.visibility = View.INVISIBLE
     }
 
     val onTouchListener = object : View.OnTouchListener {
