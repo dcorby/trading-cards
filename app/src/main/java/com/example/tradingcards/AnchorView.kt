@@ -13,7 +13,7 @@ class AnchorView: RelativeLayout {
     lateinit var params: LayoutParams
 
     constructor(context: Context?) : super(context!!) {
-        //this.setOnTouchListener(onTouchListener)
+        this.setOnTouchListener(onTouchListener)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -60,7 +60,12 @@ class AnchorView: RelativeLayout {
     }
 
     fun move(axis: String, diff: Int) {
-
+        if (axis == "x") {
+            params.leftMargin += diff
+        }
+        if (axis == "y") {
+            params.topMargin += diff
+        }
     }
 
     val onTouchListener = object : View.OnTouchListener {
@@ -70,23 +75,23 @@ class AnchorView: RelativeLayout {
         val MIN_DIM = 5
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
-            val direction = this@AnchorView.tag
+            val side = this@AnchorView.tag
             val rectangleView = this@AnchorView.rectangleView
             val rectangleParams = rectangleView.layoutParams as LayoutParams
 
             when (event.action) {
                 MotionEvent.ACTION_MOVE -> {
-                    if (direction == "left" || direction == "right") {
+                    if (side == "left" || side == "right") {
                         // Get the diff
                         val diff = event.rawX.toInt() - prevX
                         // Move the rect
-                        if (direction == "left") {
+                        if (side == "left") {
                             val width = rectangleParams.width + diff*-1
                             if (width < MIN_DIM) { return false }
                             rectangleParams.leftMargin += diff
                             rectangleParams.width = width
                         }
-                        if (direction == "right") {
+                        if (side == "right") {
                             val width = rectangleParams.width + diff
                             if (width < MIN_DIM) { return false }
                             rectangleParams.width = width
@@ -99,17 +104,17 @@ class AnchorView: RelativeLayout {
                         rectangleView.anchors.top.params.leftMargin = left
                         rectangleView.anchors.bottom.params.leftMargin = left
                     }
-                    if (direction == "top" || direction == "bottom") {
+                    if (side == "top" || side == "bottom") {
                         // Get the diff
                         val diff = event.rawY.toInt() - prevY
                         // Move the rect
-                        if (direction == "top") {
+                        if (side == "top") {
                             val height = rectangleParams.height + diff*-1
                             if (height < MIN_DIM) { return false }
                             rectangleParams.topMargin += diff
                             rectangleParams.height = height
                         }
-                        if (direction == "bottom") {
+                        if (side == "bottom") {
                             val height = rectangleParams.height + diff
                             if (height < MIN_DIM) { return false }
                             rectangleParams.height = height

@@ -9,7 +9,8 @@ import com.example.tradingcards.ui.main.CreateDesignFragment
 
 class RectangleView: RelativeLayout {
 
-    var anchors: Anchors
+    lateinit var anchors: Anchors
+    lateinit var createDesignFragment: CreateDesignFragment
 
     class Anchors(context: Context?) {
         val left = AnchorView(context)
@@ -41,9 +42,8 @@ class RectangleView: RelativeLayout {
 
     val params = LayoutParams(100, 100)
 
-    constructor(context: Context?, createDesignFragment: CreateDesignFragment) : super(context!!) {
+    constructor(context: Context?, mCreateDesignFragment: CreateDesignFragment) : super(context!!) {
         anchors = Anchors(context)
-        //this.setBackgroundColor(resources.getColor(R.color.blue2))
         this.setBackgroundColor(Color.parseColor(Utils.getRandomHexCode()))
         anchors.left.tag = "left"
         anchors.top.tag = "top"
@@ -58,11 +58,7 @@ class RectangleView: RelativeLayout {
         anchors.right.rectangleView = this
         anchors.bottom.rectangleView = this
 
-        this.setOnClickListener {
-            createDesignFragment.activeView.anchors.hide()
-            createDesignFragment.activeView = this
-            this.anchors.show(false)
-        }
+        createDesignFragment = mCreateDesignFragment
 
         this.setOnTouchListener(onTouchListener)
     }
@@ -96,6 +92,10 @@ class RectangleView: RelativeLayout {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
+                    // Always switch last touched view to active
+                    createDesignFragment.activeView.anchors.hide()
+                    createDesignFragment.activeView = this@RectangleView
+                    anchors.show(false)
                     return true
                 }
                 MotionEvent.ACTION_DOWN -> {
