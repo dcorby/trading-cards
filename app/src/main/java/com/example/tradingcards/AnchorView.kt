@@ -13,7 +13,7 @@ class AnchorView: RelativeLayout {
     lateinit var params: LayoutParams
 
     constructor(context: Context?) : super(context!!) {
-        this.setOnTouchListener(onTouchListener)
+        //this.setOnTouchListener(onTouchListener)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -67,7 +67,6 @@ class AnchorView: RelativeLayout {
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
             val direction = this@AnchorView.tag
-            //val anchorParams = anchorView.layoutParams as LayoutParams
             val rectangleView = this@AnchorView.rectangleView
             val rectangleParams = rectangleView.layoutParams as LayoutParams
 
@@ -124,13 +123,9 @@ class AnchorView: RelativeLayout {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (direction == "top" || direction == "bottom") {
-                        params.topMargin += event.rawY.toInt() - prevY
-                    }
-                    if (direction == "left" || direction == "right") {
-                        params.leftMargin += event.rawX.toInt() - prevX
-                        this@AnchorView.layoutParams = params
-                    }
+                    /* Does action_up need the same implementation as action_move?
+                       Or any implementation? This seems to work fine, tbh
+                     */
                     return true
                 }
                 MotionEvent.ACTION_DOWN -> {

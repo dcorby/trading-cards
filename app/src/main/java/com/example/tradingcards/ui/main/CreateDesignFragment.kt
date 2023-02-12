@@ -1,11 +1,13 @@
 package com.example.tradingcards.ui.main
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.RelativeLayout
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.example.tradingcards.RectangleView
@@ -57,8 +59,9 @@ class CreateDesignFragment : Fragment() {
 
         // Init the color picker
         binding.colorPicker.setColorListener(ColorListener { color, fromUser ->
-            //val linearLayout: LinearLayout = findViewById(R.id.linearLayout)
-            //linearLayout.setBackgroundColor(color)
+            if (this::activeView.isInitialized) {
+                activeView.setBackgroundColor(color)
+            }
         })
 
         // Get designView clicks, which will hide activeView anchors
@@ -81,7 +84,16 @@ class CreateDesignFragment : Fragment() {
         // Save the view
         binding.save.setOnClickListener {
             val children = binding.designView.children
-
+            children.filter { it is RectangleView }.forEachIndexed { index, view ->
+                Log.v("TEST", "view=${index}")
+                val params = view.layoutParams as RelativeLayout.LayoutParams
+                Log.v("TEST", "marginLeft=${params.leftMargin}")
+                Log.v("TEST", "marginTop=${params.topMargin}")
+                Log.v("TEST", "width=${params.width}")
+                Log.v("TEST", "height=${params.height}")
+                Log.v("TEST", "color=#${Integer.toHexString((view.background as ColorDrawable).color)}")
+                Log.v("TEST", "--------------------")
+            }
         }
     }
 }

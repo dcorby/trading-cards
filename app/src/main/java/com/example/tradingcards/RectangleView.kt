@@ -2,7 +2,8 @@ package com.example.tradingcards
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.RelativeLayout
 import com.example.tradingcards.ui.main.CreateDesignFragment
 
@@ -55,6 +56,8 @@ class RectangleView: RelativeLayout {
             createDesignFragment.activeView = this
             this.anchors.show(false)
         }
+
+        this.setOnTouchListener(onTouchListener)
     }
 
     fun show(origin: Pair<Int, Int>?) {
@@ -62,5 +65,37 @@ class RectangleView: RelativeLayout {
             params.setMargins(origin.first, origin.second, origin.first, origin.second)
         }
         this.layoutParams = params
+    }
+
+    val onTouchListener = object : View.OnTouchListener {
+        var prevX = 0
+        var prevY = 0
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            if (v == null || event == null) { return false }
+            when (event.action) {
+                MotionEvent.ACTION_MOVE -> {
+                    val diffX = event.rawX.toInt() - prevX
+                    val diffY = event.rawY.toInt() - prevY
+                    params.leftMargin += diffX
+                    params.topMargin += diffY
+                    prevX = event.rawX.toInt()
+                    prevY = event.rawY.toInt()
+                    this@RectangleView.layoutParams = params
+                    return true
+                }
+                MotionEvent.ACTION_UP -> {
+                    return true
+                }
+                MotionEvent.ACTION_DOWN -> {
+                    prevX = event.rawX.toInt()
+                    prevY = event.rawY.toInt()
+                    params.bottomMargin = -2 * params.height
+                    params.rightMargin = -2 * params.width
+                    this@RectangleView.layoutParams = params
+                    return true
+                }
+            }
+            return false
+        }
     }
 }
