@@ -6,6 +6,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 
+const val DIM = 40
+
 class AnchorView: RelativeLayout {
 
     lateinit var rectangleView: RectangleView
@@ -26,26 +28,26 @@ class AnchorView: RelativeLayout {
 
     fun show(init: Boolean) {
         if (init) {
-            params = LayoutParams(20, 20)
+            params = LayoutParams(DIM, DIM)
             var leftMargin = 0
             var topMargin = 0
             when (this.tag.toString()) {
                 "left" -> {
                     // Need to use params.height, not height, since not drawn yet
-                    leftMargin = rectangleView.params.leftMargin - 10
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                    leftMargin = rectangleView.params.leftMargin - DIM / 2
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
                 }
                 "top" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
-                    topMargin = rectangleView.params.topMargin - 10
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
+                    topMargin = rectangleView.params.topMargin - DIM / 2
                 }
                 "right" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width - 10
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width - DIM / 2
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
                 }
                 "bottom" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height - 10
+                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
+                    topMargin = rectangleView.params.topMargin + rectangleView.params.height - DIM / 2
                 }
             }
             params.leftMargin = leftMargin
@@ -75,8 +77,9 @@ class AnchorView: RelativeLayout {
         val MIN_DIM = 5
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
-            val side = this@AnchorView.tag
-            val rectangleView = this@AnchorView.rectangleView
+            val anchorView = this@AnchorView
+            val side = anchorView.tag
+            val rectangleView = anchorView.rectangleView
             val rectangleParams = rectangleView.layoutParams as LayoutParams
 
             when (event.action) {
@@ -100,7 +103,7 @@ class AnchorView: RelativeLayout {
                         params.leftMargin += diff
                         prevX = event.rawX.toInt()
                         // Move the perpendicular anchors
-                        val left = rectangleView.params.leftMargin + rectangleView.params.width / 2 - 10
+                        val left = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
                         rectangleView.anchors.top.params.leftMargin = left
                         rectangleView.anchors.bottom.params.leftMargin = left
                     }
@@ -123,11 +126,11 @@ class AnchorView: RelativeLayout {
                         params.topMargin += diff
                         prevY = event.rawY.toInt()
                         // Move the perpendicular anchors
-                        val top = rectangleView.params.topMargin + rectangleView.params.height / 2 - 10
+                        val top = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
                         rectangleView.anchors.left.params.topMargin = top
                         rectangleView.anchors.right.params.topMargin = top
                     }
-                    this@AnchorView.layoutParams = params
+                    anchorView.layoutParams = params
                     rectangleView.layoutParams = rectangleParams
                     return true
                 }
@@ -143,14 +146,13 @@ class AnchorView: RelativeLayout {
                     prevY = event.rawY.toInt()
 
                     // little confused about bottom/right margins and the values??
-                    params.bottomMargin = -2 * this@AnchorView.height
-                    params.rightMargin = -2 * this@AnchorView.width
-                    this@AnchorView.layoutParams = params
+                    params.bottomMargin = -2 * anchorView.height
+                    params.rightMargin = -2 * anchorView.width
+                    anchorView.layoutParams = params
 
                     rectangleParams.bottomMargin = -2 * rectangleParams.height
                     rectangleParams.rightMargin = -2 * rectangleParams.width
                     rectangleView.layoutParams = rectangleParams
-
                     return true
                 }
             }

@@ -92,10 +92,6 @@ class RectangleView: RelativeLayout {
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
-                    // Always switch last touched view to active
-                    createDesignFragment.activeView.anchors.hide()
-                    createDesignFragment.activeView = this@RectangleView
-                    anchors.show(false)
                     return true
                 }
                 MotionEvent.ACTION_DOWN -> {
@@ -104,6 +100,11 @@ class RectangleView: RelativeLayout {
                     params.bottomMargin = -2 * params.height
                     params.rightMargin = -2 * params.width
                     rectangleView.layoutParams = params
+
+                    // Switch this view to active
+                    createDesignFragment.activeView.anchors.hide()
+                    createDesignFragment.activeView = rectangleView
+                    anchors.show(false)
                     return true
                 }
             }
