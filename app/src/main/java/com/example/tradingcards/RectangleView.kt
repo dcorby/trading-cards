@@ -30,6 +30,13 @@ class RectangleView: RelativeLayout {
             right.hide()
             bottom.hide()
         }
+
+        fun move(axis: String, diff: Int) {
+            left.move(axis, diff)
+            top.move(axis, diff)
+            right.move(axis, diff)
+            bottom.move(axis, diff)
+        }
     }
 
     val params = LayoutParams(100, 100)
@@ -70,6 +77,7 @@ class RectangleView: RelativeLayout {
     val onTouchListener = object : View.OnTouchListener {
         var prevX = 0
         var prevY = 0
+        var rectangleView = this@RectangleView
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
             when (event.action) {
@@ -80,7 +88,11 @@ class RectangleView: RelativeLayout {
                     params.topMargin += diffY
                     prevX = event.rawX.toInt()
                     prevY = event.rawY.toInt()
-                    this@RectangleView.layoutParams = params
+                    rectangleView.layoutParams = params
+
+                    // Get the movements to send to anchorView
+                    if (prevX != 0) { rectangleView.anchors.move("x", diffX) }
+                    if (prevY != 0) { rectangleView.anchors.move("y", diffY) }
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -91,7 +103,7 @@ class RectangleView: RelativeLayout {
                     prevY = event.rawY.toInt()
                     params.bottomMargin = -2 * params.height
                     params.rightMargin = -2 * params.width
-                    this@RectangleView.layoutParams = params
+                    rectangleView.layoutParams = params
                     return true
                 }
             }

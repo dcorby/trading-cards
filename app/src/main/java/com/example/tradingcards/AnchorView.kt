@@ -59,6 +59,10 @@ class AnchorView: RelativeLayout {
         this.visibility = View.INVISIBLE
     }
 
+    fun move(axis: String, diff: Int) {
+
+    }
+
     val onTouchListener = object : View.OnTouchListener {
         // https://stackoverflow.com/questions/7892853/how-to-use-correct-dragging-of-a-view-on-android/18806475#18806475
         var prevX = 0
