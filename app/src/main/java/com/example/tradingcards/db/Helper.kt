@@ -6,9 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 const val CREATE_CARDS = """
 CREATE TABLE IF NOT EXISTS cards (
-  id INTEGER PRIMARY KEY NOT NULL,
-  width INTEGER NOT NULL,
-  height INTEGER NOT NULL
+  id INTEGER PRIMARY KEY NOT NULL
 );
 """
 const val CREATE_CARD_VIEWS = """
@@ -19,6 +17,7 @@ CREATE TABLE IF NOT EXISTS card_views (
   height INTEGER NOT NULL,
   margin_left INTEGER NOT NULL,
   margin_top INTEGER NOT NULL,
+  hexadecimal TEXT NOT NULL
   FOREIGN KEY(card) REFERENCES cards(id)
 );"""
 

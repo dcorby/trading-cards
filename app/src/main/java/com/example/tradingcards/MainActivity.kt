@@ -1,22 +1,13 @@
 package com.example.tradingcards
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toolbar
+import android.util.DisplayMetrics
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.tradingcards.databinding.ActivityMainBinding
 
-// TODO: Add a drawer with link visible from top-level fragments
-// https://m2.material.io/components/navigation-drawer/android#anatomy
-// Should display user name/id, link to sets, show share/shared, recent, and trash
-// Labels or Tags should provide a filtering overlay to the search fragment
-// Allow user to add labels/tags on creation of set and card
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -53,5 +44,17 @@ class MainActivity : AppCompatActivity() {
         // don't need this
         //val appBarConfiguration = AppBarConfiguration(navGraph)
         //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+    }
+
+    // MainReceiver methods
+    override fun getScreenDims() : HashMap<String, Int> {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+        return hashMapOf(
+            "width" to width,
+            "height" to height
+        )
     }
 }

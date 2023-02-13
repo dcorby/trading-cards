@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -8,10 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.LocationsAdapter
@@ -28,6 +30,7 @@ class CreateSetFragment : Fragment() {
     private var _binding: FragmentCreateSetBinding? = null
     private val binding get() = _binding!!
 
+    lateinit var mainReceiver: MainReceiver
     lateinit var locationsAdapter: LocationsAdapter
     private lateinit var viewModel: CreateSetViewModel
     lateinit var tracker: SelectionTracker<String>
@@ -43,7 +46,6 @@ class CreateSetFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(CreateSetViewModel::class.java)
-
         // Set title
         //requireActivity().title = "Create Set"
     }
@@ -109,6 +111,25 @@ class CreateSetFragment : Fragment() {
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_CreateDesignFragment)
         }
+
+        // Display designs
+        // It is safe to call requireActivity() here
+        // https://stackoverflow.com/questions/65863267/is-it-safe-to-call-getactivity-from-oncreateview
+        mainReceiver = requireActivity() as MainReceiver
+        val screenDims = mainReceiver.getScreenDims()
+
+        val designs = mutableListOf<HashMap<String, Int>>()
+        // Add default design
+        designs.add(hashMapOf(
+            "width" to
+            "height" to
+            "margin_left" to
+            "margin_top" to
+            "hexadecimal" to
+        ))
+        // Query for user-generated designs
+
+        TODO: SUBCLASS HORIZONTAL SCROLLVIEW IN THIS FILE AND ADD ALL CHILD DESIGN THUMBNAILS IN CONSTRUCTOR
 
         // Select design
 
