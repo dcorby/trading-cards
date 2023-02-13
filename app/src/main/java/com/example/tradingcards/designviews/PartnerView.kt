@@ -1,16 +1,43 @@
-package com.example.tradingcards
+package com.example.tradingcards.designviews
 
 import android.content.Context
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
+import com.example.tradingcards.Utils
 import com.example.tradingcards.ui.main.CreateDesignFragment
 
-class RectangleView: RelativeLayout {
+open class PartnerView : RelativeLayout {
 
     lateinit var anchors: Anchors
     lateinit var createDesignFragment: CreateDesignFragment
+    lateinit var params: LayoutParams
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context?, mCreateDesignFragment: CreateDesignFragment, mParams: LayoutParams)
+            : super(context!!) {
+
+        anchors = Anchors(context)
+        this.setBackgroundColor(Color.parseColor(Utils.getRandomHexCode()))
+        anchors.left.tag = "left"
+        anchors.top.tag = "top"
+        anchors.right.tag = "right"
+        anchors.bottom.tag = "bottom"
+        anchors.left.setBackgroundColor(Color.parseColor("#0000FF"))
+        anchors.top.setBackgroundColor(Color.parseColor("#0000FF"))
+        anchors.right.setBackgroundColor(Color.parseColor("#0000FF"))
+        anchors.bottom.setBackgroundColor(Color.parseColor("#0000FF"))
+        anchors.left.partnerView = this
+        anchors.top.partnerView = this
+        anchors.right.partnerView = this
+        anchors.bottom.partnerView = this
+
+        createDesignFragment = mCreateDesignFragment
+        params = mParams
+
+        this.setOnTouchListener(onTouchListener)
+    }
 
     class Anchors(context: Context?) {
         val left = AnchorView(context)
@@ -40,32 +67,14 @@ class RectangleView: RelativeLayout {
         }
     }
 
-    val params = LayoutParams(100, 100)
-
-    constructor(context: Context?, mCreateDesignFragment: CreateDesignFragment) : super(context!!) {
-        anchors = Anchors(context)
-        this.setBackgroundColor(Color.parseColor(Utils.getRandomHexCode()))
-        anchors.left.tag = "left"
-        anchors.top.tag = "top"
-        anchors.right.tag = "right"
-        anchors.bottom.tag = "bottom"
-        anchors.left.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.top.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.right.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.bottom.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.left.rectangleView = this
-        anchors.top.rectangleView = this
-        anchors.right.rectangleView = this
-        anchors.bottom.rectangleView = this
-
-        createDesignFragment = mCreateDesignFragment
-
-        this.setOnTouchListener(onTouchListener)
-    }
-
-    fun show(origin: Pair<Int, Int>?) {
-        if (origin != null) {
-            params.setMargins(origin.first, origin.second, origin.first, origin.second)
+    fun show(center: Pair<Int, Int>?) {
+        if (center != null) {
+            params.setMargins(
+                center.first - params.width / 2,
+                center.second - params.height / 2,
+                center.first - params.width / 2,
+                center.second - params.height / 2
+            )
         }
         this.layoutParams = params
     }
@@ -73,7 +82,7 @@ class RectangleView: RelativeLayout {
     val onTouchListener = object : View.OnTouchListener {
         var prevX = 0
         var prevY = 0
-        var rectangleView = this@RectangleView
+        var partnerView = this@PartnerView
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null || event == null) { return false }
             when (event.action) {
@@ -84,11 +93,11 @@ class RectangleView: RelativeLayout {
                     params.topMargin += diffY
                     prevX = event.rawX.toInt()
                     prevY = event.rawY.toInt()
-                    rectangleView.layoutParams = params
+                    partnerView.layoutParams = params
 
                     // Get the movements to send to anchorView
-                    if (prevX != 0) { rectangleView.anchors.move("x", diffX) }
-                    if (prevY != 0) { rectangleView.anchors.move("y", diffY) }
+                    if (prevX != 0) { partnerView.anchors.move("x", diffX) }
+                    if (prevY != 0) { partnerView.anchors.move("y", diffY) }
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -99,11 +108,11 @@ class RectangleView: RelativeLayout {
                     prevY = event.rawY.toInt()
                     params.bottomMargin = -2 * params.height
                     params.rightMargin = -2 * params.width
-                    rectangleView.layoutParams = params
+                    partnerView.layoutParams = params
 
                     // Switch this view to active
                     createDesignFragment.activeView.anchors.hide()
-                    createDesignFragment.activeView = rectangleView
+                    createDesignFragment.activeView = partnerView
                     anchors.show(false)
                     return true
                 }

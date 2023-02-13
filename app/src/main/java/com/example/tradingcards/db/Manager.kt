@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteDatabase
 class Manager(context: Context) {
 
     private var context: Context = context
-    lateinit private var helper: Helper
-    lateinit private var database: SQLiteDatabase
+    private lateinit var helper: Helper
+    private lateinit var database: SQLiteDatabase
 
     @Throws(SQLException::class)
     fun open(): Manager {

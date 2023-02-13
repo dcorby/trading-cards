@@ -7,20 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.widget.AdapterView
 import android.widget.RelativeLayout
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import com.example.tradingcards.RectangleView
+import com.example.tradingcards.designviews.RectangleView
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
+import com.example.tradingcards.designviews.DataView
+import com.example.tradingcards.designviews.PartnerView
 import com.skydoves.colorpickerview.listeners.ColorListener
+
 
 class CreateDesignFragment : Fragment() {
 
     private var _binding: FragmentCreateDesignBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var activeView: RectangleView
-    private lateinit var origin: Pair<Int, Int>
+    lateinit var activeView: PartnerView
+    private lateinit var center: Pair<Int, Int>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +53,7 @@ class CreateDesignFragment : Fragment() {
             }
             activeView = rectangleView
             binding.designView.addView(rectangleView)
-            rectangleView.show(origin)
+            rectangleView.show(center)
             rectangleView.anchors.show(true)
             binding.designView.addView(rectangleView.anchors.left)
             binding.designView.addView(rectangleView.anchors.top)
@@ -74,12 +78,38 @@ class CreateDesignFragment : Fragment() {
         binding.designView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                origin = Pair(
-                    binding.designView.width / 2 - 50,
-                    binding.designView.height / 2 - 50
+                center = Pair(
+                    binding.designView.width / 2,
+                    binding.designView.height / 2
                 )
             }
         })
+
+        // Get data mappings selections
+        binding.dataMappings.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                if (position == 0) {
+                    return
+                }
+
+                val dataView = DataView(requireContext(), this@CreateDesignFragment, "Foo Bar")
+                if (this@CreateDesignFragment::activeView.isInitialized) {
+                    activeView.anchors.hide()
+                }
+                activeView = dataView
+                binding.designView.addView(dataView)
+                dataView.show(center)
+                dataView.anchors.show(true)
+                binding.designView.addView(dataView.anchors.left)
+                binding.designView.addView(dataView.anchors.top)
+                binding.designView.addView(dataView.anchors.right)
+                binding.designView.addView(dataView.anchors.bottom)
+
+                binding.dataMappings.setSelection(0)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         // Save the view
         binding.save.setOnClickListener {

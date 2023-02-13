@@ -1,4 +1,4 @@
-package com.example.tradingcards
+package com.example.tradingcards.designviews
 
 import android.content.Context
 import android.graphics.Canvas
@@ -10,7 +10,7 @@ const val DIM = 40
 
 class AnchorView: RelativeLayout {
 
-    lateinit var rectangleView: RectangleView
+    lateinit var partnerView: PartnerView
     // Setting this.layoutParams fails per smartcast issue. Get a reference
     lateinit var params: LayoutParams
 
@@ -33,21 +33,20 @@ class AnchorView: RelativeLayout {
             var topMargin = 0
             when (this.tag.toString()) {
                 "left" -> {
-                    // Need to use params.height, not height, since not drawn yet
-                    leftMargin = rectangleView.params.leftMargin - DIM / 2
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
+                    leftMargin = partnerView.params.leftMargin - DIM / 2
+                    topMargin = partnerView.params.topMargin + partnerView.params.height / 2 - DIM / 2
                 }
                 "top" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
-                    topMargin = rectangleView.params.topMargin - DIM / 2
+                    leftMargin = partnerView.params.leftMargin + partnerView.params.width / 2 - DIM / 2
+                    topMargin = partnerView.params.topMargin - DIM / 2
                 }
                 "right" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width - DIM / 2
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
+                    leftMargin = partnerView.params.leftMargin + partnerView.params.width - DIM / 2
+                    topMargin = partnerView.params.topMargin + partnerView.params.height / 2 - DIM / 2
                 }
                 "bottom" -> {
-                    leftMargin = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
-                    topMargin = rectangleView.params.topMargin + rectangleView.params.height - DIM / 2
+                    leftMargin = partnerView.params.leftMargin + partnerView.params.width / 2 - DIM / 2
+                    topMargin = partnerView.params.topMargin + partnerView.params.height - DIM / 2
                 }
             }
             params.leftMargin = leftMargin
@@ -79,8 +78,8 @@ class AnchorView: RelativeLayout {
             if (v == null || event == null) { return false }
             val anchorView = this@AnchorView
             val side = anchorView.tag
-            val rectangleView = anchorView.rectangleView
-            val rectangleParams = rectangleView.layoutParams as LayoutParams
+            val partnerView = anchorView.partnerView
+            val partnerParams = partnerView.layoutParams as LayoutParams
 
             when (event.action) {
                 MotionEvent.ACTION_MOVE -> {
@@ -89,49 +88,49 @@ class AnchorView: RelativeLayout {
                         val diff = event.rawX.toInt() - prevX
                         // Move the rect
                         if (side == "left") {
-                            val width = rectangleParams.width + diff*-1
+                            val width = partnerParams.width + diff*-1
                             if (width < MIN_DIM) { return false }
-                            rectangleParams.leftMargin += diff
-                            rectangleParams.width = width
+                            partnerParams.leftMargin += diff
+                            partnerParams.width = width
                         }
                         if (side == "right") {
-                            val width = rectangleParams.width + diff
+                            val width = partnerParams.width + diff
                             if (width < MIN_DIM) { return false }
-                            rectangleParams.width = width
+                            partnerParams.width = width
                         }
                         // Move the anchor
                         params.leftMargin += diff
                         prevX = event.rawX.toInt()
                         // Move the perpendicular anchors
-                        val left = rectangleView.params.leftMargin + rectangleView.params.width / 2 - DIM / 2
-                        rectangleView.anchors.top.params.leftMargin = left
-                        rectangleView.anchors.bottom.params.leftMargin = left
+                        val left = partnerView.params.leftMargin + partnerView.params.width / 2 - DIM / 2
+                        partnerView.anchors.top.params.leftMargin = left
+                        partnerView.anchors.bottom.params.leftMargin = left
                     }
                     if (side == "top" || side == "bottom") {
                         // Get the diff
                         val diff = event.rawY.toInt() - prevY
                         // Move the rect
                         if (side == "top") {
-                            val height = rectangleParams.height + diff*-1
+                            val height = partnerParams.height + diff*-1
                             if (height < MIN_DIM) { return false }
-                            rectangleParams.topMargin += diff
-                            rectangleParams.height = height
+                            partnerParams.topMargin += diff
+                            partnerParams.height = height
                         }
                         if (side == "bottom") {
-                            val height = rectangleParams.height + diff
+                            val height = partnerParams.height + diff
                             if (height < MIN_DIM) { return false }
-                            rectangleParams.height = height
+                            partnerParams.height = height
                         }
                         // Move the anchor
                         params.topMargin += diff
                         prevY = event.rawY.toInt()
                         // Move the perpendicular anchors
-                        val top = rectangleView.params.topMargin + rectangleView.params.height / 2 - DIM / 2
-                        rectangleView.anchors.left.params.topMargin = top
-                        rectangleView.anchors.right.params.topMargin = top
+                        val top = partnerView.params.topMargin + partnerView.params.height / 2 - DIM / 2
+                        partnerView.anchors.left.params.topMargin = top
+                        partnerView.anchors.right.params.topMargin = top
                     }
                     anchorView.layoutParams = params
-                    rectangleView.layoutParams = rectangleParams
+                    partnerView.layoutParams = partnerParams
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -150,9 +149,9 @@ class AnchorView: RelativeLayout {
                     params.rightMargin = -2 * anchorView.width
                     anchorView.layoutParams = params
 
-                    rectangleParams.bottomMargin = -2 * rectangleParams.height
-                    rectangleParams.rightMargin = -2 * rectangleParams.width
-                    rectangleView.layoutParams = rectangleParams
+                    partnerParams.bottomMargin = -2 * partnerParams.height
+                    partnerParams.rightMargin = -2 * partnerParams.width
+                    partnerView.layoutParams = partnerParams
                     return true
                 }
             }
