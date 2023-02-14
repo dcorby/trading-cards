@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         )
     }
 
-    override fun getDefaultDesign(width: Int, height: Int) : MutableList<HashMap<String, Any?>> {
-        return mutableListOf(
+    override fun getDefaultDesign(width: Int, height: Int) : ArrayList<HashMap<String, Any?>> {
+        return arrayListOf(
             // Add ShapeView along bottom (solid gray)
             hashMapOf(
                 "type" to "ShapeView",

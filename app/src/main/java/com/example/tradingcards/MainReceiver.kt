@@ -4,6 +4,6 @@ import com.example.tradingcards.db.DBManager
 
 interface MainReceiver {
     fun getScreenDims(): HashMap<String, Int>
-    fun getDefaultDesign(width: Int, height: Int): MutableList<HashMap<String, Any?>>
+    fun getDefaultDesign(width: Int, height: Int): ArrayList<HashMap<String, Any?>>
     fun getDBManager(): DBManager
 }

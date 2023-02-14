@@ -32,7 +32,7 @@ class DBManager(context: Context) {
     }
 
     // https://stackoverflow.com/questions/6293063/identifying-datatype-of-a-column-in-an-sqlite-android-cursor
-    fun fetch(query: String, args: Array<String>): ArrayList<HashMap<Any, Any>> {
+    fun fetch(query: String, args: Array<String>?): ArrayList<HashMap<Any, Any>> {
         val cursor = database.rawQuery(query, args)
         val columns = cursor.columnCount
         val arrayList: ArrayList<HashMap<Any, Any>> = ArrayList()

@@ -23,9 +23,6 @@ import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.viewmodels.CreateSetViewModel
 import java.io.File
 
-// adb shell
-// run-as com.example.tradingcards
-
 class CreateSetFragment : Fragment() {
 
     private var _binding: FragmentCreateSetBinding? = null
@@ -121,13 +118,13 @@ class CreateSetFragment : Fragment() {
         val designParams = Utils.getLayoutParams("design", screenDims)
 
         // Get the designs
-        val designs = mutableListOf<MutableList<HashMap<String, Any?>>>()
+        val designs = arrayListOf<ArrayList<HashMap<String, Any?>>>()
 
         // Get the default design
         designs.add(mainReceiver.getDefaultDesign(designParams.width, designParams.height))
 
         // Get user-generated designs
-        // TODO
+        designs += getUserDesigns()
 
         // Get the mini layoutParams
         val miniParams = Utils.getLayoutParams("mini", screenDims)
@@ -136,11 +133,12 @@ class CreateSetFragment : Fragment() {
         val shrinkFactor = 150 / designParams.width.toFloat()
 
         // Add the designs
-        binding.designScrollview.layoutParams.height = miniParams.height
+        binding.scrollviewLayout.layoutParams.height = miniParams.height
         designs.forEach { design ->
             val view = MiniView(requireContext(), design)
             view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
-            binding.designScrollview.addView(view.shrink(shrinkFactor))
+            val miniView = view.shrink(shrinkFactor)
+            binding.scrollviewLayout.addView(miniView)
         }
 
         // Select design
@@ -175,6 +173,26 @@ class CreateSetFragment : Fragment() {
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_SetFragment, bundle)
         }
+    }
+
+    private fun getUserDesigns() : ArrayList<ArrayList<HashMap<String, Any?>>> {
+        val userDesigns = arrayListOf<ArrayList<HashMap<String, Any?>>>()
+        val dbManager = mainReceiver.getDBManager()
+        val userDesignViews = dbManager.fetch("SELECT * FROM card_views ORDER BY card ASC", null)
+        var currentDesign = ArrayList<HashMap<String, Any?>>()
+        val previousView: HashMap<String, *>? = null
+        userDesignViews.forEach { userDesignView ->
+            if (previousView != null && userDesignView.getValue("card") != previousView.getValue("card")) {
+                userDesigns.add(ArrayList(currentDesign))
+            }
+
+            // ************ TODO: This needs to be set on create **************
+            userDesignView.set("type", "ShapeView")
+
+            currentDesign.add(userDesignView as kotlin.collections.HashMap<String, Any?>)
+        }
+        userDesigns.add(ArrayList(currentDesign))
+        return userDesigns
     }
 }
 

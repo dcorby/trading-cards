@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/location_text_view"
-        app:layout_constraintBottom_toTopOf="@id/design_scrollparent"
+        app:layout_constraintBottom_toTopOf="@id/scrollview_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <TextView
@@ -99,7 +99,7 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/design_scrollparent"
+        android:id="@+id/scrollview_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -116,10 +116,16 @@
             android:text="L">
         </TextView>
         <HorizontalScrollView
-            android:id="@+id/design_scrollview"
+            android:id="@+id/scrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/scrollview_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </HorizontalScrollView>
         <TextView
             android:layout_width="50dp"
@@ -139,7 +145,7 @@
         android:textSize="16sp"
         android:text="Create"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/design_scrollparent"
+        app:layout_constraintTop_toBottomOf="@id/scrollview_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
     </Button>
