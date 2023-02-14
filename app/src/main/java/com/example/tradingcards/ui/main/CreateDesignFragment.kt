@@ -1,6 +1,6 @@
 package com.example.tradingcards.ui.main
 
-import android.app.ActionBar.LayoutParams
+import android.content.ContentValues
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +14,11 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.Utils
-import com.example.tradingcards.designviews.RectangleView
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
+import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.designviews.DataView
 import com.example.tradingcards.designviews.PartnerView
+import com.example.tradingcards.designviews.RectangleView
 import com.skydoves.colorpickerview.listeners.ColorListener
 
 
@@ -28,6 +29,9 @@ class CreateDesignFragment : Fragment() {
 
     lateinit var activeView: PartnerView
     private lateinit var center: Pair<Int, Int>
+
+    private lateinit var mainReceiver: MainReceiver
+    private lateinit var dbManager: DBManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,13 +47,15 @@ class CreateDesignFragment : Fragment() {
 
         // Set title
         //requireActivity().title = "Create Design"
+        mainReceiver = requireActivity() as MainReceiver
+        dbManager = mainReceiver.getDBManager()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Layout designView
-        val mainReceiver = requireActivity() as MainReceiver
+
         binding.designView.layoutParams = Utils.getLayoutParams("design", mainReceiver.getScreenDims())
 
         // Create a rectangle on click
@@ -121,15 +127,31 @@ class CreateDesignFragment : Fragment() {
         // Save the view
         binding.save.setOnClickListener {
             val children = binding.designView.children
+            dbManager.beginTransaction()
+
+            // Insert the card record
+            val contentValues = ContentValues()
+            contentValues.put("id", id)
+            val card = dbManager.insert("cards", contentValues)
+
             children.filter { it is RectangleView }.forEachIndexed { index, view ->
-                Log.v("TEST", "view=${index}")
                 val params = view.layoutParams as RelativeLayout.LayoutParams
+                val contentValues = ContentValues()
+                contentValues.put("card", card)
+                contentValues.put("width", params.width)
+                contentValues.put("width", params.height)
+                contentValues.put("margin_left", params.leftMargin)
+                contentValues.put("margin_top", params.topMargin)
+                contentValues.put("hexadecimal", "#" + Integer.toHexString((view.background as ColorDrawable).color))
+                val id = dbManager.insert("card_views", contentValues)
+
+                Log.v("TEST", "Saving:")
+                Log.v("TEST", "card=${card}, id=${id}")
                 Log.v("TEST", "marginLeft=${params.leftMargin}")
                 Log.v("TEST", "marginTop=${params.topMargin}")
                 Log.v("TEST", "width=${params.width}")
                 Log.v("TEST", "height=${params.height}")
                 Log.v("TEST", "color=#${Integer.toHexString((view.background as ColorDrawable).color)}")
-                Log.v("TEST", "--------------------")
             }
         }
     }

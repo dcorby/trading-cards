@@ -5,13 +5,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
+import com.example.tradingcards.db.DBManager
+
 
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dbManager: DBManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dbManager = DBManager(this)
+        dbManager.open()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -77,4 +83,9 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             )
         )
     }
+
+    override fun getDBManager(): DBManager {
+        return dbManager
+    }
+
 }

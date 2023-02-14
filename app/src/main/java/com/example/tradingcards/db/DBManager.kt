@@ -7,14 +7,14 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 
-class Manager(context: Context) {
+class DBManager(context: Context) {
 
     private var context: Context = context
     private lateinit var helper: Helper
     private lateinit var database: SQLiteDatabase
 
     @Throws(SQLException::class)
-    fun open(): Manager {
+    fun open(): DBManager {
         helper = Helper(context)
         // this will call oncreate() & onopen()
         database = helper.writableDatabase
@@ -28,6 +28,8 @@ class Manager(context: Context) {
     @Throws(SQLiteConstraintException::class)
     fun insert(table: String, contentValues: ContentValues): Long {
         // https://stackoverflow.com/questions/3421577/sqliteconstraintexception-not-caught
+        // "the INTEGER PRIMARY KEY becomes an alias for the rowid."
+        // https://www.sqlite.org/rowidtable.html
         return database.insertOrThrow(table, null, contentValues)
     }
 
