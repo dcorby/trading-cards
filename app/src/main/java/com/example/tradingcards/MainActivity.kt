@@ -7,7 +7,6 @@ import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
 import com.example.tradingcards.db.DBManager
 
-
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
@@ -87,5 +86,4 @@ class MainActivity : AppCompatActivity(), MainReceiver {
     override fun getDBManager(): DBManager {
         return dbManager
     }
-
 }

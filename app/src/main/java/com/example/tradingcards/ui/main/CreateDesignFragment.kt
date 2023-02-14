@@ -3,7 +3,6 @@ package com.example.tradingcards.ui.main
 import android.content.ContentValues
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -131,7 +130,7 @@ class CreateDesignFragment : Fragment() {
 
             // Insert the card record
             val contentValues = ContentValues()
-            contentValues.put("id", id)
+            contentValues.put("dummy", "") // dummy value just to get id autoincrement
             val card = dbManager.insert("cards", contentValues)
 
             children.filter { it is RectangleView }.forEachIndexed { index, view ->
@@ -139,20 +138,23 @@ class CreateDesignFragment : Fragment() {
                 val contentValues = ContentValues()
                 contentValues.put("card", card)
                 contentValues.put("width", params.width)
-                contentValues.put("width", params.height)
+                contentValues.put("height", params.height)
                 contentValues.put("margin_left", params.leftMargin)
                 contentValues.put("margin_top", params.topMargin)
                 contentValues.put("hexadecimal", "#" + Integer.toHexString((view.background as ColorDrawable).color))
                 val id = dbManager.insert("card_views", contentValues)
 
-                Log.v("TEST", "Saving:")
-                Log.v("TEST", "card=${card}, id=${id}")
-                Log.v("TEST", "marginLeft=${params.leftMargin}")
-                Log.v("TEST", "marginTop=${params.topMargin}")
-                Log.v("TEST", "width=${params.width}")
-                Log.v("TEST", "height=${params.height}")
-                Log.v("TEST", "color=#${Integer.toHexString((view.background as ColorDrawable).color)}")
+                // Log.v("TEST", "Saving:")
+                // Log.v("TEST", "card=${card}, id=${id}")
+                // Log.v("TEST", "marginLeft=${params.leftMargin}")
+                // Log.v("TEST", "marginTop=${params.topMargin}")
+                // Log.v("TEST", "width=${params.width}")
+                // Log.v("TEST", "height=${params.height}")
+                // Log.v("TEST", "color=#${Integer.toHexString((view.background as ColorDrawable).color)}")
             }
+            dbManager.commitTransaction()
+            dbManager.endTransaction()
+            this.parentFragmentManager.popBackStack()
         }
     }
 }

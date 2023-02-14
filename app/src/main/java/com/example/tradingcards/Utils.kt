@@ -1,7 +1,6 @@
 package com.example.tradingcards
 
 import android.content.Context
-import android.util.Log
 import android.widget.RelativeLayout.LayoutParams
 
 class Utils {

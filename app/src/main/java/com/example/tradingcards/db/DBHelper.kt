@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper
 
 const val CREATE_CARDS = """
 CREATE TABLE IF NOT EXISTS cards (
-  id INTEGER PRIMARY KEY AUTOINCREMENT
-);
-"""
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  dummy TEXT NOT NULL
+);"""
 const val CREATE_CARD_VIEWS = """
 CREATE TABLE IF NOT EXISTS card_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

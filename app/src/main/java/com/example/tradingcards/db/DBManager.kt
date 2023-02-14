@@ -3,8 +3,6 @@ package com.example.tradingcards.db
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.SQLException
-import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 
 class DBManager(context: Context) {
@@ -13,7 +11,7 @@ class DBManager(context: Context) {
     private lateinit var helper: Helper
     private lateinit var database: SQLiteDatabase
 
-    @Throws(SQLException::class)
+    //@Throws(SQLException::class)
     fun open(): DBManager {
         helper = Helper(context)
         // this will call oncreate() & onopen()
@@ -25,7 +23,7 @@ class DBManager(context: Context) {
         helper.close()
     }
 
-    @Throws(SQLiteConstraintException::class)
+    //@Throws(SQLiteConstraintException::class)
     fun insert(table: String, contentValues: ContentValues): Long {
         // https://stackoverflow.com/questions/3421577/sqliteconstraintexception-not-caught
         // "the INTEGER PRIMARY KEY becomes an alias for the rowid."
