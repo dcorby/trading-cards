@@ -10,14 +10,20 @@
     tools:context=".ui.main.CreateDesignFragment">
 
     <RelativeLayout
-        android:id="@+id/design_view"
+        android:id="@+id/design_view_parent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/border_black"
+        android:background="@color/pink1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/controls_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+        <RelativeLayout
+            android:id="@+id/design_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/border_black">
+        </RelativeLayout>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/controls_view"
@@ -25,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/design_view"
+        app:layout_constraintTop_toBottomOf="@id/design_view_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

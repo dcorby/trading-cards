@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.app.ActionBar.LayoutParams
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.RelativeLayout
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.designviews.RectangleView
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.example.tradingcards.designviews.DataView
@@ -44,6 +46,14 @@ class CreateDesignFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Layout designView
+        val mainReceiver = requireActivity() as MainReceiver
+        val dims = mainReceiver.getScreenDims()
+        binding.designView.layoutParams.width = dims["width"]!!
+        binding.designView.layoutParams.height = dims["height"]!!
+        TODO LAY THIS OUT WITH THE CORRECT MARGINS, ETC., AND MAX OUT THE SIZE GIVEN THE REQUIRED ASPECT RATIO
+        binding.designView.rawx
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
@@ -125,5 +135,9 @@ class CreateDesignFragment : Fragment() {
                 Log.v("TEST", "--------------------")
             }
         }
+
+        val p = RelativeLayout.LayoutParams(200, 200)
+        binding.designView.layoutParams = p
+
     }
 }
