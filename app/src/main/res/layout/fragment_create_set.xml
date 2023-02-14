@@ -104,6 +104,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/design_layout"
+        app:layout_constraintBottom_toTopOf="@id/create_set"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -119,15 +120,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-            <!--
-            <ImageView
-                android:tag="default"
-                android:adjustViewBounds="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background">
-            </ImageView>
-            -->
         </HorizontalScrollView>
         <TextView
             android:layout_width="50dp"

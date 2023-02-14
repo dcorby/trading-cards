@@ -1,10 +1,7 @@
 package com.example.tradingcards
 
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
@@ -12,8 +9,6 @@ import com.example.tradingcards.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
-    private var w: Int? = null
-    private var h: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,13 +21,6 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             R.id.SetFragment
         } else {
             R.id.SetFragment
-        }
-
-        binding.root.doOnLayout {
-            w = binding.root.width
-            h = binding.root.height
-            Log.v("TEST", "root width=$w")
-            Log.v("TEST", "root height=$h")
         }
 
         // Required below, to use action bar
@@ -59,37 +47,33 @@ class MainActivity : AppCompatActivity(), MainReceiver {
     }
 
     // MainReceiver methods
-    override fun getScreenDims() : HashMap<String, Int?> {
-        //Log.v("TEST", "binding.parent width=${binding.parent.layoutParams.width}, height=${binding.parent.layoutParams.height}")
-        //val displayMetrics = DisplayMetrics()
-        //windowManager.defaultDisplay.getMetrics(displayMetrics)
-        //val width = displayMetrics.widthPixels
-        //val height = displayMetrics.heightPixels
+    override fun getScreenDims() : HashMap<String, Int> {
+        // binding.root.doOnLayout {}
         return hashMapOf(
-            "width" to w,
-            "height" to h
+            "width" to binding.root.width,
+            "height" to binding.root.height
         )
     }
 
-    override fun getDefaultDesign(w: Int, h: Int) : MutableList<HashMap<String, Any?>> {
+    override fun getDefaultDesign(width: Int, height: Int) : MutableList<HashMap<String, Any?>> {
         return mutableListOf(
             // Add ShapeView along bottom (solid gray)
             hashMapOf(
                 "type" to "ShapeView",
-                "width" to w,
+                "width" to width,
                 "height" to 100,
                 "margin_left" to 0,
-                "margin_top" to h - 100,
+                "margin_top" to height - 100,
                 "hexadecimal" to "#FFCCCCCC"
             ),
             // Add DataView (player name)
             hashMapOf(
               "type" to "DataView",
               "data" to "name",
-              "width" to w - 32 - 100,
-              "height" to 50,
+              "width" to width - 50,
+              "height" to 100,
               "margin_left" to 50,
-              "margin_top" to h - 16 - 50 - 100,
+              "margin_top" to height - 100
             )
         )
     }

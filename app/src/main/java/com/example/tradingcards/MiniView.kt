@@ -5,16 +5,12 @@ import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
-import androidx.core.view.allViews
 import androidx.core.view.children
-import androidx.core.view.marginLeft
-import androidx.core.view.marginTop
 import kotlin.collections.HashMap
 
-class DesignMiniView : RelativeLayout {
+class MiniView : RelativeLayout {
 
     lateinit var mContext: Context
-    lateinit var mScreenDims: HashMap<String, Int>
 
     constructor(context: Context) : super(context)
     constructor(context: Context?, design: MutableList<HashMap<String, Any?>>)
@@ -36,8 +32,6 @@ class DesignMiniView : RelativeLayout {
         val view = RelativeLayout(mContext)
         view.layoutParams = params
         view.setBackgroundColor(Color.parseColor(viewData.getValue("hexadecimal") as String))
-        Log.v("TEST", "Returning view from convertMapToView()")
-        Log.v("TEST", "View width=${params.width}, height=${params.height}, leftMargin=${params.leftMargin}, topMargin=${params.topMargin}")
         return view
     }
 
@@ -48,7 +42,6 @@ class DesignMiniView : RelativeLayout {
             params.height = (params.height * shrinkFactor).toInt()
             params.leftMargin  = (params.leftMargin * shrinkFactor).toInt()
             params.topMargin = (params.topMargin * shrinkFactor).toInt()
-            Log.v("TEST", "Shrunk view width=${params.width}, height=${params.height}, leftMargin=${params.leftMargin}, topMargin=${params.topMargin}")
             view.layoutParams = params
         }
         return this

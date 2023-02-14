@@ -1,23 +1,20 @@
 package com.example.tradingcards.ui.main
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
-import androidx.core.view.doOnLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tradingcards.DesignMiniView
+import com.example.tradingcards.MiniView
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
@@ -120,40 +117,33 @@ class CreateSetFragment : Fragment() {
         // Display designs
         // It is safe to call requireActivity() here
         // https://stackoverflow.com/questions/65863267/is-it-safe-to-call-getactivity-from-oncreateview
-        binding.root.doOnLayout {
-            mainReceiver = requireActivity() as MainReceiver
-            val screenDims = mainReceiver.getScreenDims()
-            val w = screenDims["width"]!!
-            val h = screenDims["height"]!!
+        mainReceiver = requireActivity() as MainReceiver
+        val screenDims = mainReceiver.getScreenDims()
+        val designParams = Utils.getLayoutParams("design", screenDims)
 
-            Log.v("TEST", "width=${w}")
-            Log.v("TEST", "height=${h}")
+        // Get the designs
+        val designs = mutableListOf<MutableList<HashMap<String, Any?>>>()
 
-            // Get the height, given a width of 150
-            val aspectRatio = w / h.toFloat()
-            val height = (150 / aspectRatio).toInt()
-            binding.designScrollview.layoutParams.height = height
+        // Get the default design
+        designs.add(mainReceiver.getDefaultDesign(designParams.width, designParams.height))
 
-            // Get the designs
-            val designs = mutableListOf<MutableList<HashMap<String, Any?>>>()
+        // Get user-generated designs
+        // TODO
 
-            // Get the default design
-            designs.add(mainReceiver.getDefaultDesign(w, h))
+        // Get the mini layoutParams
+        val miniParams = Utils.getLayoutParams("mini", screenDims)
 
-            // Get user-generated designs
-            // TODO
+        // Get the shrinkFactor
+        val shrinkFactor = 150 / designParams.width.toFloat()
 
-            // Get the shrinkFactor
-            val shrinkFactor = 150 / w.toFloat()
-
-            // Add the designs
-            designs.forEach { design ->
-                val view = DesignMiniView(requireContext(), design)
-                view.layoutParams = LayoutParams(150, height)
-                Log.v("TEST", "Adding view to designScrollview with width=150, height=${height}")
-                binding.designScrollview.addView(view.shrink(shrinkFactor))
-            }
+        // Add the designs
+        binding.designScrollview.layoutParams.height = miniParams.height
+        designs.forEach { design ->
+            val view = MiniView(requireContext(), design)
+            view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
+            binding.designScrollview.addView(view.shrink(shrinkFactor))
         }
+
         // Select design
 
         // Create set
