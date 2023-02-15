@@ -148,7 +148,7 @@ class CreateSetFragment : Fragment() {
         val sources = mainReceiver.getDBManager().fetch(
             "SELECT id, COUNT(*) AS count FROM sources GROUP BY id HAVING COUNT(*) > 0", null, "id")
         if (sources.size == 0) {
-            sources.add("Baseball Reference")
+            sources.add("Add a source")
             binding.sourcesSpinner.isEnabled = false
             binding.sourcesManage.visibility = View.INVISIBLE
         }
@@ -168,7 +168,10 @@ class CreateSetFragment : Fragment() {
 
         // Create source
         binding.sourcesAdd.setOnClickListener {
-            Toast.makeText(requireContext(), "Add source test", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "Add source test", Toast.LENGTH_SHORT).show()
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_CreateSetFragment_to_SourceFragment)
         }
 
         // Create set

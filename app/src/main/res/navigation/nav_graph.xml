@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_CreateSetFragment_to_CreateDesignFragment"
             app:destination="@id/CreateDesignFragment" />
+        <action
+            android:id="@+id/action_CreateSetFragment_to_SourceFragment"
+            app:destination="@id/SourceFragment" />
     </fragment>
 
     <!-- DisplayBackFragment -->
@@ -89,6 +92,14 @@
         <action
             android:id="@+id/action_SetFragment_to_CreateSetFragment"
             app:destination="@id/CreateSetFragment" />
+    </fragment>
+
+    <!-- SourceFragment -->
+    <fragment
+        android:id="@+id/SourceFragment"
+        android:name="com.example.tradingcards.ui.main.SourceFragment"
+        tools:layout="@layout/fragment_source"
+        android:label="SourceFragment">
     </fragment>
 
 </navigation>
