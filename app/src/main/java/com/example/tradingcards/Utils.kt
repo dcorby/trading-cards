@@ -1,6 +1,7 @@
 package com.example.tradingcards
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.widget.RelativeLayout.LayoutParams
 
 class Utils {
@@ -49,5 +50,11 @@ class Utils {
                 else -> throw Exception("getLayoutParams() invalid key")
             }
         }
+
+        fun readAssetsFile(context: Context, filename: String): String {
+            val assetManager: AssetManager = context.getAssets()
+            return assetManager.open(filename).bufferedReader().use { it.readText() }
+        }
+
     }
 }
