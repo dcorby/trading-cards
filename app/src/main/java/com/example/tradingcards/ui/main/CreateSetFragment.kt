@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -58,7 +61,6 @@ class CreateSetFragment : Fragment() {
         // Get the absolute path
         val pathParts = listOf(requireContext().filesDir.absolutePath, viewModel.currentDirectory, viewModel.name)
         val absolutePath: String = pathParts.filter { !it.equals("") }.joinToString("/")
-        Log.v("TEST", "absolutePath=${absolutePath}")
         viewModel.absolutePath = absolutePath
 
         // Get the name, listen for edits
@@ -103,7 +105,7 @@ class CreateSetFragment : Fragment() {
         tracker.select("/")
 
         // Create design
-        binding.designCreate.setOnClickListener {
+        binding.designAdd.setOnClickListener {
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_CreateDesignFragment)
@@ -141,6 +143,33 @@ class CreateSetFragment : Fragment() {
         }
 
         // Select design
+
+        // Show sources
+        val sources = mainReceiver.getDBManager().fetch(
+            "SELECT id, COUNT(*) AS count FROM sources GROUP BY id HAVING COUNT(*) > 0", null, "id")
+        if (sources.size == 0) {
+            sources.add("Baseball Reference")
+            binding.sourcesSpinner.isEnabled = false
+            binding.sourcesManage.visibility = View.INVISIBLE
+        }
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            sources)
+        binding.sourcesSpinner.adapter = adapter
+        binding.sourcesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        // Create source
+        binding.sourcesAdd.setOnClickListener {
+            Toast.makeText(requireContext(), "Add source test", Toast.LENGTH_SHORT).show()
+        }
 
         // Create set
         binding.createSet.setOnClickListener {

@@ -52,7 +52,7 @@ class DBManager(context: Context) {
     }
 
     // Extract a column as a list, by key
-    fun fetch(query: String, args: Array<String>, key: String): ArrayList<Any> {
+    fun fetch(query: String, args: Array<String>?, key: String): ArrayList<Any> {
         val tmp = fetch(query, args)
         val list = ArrayList<Any>()
         for (i in 0 until tmp.size) {
