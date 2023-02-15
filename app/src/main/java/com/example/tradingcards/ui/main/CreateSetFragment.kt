@@ -103,7 +103,7 @@ class CreateSetFragment : Fragment() {
         tracker.select("/")
 
         // Create design
-        binding.createDesign.setOnClickListener {
+        binding.designCreate.setOnClickListener {
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_CreateDesignFragment)
