@@ -130,16 +130,6 @@
             android:text="Sources">
         </TextView>
         <Button
-            android:id="@+id/sources_add"
-            android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/purple_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Add">
-        </Button>
-        <Button
             android:id="@+id/sources_manage"
             android:layout_marginLeft="20dp"
             android:backgroundTint="@color/white"

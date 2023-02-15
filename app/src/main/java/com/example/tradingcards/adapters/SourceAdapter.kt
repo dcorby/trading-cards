@@ -3,6 +3,7 @@ package com.example.tradingcards.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 // import android.widget.ListAdapter NO!
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
@@ -18,14 +19,19 @@ class SourceAdapter(private val onClick: (SourceItem) -> Unit) :
                                   val onClick: (SourceItem) -> Unit) : RecyclerView.ViewHolder(sourceItemView) {
 
         private val sourceItemView = sourceItemView
-        private val sourceItemTextView: TextView = sourceItemView.findViewById(R.id.text_view)
+        private val sourceItemTextView: TextView = sourceItemView.findViewById(R.id.textview)
+        private val sourceItemCheckBox: CheckBox = sourceItemView.findViewById(R.id.checkbox)
 
         /* Bind data to view */
         fun bind(sourceItem: SourceItem) {
-            sourceItemTextView.text = sourceItem.playerName
+            sourceItemTextView.text = sourceItem.label
+            sourceItemCheckBox.isChecked = sourceItem.synced
 
             // CHECK THIS AGAINST FLOWERS IMPLEMENTATIONS
-            sourceItemView.setOnClickListener { onClick(sourceItem) }
+            //sourceItemView.setOnClickListener { onClick(sourceItem) }
+            // This will get called over and over by the recycler view
+            //sourceItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->  onCheck()
+            sourceItemCheckBox.setOnClickListener{ onClick(sourceItem) }
         }
     }
 
@@ -44,10 +50,10 @@ class SourceAdapter(private val onClick: (SourceItem) -> Unit) :
 
 object SourceItemDiffCallback : DiffUtil.ItemCallback<SourceItem>() {
     override fun areItemsTheSame(oldItem: SourceItem, newItem: SourceItem): Boolean {
-        return oldItem.itemId == newItem.itemId
+        return oldItem.label == newItem.label
     }
 
     override fun areContentsTheSame(oldItem: SourceItem, newItem: SourceItem): Boolean {
-        return oldItem.itemId == newItem.itemId
+        return oldItem.label == newItem.label
     }
 }
