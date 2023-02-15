@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -57,16 +58,14 @@ class CreateSetFragment : Fragment() {
         // Get the absolute path
         val pathParts = listOf(requireContext().filesDir.absolutePath, viewModel.currentDirectory, viewModel.name)
         val absolutePath: String = pathParts.filter { !it.equals("") }.joinToString("/")
+        Log.v("TEST", "absolutePath=${absolutePath}")
         viewModel.absolutePath = absolutePath
 
         // Get the name, listen for edits
         binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
         binding.nameEditText.addTextChangedListener {
             viewModel.name = binding.nameEditText.text.toString()
-            binding.locationLiveView.text =
-                Utils.getRelativePath(
-                    requireContext(),
-                    viewModel.absolutePath + "/" + tracker.selection + "/" + viewModel.name)
+            binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
         }
 
         // Get the locations

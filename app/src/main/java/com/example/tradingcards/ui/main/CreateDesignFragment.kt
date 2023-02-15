@@ -82,7 +82,9 @@ class CreateDesignFragment : Fragment() {
 
         // Get designView clicks, which will hide activeView anchors
         binding.designView.setOnClickListener {
-            activeView.anchors.hide()
+            if (this::activeView.isInitialized) {
+                activeView.anchors.hide()
+            }
         }
 
         // Get the designView width and height, in order to size added rectangleViews
