@@ -50,7 +50,7 @@
             android:layout_weight="1" />
         <Spinner
             android:id="@+id/data_mappings"
-            android:entries="@array/data_mappings"
+            android:entries="@array/data_map_labels"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1" />
