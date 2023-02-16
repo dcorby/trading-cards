@@ -1,38 +1,28 @@
 package com.example.tradingcards.ui.main
 
-import android.content.ContentValues
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.util.rangeTo
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.navigation.Navigation
-import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Sources
 import com.example.tradingcards.Utils
-import com.example.tradingcards.adapters.LocationsAdapter
 import com.example.tradingcards.adapters.SourceAdapter
 import com.example.tradingcards.databinding.FragmentSourcesBinding
-import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.items.SourceItem
-import com.example.tradingcards.viewmodels.CreateSetViewModel
+import com.example.tradingcards.viewmodels.TestViewModel
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
-import java.util.concurrent.Executors
 
 class SourcesFragment : Fragment() {
 
@@ -42,9 +32,10 @@ class SourcesFragment : Fragment() {
     lateinit var mainReceiver: MainReceiver
     lateinit var sourceAdapter: SourceAdapter
     lateinit var res: Resources
-    private lateinit var viewModel: CreateSetViewModel
     private lateinit var sourcesData: HashMap<String, MutableList<SourceItem>>
     var activeId = "baseball-reference"
+
+    private lateinit var viewModel: TestViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +48,7 @@ class SourcesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //viewModel = ViewModelProvider(this).get(CreateSetViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TestViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,8 +94,13 @@ class SourcesFragment : Fragment() {
 
         // Sync
         binding.sync.setOnClickListener {
-            syncSources() // TODO? Get a callback when all I/O operations are done, and pop backstack or whatever
-            Log.v("TEST", "syncSources() has returned")
+            // https://developer.android.com/kotlin/coroutines
+            // This should probably be attached to a viewModelScope
+            // GlobalScope.launch(Dispatchers.IO) {
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                val players = syncSources()
+                // Do db stuff...
+            }
         }
     }
 
@@ -116,7 +113,7 @@ class SourcesFragment : Fragment() {
         Log.v("TEST", "Checkbox onclick")
     }
 
-    private fun syncSources() {
+    private suspend fun syncSources() : MutableList<Pair<String, String>> {
         Log.v("TEST", "Syncing for activeId=${activeId}")
 
         // Get the urls to sync
@@ -124,37 +121,44 @@ class SourcesFragment : Fragment() {
         val sources = Sources.toMap(jsonObject)
         val source = sources[activeId] as HashMap<*, *>
         val batches = source["batches"] as List<*>
+        val urls = mutableListOf<String>()
         batches.forEach {
             val batch = it as HashMap<*, *>
             if (batch["label"] == "2022") {
                 (batch["urls"] as List<*>).forEach { url ->
-                    Log.v("TEST", "url=${url}")
+                    urls.add(url.toString())
                 }
             }
         }
 
         fun downloadUrl(url: String) {
             Log.v("TEST", "Downloading URL=$url")
-            //Thread.sleep(10000)
+            val response = URL(url)
+            val content = response.readText()
+            //<a href="/players/a/abramcj01.shtml">CJ&nbsp;Abrams</a>
+            val regex = Regex("<a.*?/players/.*?.shtml\">.*?</a>")
+            val matches = regex.findAll(content)
+            val html = matches.map{ it.groupValues[1] }.toMutableList()
+            html.forEach {
+
+            }
         }
 
-        // https://stackoverflow.com/questions/58170206/download-multiple-content-asynchronously-from-a-single-coroutine
-        var urls = listOf("url1", "url2", "url3", "url4", "url5")
-
+        val players = mutableListOf<Pair<String, String>>()
         var timer: CountDownTimer? = null
-        var jobs = GlobalScope.launch(Dispatchers.IO) {
+        suspend fun getData() = coroutineScope {
             val results = urls.map{ async { downloadUrl(it) } }
             results.awaitAll()
             timer?.cancel()
-            Log.v("TEST", "Done awaiting")
         }
         timer = object : CountDownTimer(5000, 1000) {
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
-                jobs.cancel()
-                throw Exception("downloadUrls timeout")
+                throw Exception("Get data timeout")
             }
         }.start()
+        getData()
+        return players
     }
 }
 
