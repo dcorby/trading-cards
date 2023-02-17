@@ -10,5 +10,5 @@ class CreateSetViewModel : ViewModel() {
     var location = ""
     var currentDirectory = ""
     var absolutePath = ""
-    var card: String? = null
+    var activeDesign = 0
 }

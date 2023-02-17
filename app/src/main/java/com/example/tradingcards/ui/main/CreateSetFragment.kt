@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -139,21 +141,26 @@ class CreateSetFragment : Fragment() {
 
         // Add the designs
         binding.scrollviewLayout.layoutParams.height = miniParams.height
-        designs.forEach { design ->
+        designs.forEachIndexed { index, design ->
             val view = MiniView(requireContext(), design)
             view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
             val miniView = view.shrink(shrinkFactor)
-            miniView.tag = design[0]["card"] ?: 0
+            //miniView.tag = design[0]["card"] ?: 0
             binding.scrollviewLayout.addView(miniView)
         }
 
         // Select design
         binding.scrollviewLayout.children.forEach { miniView ->
             miniView.setOnClickListener {
-                Toast.makeText(requireContext(), it.tag.toString(), Toast.LENGTH_SHORT).show()
-                viewModel.card = it.tag.toString()
+                (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign).setBackgroundColor(Color.parseColor("#ffffff"))
+                viewModel.activeDesign = (it.parent as ViewGroup).indexOfChild(it)
+                it.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
             }
         }
+
+        // Set default design
+        viewModel.activeDesign = 0
+        (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(0).background = ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
 
         // Show sources
         val sources = mainReceiver.getDBManager().fetch(
@@ -205,15 +212,14 @@ class CreateSetFragment : Fragment() {
     }
 
     private fun createSet() {
-        // Need a name, a design, and a source
+
         val name = viewModel.name
-        val card= viewModel.card
+        val activeDesign = viewModel.activeDesign
         val source= resources.getStringArray(R.array.source_ids)[binding.sourcesSpinner.selectedItemPosition]
 
-        if (name == "" || card == null || source == null) {
+        if (name == "" || source == null) {
             var msg = ""
             if (name == "") { msg = "Name required" }
-            if (card == null) { msg = "Select a design" }
             if (source == null) { msg = "Select a source" }
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
             return
