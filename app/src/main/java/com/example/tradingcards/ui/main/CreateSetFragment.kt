@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -140,10 +141,16 @@ class CreateSetFragment : Fragment() {
             val view = MiniView(requireContext(), design)
             view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
             val miniView = view.shrink(shrinkFactor)
+            miniView.tag = design[0]["card"] ?: 0
             binding.scrollviewLayout.addView(miniView)
         }
 
         // Select design
+        binding.scrollviewLayout.children.forEach { miniView ->
+            miniView.setOnClickListener {
+                Toast.makeText(requireContext(), it.tag.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Show sources
         val sources = mainReceiver.getDBManager().fetch(
