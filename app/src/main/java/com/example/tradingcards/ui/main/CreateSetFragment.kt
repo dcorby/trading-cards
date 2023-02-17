@@ -47,6 +47,7 @@ class CreateSetFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel = ViewModelProvider(this).get(CreateSetViewModel::class.java)
         // Set title
         //requireActivity().title = "Create Set"
@@ -159,9 +160,8 @@ class CreateSetFragment : Fragment() {
             sources)
         binding.sourcesSpinner.adapter = adapter
         binding.sourcesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
