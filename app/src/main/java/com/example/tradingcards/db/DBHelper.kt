@@ -26,13 +26,21 @@ CREATE TABLE IF NOT EXISTS sources (
   batch TEXT NOT NULL,
   date TEXT
 );"""
+const val CREATE_PLAYERS = """
+CREATE TABLE IF NOT EXISTS players (
+  source TEXT NOT NULL,
+  id TEXT NOT NULL,
+  name TEXT NOT NULL
+);
+"""
 
 class Helper(context: Context) : SQLiteOpenHelper(context, "tradingCards.db", null, 1) {
 
     private val tables = hashMapOf<String, String>(
         "cards" to CREATE_CARDS,
         "card_views" to CREATE_CARD_VIEWS,
-        "sources" to CREATE_SOURCES
+        "sources" to CREATE_SOURCES,
+        "players" to CREATE_PLAYERS
     )
 
     private fun createTables(db: SQLiteDatabase?) {

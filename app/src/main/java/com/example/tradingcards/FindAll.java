@@ -13,7 +13,7 @@ public class FindAll {
 
         ArrayList<Pair<String, String>> matches = new ArrayList<Pair<String, String>>();
         while (matcher.find()) {
-            Pair<String, String> pair = new Pair<String, String>(matcher.group(0), matcher.group(1));
+            Pair<String, String> pair = new Pair<String, String>(matcher.group(1), matcher.group(2));
             matches.add(pair);
         }
         return matches;

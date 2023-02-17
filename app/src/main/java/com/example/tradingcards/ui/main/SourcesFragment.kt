@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.content.ContentValues
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,11 @@ import com.example.tradingcards.viewmodels.TestViewModel
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.HashMap
 
 class SourcesFragment : Fragment() {
 
@@ -72,7 +78,7 @@ class SourcesFragment : Fragment() {
 
         // Get the sources data
         val sources = mainReceiver.getDBManager().fetch(
-            "SELECT id, batch, CASE WHEN date IS NULL THEN 0 ELSE 1 END AS synced FROM sources",null)
+            "SELECT id, batch, CASE WHEN date IS NULL THEN 0 ELSE 1 END AS synced FROM sources", null)
         sourcesData = HashMap<String, MutableList<SourceItem>>()
         sources.forEach { row ->
             val id = row.getValue("id").toString()
@@ -93,10 +99,31 @@ class SourcesFragment : Fragment() {
             // https://developer.android.com/kotlin/coroutines
             // This should probably be attached to a viewModelScope
             // GlobalScope.launch(Dispatchers.IO) {
+            var players: HashMap<String, String>? = null
             viewModel.viewModelScope.launch(Dispatchers.IO) {
                 withTimeout(10000) {
-                    val players = syncSources()
+                    players = syncSources()
                 }
+            }.invokeOnCompletion {
+                players?.forEach { player ->
+                    val source = activeId
+                    val id = player.key
+                    val name = player.value
+                    val contentValues = ContentValues()
+                    contentValues.put("source", source)
+                    contentValues.put("id", id)
+                    contentValues.put("name", name)
+                    mainReceiver.getDBManager().insert("players", contentValues)
+                }
+
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time).toString()
+                val contentValues = ContentValues()
+                contentValues.put("date", date)
+                mainReceiver.getDBManager().update(
+                    "sources",
+                    contentValues,
+                    "id = ? AND batch = ?",
+                    arrayOf(activeId, "2022"))
             }
         }
     }
@@ -107,12 +134,9 @@ class SourcesFragment : Fragment() {
     }
 
     private fun adapterOnClick(sourceItem: SourceItem) {
-        Log.v("TEST", "Checkbox onclick")
     }
 
     private suspend fun syncSources() : HashMap<String, String> {
-        Log.v("TEST", "Syncing for activeId=${activeId}")
-
         val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sources.json"))
         val sources = Sources.toMap(jsonObject)
         val source = sources[activeId] as HashMap<*, *>
@@ -133,9 +157,7 @@ class SourcesFragment : Fragment() {
             val content = response.readText()
             val matches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", content)
             matches.forEach {
-                players[it.first] = it.second
-                Log.v("TEST", it.first)
-                Log.v("TEST", it.second)
+                players[it.first] = it.second.replace("&nbsp;", " ")
             }
         }
 

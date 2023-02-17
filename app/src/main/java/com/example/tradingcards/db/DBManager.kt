@@ -31,6 +31,10 @@ class DBManager(context: Context) {
         return database.insertOrThrow(table, null, contentValues)
     }
 
+    fun update(table: String, contentValues: ContentValues, whereClause: String, whereArgs: Array<String>?): Int {
+        return database.update(table, contentValues, whereClause, whereArgs)
+    }
+
     // https://stackoverflow.com/questions/6293063/identifying-datatype-of-a-column-in-an-sqlite-android-cursor
     fun fetch(query: String, args: Array<String>?): ArrayList<HashMap<Any, Any>> {
         val cursor = database.rawQuery(query, args)
