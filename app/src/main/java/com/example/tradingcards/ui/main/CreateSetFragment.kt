@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -57,19 +58,20 @@ class CreateSetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get the directory
+        // Get the current directory
         viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
 
-        // Get the absolute path
+        // Get the current absolute path + name
         val pathParts = listOf(requireContext().filesDir.absolutePath, viewModel.currentDirectory, viewModel.name)
         val absolutePath: String = pathParts.filter { !it.equals("") }.joinToString("/")
         viewModel.absolutePath = absolutePath
 
-        // Get the name, listen for edits
+        // Get the name and location, and listen for edits
         binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
         binding.nameEditText.addTextChangedListener {
-            viewModel.name = binding.nameEditText.text.toString()
+            viewModel.name = binding.nameEditText.text.toString().trim()
             binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
+            viewModel.location = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
         }
 
         // Get the locations
@@ -149,6 +151,7 @@ class CreateSetFragment : Fragment() {
         binding.scrollviewLayout.children.forEach { miniView ->
             miniView.setOnClickListener {
                 Toast.makeText(requireContext(), it.tag.toString(), Toast.LENGTH_SHORT).show()
+                viewModel.card = it.tag.toString()
             }
         }
 
@@ -202,6 +205,24 @@ class CreateSetFragment : Fragment() {
     }
 
     private fun createSet() {
+        // Need a name, a design, and a source
+        val name = viewModel.name
+        val card= viewModel.card
+        val source= resources.getStringArray(R.array.source_ids)[binding.sourcesSpinner.selectedItemPosition]
+
+        if (name == "" || card == null || source == null) {
+            var msg = ""
+            if (name == "") { msg = "Name required" }
+            if (card == null) { msg = "Select a design" }
+            if (source == null) { msg = "Select a source" }
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val path = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
+
+        // TODO: Create the set here
+
         val file = File(viewModel.absolutePath)
         if (!file.exists()) {
             file.mkdirs()
