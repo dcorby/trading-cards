@@ -58,7 +58,9 @@ class CreateSetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Get the current directory
-        viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
+        viewModel.currentDirectory =
+            (arguments?.getString("currentDirectory", "") ?: "").replace("//", "/")
+        requireActivity().title = "Create Set (${viewModel.currentDirectory})"
 
         // Get the current absolute path + name
         val pathParts = listOf(requireContext().filesDir.absolutePath, viewModel.currentDirectory, viewModel.name)

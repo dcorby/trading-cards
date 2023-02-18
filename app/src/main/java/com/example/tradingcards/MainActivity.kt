@@ -2,7 +2,6 @@ package com.example.tradingcards
 
 import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI

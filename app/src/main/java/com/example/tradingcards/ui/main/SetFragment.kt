@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -81,8 +82,7 @@ class SetFragment : Fragment() {
                     override fun onSelectionChanged() {
                     }
                     override fun onItemStateChanged(key: String, selected: Boolean) {
-                        if (tracker.hasSelection()) {
-                        }
+                        if (tracker.hasSelection()) { }
                         super.onItemStateChanged(key, !selected)
                     }
                 })
@@ -91,16 +91,27 @@ class SetFragment : Fragment() {
             binding.gettingStarted.visibility = View.VISIBLE
         }
 
-        binding.create1.setOnClickListener {
+        fun getSelectionName() : String? {
+            if (tracker.selection.size() == 0) {
+                Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
+                return null
+            }
+            val name = tracker.selection.toList()[0] + "/"
+            return name
+        }
+
+        fun create() {
+            val bundle = Bundle()
+            val name = getSelectionName()
+            if (name == null) { return }
+            bundle.putString("currentDirectory", viewModel.currentDirectory + name)
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
+            navController.navigate(R.id.action_SetFragment_to_CreateSetFragment, bundle)
         }
-        binding.create2.setOnClickListener {
-            val navController =
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
-        }
+        binding.create1.setOnClickListener { create() }
+        binding.create2.setOnClickListener { create() }
+
         binding.add.setOnClickListener {
             //val navController =
             //    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
@@ -111,7 +122,8 @@ class SetFragment : Fragment() {
             val isDir = true
             if (isDir) {
                 val bundle = Bundle()
-                val name = tracker.selection.toList()[0] + "/"
+                val name = getSelectionName()
+                if (name == null) { return@setOnClickListener }
                 bundle.putString("currentDirectory", viewModel.currentDirectory + name)
                 val navController =
                     Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
