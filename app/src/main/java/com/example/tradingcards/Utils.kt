@@ -11,7 +11,14 @@ import kotlin.math.abs
 class Utils {
     companion object {
         fun getRelativePath(context: Context, absolutePath: String) : String {
-            return absolutePath.replace(context.filesDir.absolutePath, "/", false)
+            var relativePath = absolutePath.replace(context.filesDir.absolutePath, "", false)
+            if (relativePath == "") {
+                return "/"
+            }
+            if (relativePath.first().toString() != "/") {
+                relativePath = "/" + relativePath
+            }
+            return relativePath
         }
 
         fun getRandomHexCode() : String {
@@ -79,10 +86,10 @@ class Utils {
             return locationItems
         }
 
-        fun getSetItems(context: Context, absolutePath: String) : MutableList<SetItem> {
+        fun getSetItems(context: Context, path: File) : MutableList<SetItem> {
             val setItems = mutableListOf<SetItem>()
             //getRecursivePaths(context, absolutePath, false).forEach {
-            val list = File(absolutePath).listFiles()
+            val list = path.listFiles()
             if (list == null) {
                 return setItems
             }

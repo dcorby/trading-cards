@@ -219,13 +219,12 @@ class CreateSetFragment : Fragment() {
             return
         }
 
-        val filePath = (viewModel.absolutePath + viewModel.name).replace("//", "/")
+        val filePath = viewModel.absolutePath + viewModel.name
         val file = File(filePath)
         if (!file.exists()) {
             file.mkdirs()
             val bundle = Bundle()
-            //bundle.putString("currentDirectory", file.parent?.toString() ?: "")
-            bundle.putString("currentDirectory", file.toString() ?: "")
+            bundle.putString("currentDirectory", file.toString().replace(requireContext().filesDir.toString(), "") ?: "")
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_SetFragment, bundle)

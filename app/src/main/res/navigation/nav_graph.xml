@@ -23,7 +23,9 @@
         android:label="">
         <action
             android:id="@+id/action_CreateSetFragment_to_SetFragment"
-            app:destination="@id/SetFragment" />
+            app:destination="@id/SetFragment"
+            app:popUpTo="@id/SetFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_CreateSetFragment_to_CreateDesignFragment"
             app:destination="@id/CreateDesignFragment" />

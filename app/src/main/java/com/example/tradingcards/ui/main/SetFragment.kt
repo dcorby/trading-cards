@@ -45,22 +45,18 @@ class SetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentDirectory = (arguments?.getString("currentDirectory", "/") ?: "/")
-            .replace("//", "/")
-
+        viewModel.currentDirectory = (arguments?.getString("currentDirectory", "") ?: "") + "/"
         setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
 
-        val rootDir = File(requireContext().filesDir, viewModel.currentDirectory)
-        val files = rootDir.listFiles()
+        val setDir = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
+        val files = setDir.listFiles()
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
-            requireActivity()
-                .setTitle(Utils.getRelativePath(requireContext(), rootDir.toString() + "/")
-                .replace("//", "/"))
+            requireActivity().setTitle(viewModel.currentDirectory)
             binding.listParent.visibility = View.VISIBLE
 
-            val setItems = Utils.getSetItems(requireContext(), rootDir.absolutePath)
+            val setItems = Utils.getSetItems(requireContext(), setDir)
             // Init the adapter with the locations
             setAdapter = SetAdapter { locationItem -> adapterOnClick(locationItem) }
             val recyclerView: RecyclerView = binding.recyclerView
@@ -99,7 +95,7 @@ class SetFragment : Fragment() {
                 Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
                 return null
             }
-            val name = tracker.selection.toList()[0] + "/"
+            val name = tracker.selection.toList()[0]
             return name
         }
 
