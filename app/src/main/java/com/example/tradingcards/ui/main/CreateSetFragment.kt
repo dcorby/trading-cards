@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.content.ContentValues
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
@@ -206,7 +207,6 @@ class CreateSetFragment : Fragment() {
     }
 
     private fun createSet() {
-
         val name = viewModel.name
         val activeDesign = viewModel.activeDesign
         val source= resources.getStringArray(R.array.source_ids)[binding.sourcesSpinner.selectedItemPosition]
@@ -223,6 +223,13 @@ class CreateSetFragment : Fragment() {
         val file = File(filePath)
         if (!file.exists()) {
             file.mkdirs()
+
+            val contentValues = ContentValues()
+            contentValues.put("path", file.toString().replace(requireContext().filesDir.toString(), ""))
+            contentValues.put("source", source)
+            contentValues.put("design", activeDesign)
+            mainReceiver.getDBManager().insert("sets", contentValues)
+
             val bundle = Bundle()
             bundle.putString("currentDirectory", file.toString().replace(requireContext().filesDir.toString(), "") ?: "")
             val navController =

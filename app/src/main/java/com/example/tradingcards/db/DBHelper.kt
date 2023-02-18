@@ -33,6 +33,13 @@ CREATE TABLE IF NOT EXISTS players (
   name TEXT NOT NULL
 );
 """
+const val CREATE_SETS = """
+CREATE TABLE IF NOT EXISTS sets (
+  path TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  design INT NOT NULL
+);
+"""
 
 class Helper(context: Context) : SQLiteOpenHelper(context, "tradingCards.db", null, 1) {
 
@@ -40,7 +47,8 @@ class Helper(context: Context) : SQLiteOpenHelper(context, "tradingCards.db", nu
         "cards" to CREATE_CARDS,
         "card_views" to CREATE_CARD_VIEWS,
         "sources" to CREATE_SOURCES,
-        "players" to CREATE_PLAYERS
+        "players" to CREATE_PLAYERS,
+        "sets" to CREATE_SETS
     )
 
     private fun createTables(db: SQLiteDatabase?) {

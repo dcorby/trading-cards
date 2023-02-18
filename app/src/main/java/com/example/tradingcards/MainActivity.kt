@@ -1,8 +1,15 @@
 package com.example.tradingcards
 
 import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
+import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnAttach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
@@ -10,11 +17,13 @@ import com.example.tradingcards.db.DBManager
 import org.json.JSONArray
 import org.json.JSONObject
 
+
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var sources: Map<String, *>
     private lateinit var dbManager: DBManager
+    private lateinit var screenDims: HashMap<String, Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +64,14 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         // don't need this
         //val appBarConfiguration = AppBarConfiguration(navGraph)
         //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                setScreenDims()
+            }
+        })
     }
+
 
     private fun populateSources() {
         // For now, just return if table is already populated
@@ -79,8 +95,14 @@ class MainActivity : AppCompatActivity(), MainReceiver {
 
     // MainReceiver methods
     override fun getScreenDims() : HashMap<String, Int> {
-        // binding.root.doOnLayout {}
-        return hashMapOf(
+        return screenDims
+    }
+
+    fun setScreenDims() {
+        if (this::screenDims.isInitialized && screenDims.get("width") != null) {
+            return
+        }
+        screenDims = hashMapOf(
             "width" to binding.root.width,
             "height" to binding.root.height
         )
