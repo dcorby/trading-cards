@@ -3,6 +3,10 @@ package com.example.tradingcards
 import android.content.Context
 import android.content.res.AssetManager
 import android.widget.RelativeLayout.LayoutParams
+import com.example.tradingcards.items.LocationItem
+import com.example.tradingcards.items.SetItem
+import java.io.File
+import kotlin.math.abs
 
 class Utils {
     companion object {
@@ -56,5 +60,33 @@ class Utils {
             return assetManager.open(filename).bufferedReader().use { it.readText() }
         }
 
+        fun getRecursivePaths(context: Context, absolutePath: String, onlyDirectories: Boolean) : MutableList<String> {
+            val paths = mutableListOf<String>()
+            File(absolutePath).walkTopDown().forEach {
+                if (!onlyDirectories || it.isDirectory) {
+                    paths.add(it.absolutePath)
+                }
+            }
+            return paths
+        }
+
+        fun getLocationItems(context: Context, absolutePath: String) : MutableList<LocationItem> {
+            val locationItems = mutableListOf<LocationItem>()
+            getRecursivePaths(context, absolutePath, true).forEach {
+                val locationItem = LocationItem(context, it)
+                locationItems.add(locationItem)
+            }
+            return locationItems
+        }
+
+        fun getSetItems(context: Context, absolutePath: String) : MutableList<SetItem> {
+            val setItems = mutableListOf<SetItem>()
+            //getRecursivePaths(context, absolutePath, false).forEach {
+            File(absolutePath).listFiles().forEach {
+                val setItem = SetItem(it.toString())
+                setItems.add(setItem)
+            }
+            return setItems
+        }
     }
 }

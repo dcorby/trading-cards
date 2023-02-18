@@ -88,10 +88,13 @@
         android:id="@+id/SetFragment"
         android:name="com.example.tradingcards.ui.main.SetFragment"
         tools:layout="@layout/fragment_set"
-        android:label="SetFragment">
+        android:label="">
         <action
             android:id="@+id/action_SetFragment_to_CreateSetFragment"
             app:destination="@id/CreateSetFragment" />
+        <action
+            android:id="@+id/action_SetFragment_to_SetFragment"
+            app:destination="@id/SetFragment" />
     </fragment>
 
     <!-- SourcesFragment -->

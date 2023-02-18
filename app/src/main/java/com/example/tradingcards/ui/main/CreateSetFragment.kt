@@ -51,10 +51,7 @@ class CreateSetFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(CreateSetViewModel::class.java)
-        // Set title
-        //requireActivity().title = "Create Set"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,11 +70,12 @@ class CreateSetFragment : Fragment() {
         binding.nameEditText.addTextChangedListener {
             viewModel.name = binding.nameEditText.text.toString().trim()
             binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
-            viewModel.location = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
+            //viewModel.location = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
         }
 
+        /*
         // Get the locations
-        val locationItems = getLocationItems()
+        val locationItems = Utils.getLocationItems(requireContext(), viewModel.absolutePath)
 
         // Init the adapter with the locations
         locationsAdapter = LocationsAdapter { locationItem -> adapterOnClick(locationItem) }
@@ -108,7 +106,8 @@ class CreateSetFragment : Fragment() {
                     super.onItemStateChanged(key, !selected)
                 }
             })
-        tracker.select("/")
+        //tracker.select("/")
+         */
 
         // Create design
         binding.designAdd.setOnClickListener {
@@ -160,7 +159,8 @@ class CreateSetFragment : Fragment() {
 
         // Set default design
         viewModel.activeDesign = 0
-        (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(0).background = ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
+        (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(0).background =
+            ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
 
         // Show sources
         val sources = mainReceiver.getDBManager().fetch(
@@ -185,7 +185,6 @@ class CreateSetFragment : Fragment() {
 
         // Manage/add source
         binding.sourcesManage.setOnClickListener {
-            //Toast.makeText(requireContext(), "Add source test", Toast.LENGTH_SHORT).show()
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_SourcesFragment)
@@ -198,17 +197,6 @@ class CreateSetFragment : Fragment() {
     }
 
     private fun adapterOnClick(locationItem: LocationItem) {
-    }
-
-    private fun getLocationItems() : MutableList<LocationItem> {
-        val locationItems = mutableListOf<LocationItem>()
-        File(viewModel.absolutePath).walkTopDown().forEach {
-            if (it.isDirectory) {
-                val locationItem = LocationItem(requireContext(), it.absolutePath)
-                locationItems.add(locationItem)
-            }
-        }
-        return locationItems
     }
 
     private fun createSet() {
@@ -225,11 +213,7 @@ class CreateSetFragment : Fragment() {
             return
         }
 
-        val path = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
-
-        // TODO: Create the set here
-
-        val file = File(viewModel.absolutePath)
+        val file = File(viewModel.absolutePath + binding.locationLiveView.text)
         if (!file.exists()) {
             file.mkdirs()
             val bundle = Bundle()

@@ -1,5 +1,6 @@
 package com.example.tradingcards.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -45,6 +46,8 @@ class LocationsAdapter(private val onClick: (LocationItem) -> Unit) :
                     }
                     itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.blue1))
                     prevRelativePath = getItem(position).relativePath
+                } else {
+                    itemView.setBackgroundColor(Color.parseColor("#ffffff"))
                 }
             }
         }

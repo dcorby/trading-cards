@@ -24,7 +24,7 @@
             android:text="Get started by creating a set of cards">
         </TextView>
         <Button
-            android:id="@+id/create"
+            android:id="@+id/create1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/blue2"
@@ -56,13 +56,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <Button
+                android:id="@+id/create2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="create"
-                android:textSize="8sp"
+                android:text="Create"
+                android:textSize="10sp"
                 android:layout_margin="2dp">
             </Button>
+            <Button
+                android:id="@+id/add"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add"
+                android:textSize="10sp"
+                android:layout_margin="2dp">
+            </Button>
+            <Button
+                android:id="@+id/open"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Open"
+                android:textSize="10sp"
+                android:layout_margin="2dp">
+            </Button>
+            <!--
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -87,12 +107,14 @@
                 android:textSize="8sp"
                 android:layout_margin="2dp">
             </Button>
+            -->
             <Button
+                android:id="@+id/delete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="delete"
-                android:textSize="8sp"
+                android:text="Delete"
+                android:textSize="10sp"
                 android:layout_margin="2dp">
             </Button>
         </androidx.appcompat.widget.LinearLayoutCompat>

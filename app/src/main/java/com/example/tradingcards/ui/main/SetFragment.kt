@@ -1,16 +1,22 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
+import com.example.tradingcards.Utils
+import com.example.tradingcards.adapters.SetAdapter
 import com.example.tradingcards.items.SetItem
-import com.example.tradingcards.adapters.SetsAdapter
 import com.example.tradingcards.databinding.FragmentSetBinding
+import com.example.tradingcards.viewmodels.SetViewModel
 import java.io.File
 
 class SetFragment : Fragment() {
@@ -18,7 +24,14 @@ class SetFragment : Fragment() {
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var setsAdapter: SetsAdapter
+    lateinit var setAdapter: SetAdapter
+    private lateinit var viewModel: SetViewModel
+    lateinit var tracker: SelectionTracker<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(SetViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,29 +44,102 @@ class SetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setsAdapter = SetsAdapter { setItem -> adapterOnClick(setItem) }
+        viewModel.currentDirectory = arguments?.getString("currentDirectory", "/") ?: "/"
+        setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
-        recyclerView.adapter = setsAdapter
+        recyclerView.adapter = setAdapter
 
-        val rootDir = File(requireContext().filesDir, "")
+        val rootDir = File(requireContext().filesDir, viewModel.currentDirectory)
         val files = rootDir.listFiles()
-        if (files.isNotEmpty()) {
+        if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
+            requireActivity()
+                .setTitle(Utils.getRelativePath(requireContext(), rootDir.toString() + "/")
+                .replace("//", "/"))
             binding.listParent.visibility = View.VISIBLE
+            val setItems = Utils.getSetItems(requireContext(), rootDir.absolutePath)
+            // Init the adapter with the locations
+            setAdapter = SetAdapter { locationItem -> adapterOnClick(locationItem) }
+            val recyclerView: RecyclerView = binding.recyclerView
+            recyclerView.adapter = setAdapter
+            setAdapter.submitList(setItems)
+
+            // Init the selection library
+            tracker = SelectionTracker.Builder<String>(
+                "selectionItem",
+                binding.recyclerView,
+                SetItemKeyProvider(setAdapter),
+                SetItemDetailsLookup(binding.recyclerView),
+                StorageStrategy.createStringStorage()
+            ).withSelectionPredicate(
+                SelectionPredicates.createSelectAnything()
+            ).build()
+            setAdapter.tracker = tracker
+
+            // Watch for location selection
+            tracker.addObserver(
+                object : SelectionTracker.SelectionObserver<String>() {
+                    override fun onSelectionChanged() {
+                    }
+                    override fun onItemStateChanged(key: String, selected: Boolean) {
+                        if (tracker.hasSelection()) {
+                        }
+                        super.onItemStateChanged(key, !selected)
+                    }
+                })
         } else {
+            requireActivity().setTitle("Get Started")
             binding.gettingStarted.visibility = View.VISIBLE
         }
 
-        binding.create.setOnClickListener {
+        binding.create1.setOnClickListener {
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
         }
-
-        //requireActivity().title = "Set"
+        binding.create2.setOnClickListener {
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
+        }
+        binding.add.setOnClickListener {
+            //val navController =
+            //    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            //navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
+        }
+        binding.open.setOnClickListener {
+            // Pressing open with nothing selected will open all cards in a stack
+            val isDir = true
+            if (isDir) {
+                val bundle = Bundle()
+                val name = tracker.selection.toList()[0] + "/"
+                bundle.putString("currentDirectory", viewModel.currentDirectory + name)
+                val navController =
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+                navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
+            }
+        }
     }
 
     private fun adapterOnClick(setItem: SetItem) {
-
     }
+}
 
+// Classes for the selection tracker
+class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
+    override fun getKey(position: Int): String {
+        return setAdapter.currentList[position].name
+    }
+    override fun getPosition(key: String): Int {
+        return setAdapter.currentList.indexOfFirst { it.name == key }
+    }
+}
+
+class SetItemDetailsLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<String>() {
+    override fun getItemDetails(event: MotionEvent): ItemDetails<String>? {
+        val view = recyclerView.findChildViewUnder(event.x, event.y)
+        if (view != null) {
+            return (recyclerView.getChildViewHolder(view) as SetAdapter.SetItemViewHolder).getItemDetails()
+        }
+        return null
+    }
 }
