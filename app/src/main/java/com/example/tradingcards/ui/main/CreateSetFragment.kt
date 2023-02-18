@@ -70,9 +70,13 @@ class CreateSetFragment : Fragment() {
         // Get the name and location, and listen for edits
         binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
         binding.nameEditText.addTextChangedListener {
+            Log.v("TEST", "editText1=${binding.nameEditText.text.toString().trim()}")
             viewModel.name = binding.nameEditText.text.toString().trim()
-            binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
+            Log.v("TEST", "editText2=${binding.nameEditText.text.toString().trim()}")
+            //binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
+            binding.locationLiveView.text = (viewModel.currentDirectory + "/" + viewModel.name).replace("//", "/")
             //viewModel.location = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
+            Log.v("TEST", "editText3=${binding.nameEditText.text.toString().trim()}")
         }
 
         /*
@@ -215,11 +219,13 @@ class CreateSetFragment : Fragment() {
             return
         }
 
-        val file = File(viewModel.absolutePath + binding.locationLiveView.text)
+        val filePath = (viewModel.absolutePath + viewModel.name).replace("//", "/")
+        val file = File(filePath)
         if (!file.exists()) {
             file.mkdirs()
             val bundle = Bundle()
-            bundle.putString("currentDirectory", file.parent?.toString() ?: "")
+            //bundle.putString("currentDirectory", file.parent?.toString() ?: "")
+            bundle.putString("currentDirectory", file.toString() ?: "")
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_SetFragment, bundle)

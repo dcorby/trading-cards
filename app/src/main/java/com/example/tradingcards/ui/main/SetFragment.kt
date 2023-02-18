@@ -45,7 +45,9 @@ class SetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentDirectory = arguments?.getString("currentDirectory", "/") ?: "/"
+        viewModel.currentDirectory = (arguments?.getString("currentDirectory", "/") ?: "/")
+            .replace("//", "/")
+
         setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
@@ -57,6 +59,7 @@ class SetFragment : Fragment() {
                 .setTitle(Utils.getRelativePath(requireContext(), rootDir.toString() + "/")
                 .replace("//", "/"))
             binding.listParent.visibility = View.VISIBLE
+
             val setItems = Utils.getSetItems(requireContext(), rootDir.absolutePath)
             // Init the adapter with the locations
             setAdapter = SetAdapter { locationItem -> adapterOnClick(locationItem) }
@@ -102,9 +105,10 @@ class SetFragment : Fragment() {
 
         fun create() {
             val bundle = Bundle()
-            val name = getSelectionName()
-            if (name == null) { return }
-            bundle.putString("currentDirectory", viewModel.currentDirectory + name)
+            //val name = getSelectionName()
+            //if (name == null) { return }
+            //bundle.putString("currentDirectory", viewModel.currentDirectory + name)
+            bundle.putString("currentDirectory", viewModel.currentDirectory)
             val navController =
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment, bundle)

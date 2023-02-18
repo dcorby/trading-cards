@@ -82,7 +82,11 @@ class Utils {
         fun getSetItems(context: Context, absolutePath: String) : MutableList<SetItem> {
             val setItems = mutableListOf<SetItem>()
             //getRecursivePaths(context, absolutePath, false).forEach {
-            File(absolutePath).listFiles().forEach {
+            val list = File(absolutePath).listFiles()
+            if (list == null) {
+                return setItems
+            }
+            list.forEach {
                 val setItem = SetItem(it.toString())
                 setItems.add(setItem)
             }
