@@ -49,6 +49,8 @@ class SelectPlayerFragment : Fragment() {
 
         // Create recycler view, and populate with async database search results from edittext.
         // Max 50 results in recycler view
+        // Use SearchView with RecyclerView
+        // https://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
     }
 }
 
