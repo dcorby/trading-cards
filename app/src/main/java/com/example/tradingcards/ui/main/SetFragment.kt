@@ -110,11 +110,16 @@ class SetFragment : Fragment() {
         binding.create2.setOnClickListener { create() }
 
         // Add
-        binding.add.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("currentDirectory", viewModel.currentDirectory)
-            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_SetFragment_to_SelectPlayerFragment, bundle)
+        if (viewModel.currentDirectory == "/") {
+            // Can't create cards in root, because it's not a set
+            binding.add.visibility = View.GONE
+        } else {
+            binding.add.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("currentDirectory", viewModel.currentDirectory)
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+                navController.navigate(R.id.action_SetFragment_to_SelectPlayerFragment, bundle)
+            }
         }
 
         // Open
@@ -127,7 +132,8 @@ class SetFragment : Fragment() {
                     return@setOnClickListener
                 }
                 bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
-                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+                val navController =
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
                 navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
             }
         }

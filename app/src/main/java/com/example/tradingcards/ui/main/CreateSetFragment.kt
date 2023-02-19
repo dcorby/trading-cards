@@ -196,7 +196,7 @@ class CreateSetFragment : Fragment() {
         val userDesigns = arrayListOf<ArrayList<HashMap<String, Any?>>>()
         val dbManager = mainReceiver.getDBManager()
         val userDesignViews = dbManager.fetch("SELECT * FROM card_views ORDER BY card ASC", null)
-        var currentDesign = ArrayList<HashMap<String, Any?>>()
+        val currentDesign = ArrayList<HashMap<String, Any?>>()
         val previousView: HashMap<String, *>? = null
         userDesignViews.forEach { userDesignView ->
             if (previousView != null && userDesignView.getValue("card") != previousView.getValue("card")) {

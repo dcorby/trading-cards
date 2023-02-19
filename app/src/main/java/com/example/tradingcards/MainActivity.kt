@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         //val appBarConfiguration = AppBarConfiguration(navGraph)
         //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
 
+        dbManager.exec("DELETE FROM sets", arrayOf())
+
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 setScreenDims()
