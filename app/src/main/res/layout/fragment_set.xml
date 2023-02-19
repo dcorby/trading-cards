@@ -107,7 +107,6 @@
                 android:textSize="8sp"
                 android:layout_margin="2dp">
             </Button>
-            -->
             <Button
                 android:id="@+id/delete"
                 android:layout_width="0dp"
@@ -117,6 +116,7 @@
                 android:textSize="10sp"
                 android:layout_margin="2dp">
             </Button>
+            -->
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 

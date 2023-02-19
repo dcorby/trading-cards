@@ -100,6 +100,7 @@ class SetFragment : Fragment() {
             return name
         }
 
+        // Create
         fun create() {
             val bundle = Bundle()
             //val name = getSelectionName()
@@ -113,11 +114,14 @@ class SetFragment : Fragment() {
         binding.create1.setOnClickListener { create() }
         binding.create2.setOnClickListener { create() }
 
+        // Add
         binding.add.setOnClickListener {
-            //val navController =
-            //    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            //navController.navigate(R.id.action_SetFragment_to_CreateSetFragment)
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_CreateCardFragment)
         }
+
+        // Open
         binding.open.setOnClickListener {
             // Pressing open with nothing selected will open all cards in a stack
             val isDir = true
