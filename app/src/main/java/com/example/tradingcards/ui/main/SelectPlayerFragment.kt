@@ -62,7 +62,7 @@ class SelectPlayerFragment : Fragment() {
                 }
             }
             viewModel.job.invokeOnCompletion {
-                
+
             }
         }
     }
