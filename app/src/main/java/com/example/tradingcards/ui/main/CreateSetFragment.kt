@@ -1,10 +1,8 @@
 package com.example.tradingcards.ui.main
 
 import android.content.ContentValues
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -38,9 +36,7 @@ class CreateSetFragment : Fragment() {
     private val binding get() = _binding!!
 
     lateinit var mainReceiver: MainReceiver
-    lateinit var locationsAdapter: LocationsAdapter
     private lateinit var viewModel: CreateSetViewModel
-    lateinit var tracker: SelectionTracker<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +55,7 @@ class CreateSetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Get the current directory
-        viewModel.currentDirectory =
-            (arguments?.getString("currentDirectory", "") ?: "").replace("//", "/")
+        viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
         requireActivity().title = "Create Set (${viewModel.currentDirectory})"
 
         // Get the current absolute path + name
@@ -71,50 +66,9 @@ class CreateSetFragment : Fragment() {
         // Get the name and location, and listen for edits
         binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
         binding.nameEditText.addTextChangedListener {
-            Log.v("TEST", "editText1=${binding.nameEditText.text.toString().trim()}")
             viewModel.name = binding.nameEditText.text.toString().trim()
-            Log.v("TEST", "editText2=${binding.nameEditText.text.toString().trim()}")
-            //binding.locationLiveView.text = tracker.selection.toList()[0] + viewModel.name
-            binding.locationLiveView.text = (viewModel.currentDirectory + "/" + viewModel.name).replace("//", "/")
-            //viewModel.location = requireContext().filesDir.absolutePath + "/" + binding.locationLiveView.text
-            Log.v("TEST", "editText3=${binding.nameEditText.text.toString().trim()}")
+            binding.locationLiveView.text = viewModel.currentDirectory + viewModel.name
         }
-
-        /*
-        // Get the locations
-        val locationItems = Utils.getLocationItems(requireContext(), viewModel.absolutePath)
-
-        // Init the adapter with the locations
-        locationsAdapter = LocationsAdapter { locationItem -> adapterOnClick(locationItem) }
-        val recyclerView: RecyclerView = binding.locationRecyclerView
-        recyclerView.adapter = locationsAdapter
-        locationsAdapter.submitList(locationItems)
-
-        // Init the selection library
-        tracker = SelectionTracker.Builder<String>(
-            "selectionItem",
-            binding.locationRecyclerView,
-            LocationItemKeyProvider(locationsAdapter),
-            LocationItemDetailsLookup(binding.locationRecyclerView),
-            StorageStrategy.createStringStorage()
-        ).withSelectionPredicate(
-            SelectionPredicates.createSelectAnything()
-        ).build()
-        locationsAdapter.tracker = tracker
-
-        // Watch for location selection
-        tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<String>() {
-                override fun onSelectionChanged() {
-                }
-                override fun onItemStateChanged(key: String, selected: Boolean) {
-                    if (tracker.hasSelection()) {
-                    }
-                    super.onItemStateChanged(key, !selected)
-                }
-            })
-        //tracker.select("/")
-         */
 
         // Create design
         binding.designAdd.setOnClickListener {
@@ -158,7 +112,8 @@ class CreateSetFragment : Fragment() {
         // Select design
         binding.scrollviewLayout.children.forEach { miniView ->
             miniView.setOnClickListener {
-                (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign).setBackgroundColor(Color.parseColor("#ffffff"))
+                (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign)
+                    .setBackgroundColor(Color.parseColor("#ffffff"))
                 viewModel.activeDesign = (it.parent as ViewGroup).indexOfChild(it)
                 it.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
             }
@@ -203,8 +158,7 @@ class CreateSetFragment : Fragment() {
         }
     }
 
-    private fun adapterOnClick(locationItem: LocationItem) {
-    }
+    private fun adapterOnClick(locationItem: LocationItem) { }
 
     private fun createSet() {
         val name = viewModel.name
@@ -219,21 +173,21 @@ class CreateSetFragment : Fragment() {
             return
         }
 
-        val filePath = viewModel.absolutePath + viewModel.name
-        val file = File(filePath)
+        val path = viewModel.absolutePath + viewModel.name
+        val file = File(path)
         if (!file.exists()) {
             file.mkdirs()
-
+            // Change the representation of path. Make relative and add a trailing slash
+            val currentDirectory = file.toString().replace(requireContext().filesDir.toString(), "") + "/"
             val contentValues = ContentValues()
-            contentValues.put("path", file.toString().replace(requireContext().filesDir.toString(), ""))
+            contentValues.put("path", currentDirectory)
             contentValues.put("source", source)
             contentValues.put("design", activeDesign)
             mainReceiver.getDBManager().insert("sets", contentValues)
 
             val bundle = Bundle()
-            bundle.putString("currentDirectory", file.toString().replace(requireContext().filesDir.toString(), "") ?: "")
-            val navController =
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            bundle.putString("currentDirectory", currentDirectory)
+            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_CreateSetFragment_to_SetFragment, bundle)
         }
     }

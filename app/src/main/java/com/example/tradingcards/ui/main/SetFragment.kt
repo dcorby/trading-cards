@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.SetAdapter
@@ -46,7 +44,12 @@ class SetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentDirectory = (arguments?.getString("currentDirectory", "") ?: "") + "/"
+        // Get the currentDirectory, and always display with a trailing slash
+        viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
+        if (viewModel.currentDirectory == "" || viewModel.currentDirectory.last().toString() != "/") {
+            viewModel.currentDirectory += "/"
+        }
+
         setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
@@ -58,10 +61,6 @@ class SetFragment : Fragment() {
             binding.listParent.visibility = View.VISIBLE
 
             val setItems = Utils.getSetItems(requireContext(), setDir)
-            // Init the adapter with the locations
-            setAdapter = SetAdapter { locationItem -> adapterOnClick(locationItem) }
-            val recyclerView: RecyclerView = binding.recyclerView
-            recyclerView.adapter = setAdapter
             setAdapter.submitList(setItems)
 
             // Init the selection library
@@ -87,7 +86,7 @@ class SetFragment : Fragment() {
                     }
                 })
         } else {
-            requireActivity().setTitle("Get Started")
+            requireActivity().title = "Get Started"
             binding.gettingStarted.visibility = View.VISIBLE
         }
 
@@ -103,12 +102,8 @@ class SetFragment : Fragment() {
         // Create
         fun create() {
             val bundle = Bundle()
-            //val name = getSelectionName()
-            //if (name == null) { return }
-            //bundle.putString("currentDirectory", viewModel.currentDirectory + name)
             bundle.putString("currentDirectory", viewModel.currentDirectory)
-            val navController =
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment, bundle)
         }
         binding.create1.setOnClickListener { create() }
@@ -116,29 +111,29 @@ class SetFragment : Fragment() {
 
         // Add
         binding.add.setOnClickListener {
-            val navController =
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_SetFragment_to_CreateCardFragment)
+            val bundle = Bundle()
+            bundle.putString("currentDirectory", viewModel.currentDirectory)
+            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_SelectPlayerFragment, bundle)
         }
 
         // Open
         binding.open.setOnClickListener {
-            // Pressing open with nothing selected will open all cards in a stack
             val isDir = true
             if (isDir) {
                 val bundle = Bundle()
-                val name = getSelectionName()
-                if (name == null) { return@setOnClickListener }
-                bundle.putString("currentDirectory", viewModel.currentDirectory + name)
-                val navController =
-                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+                val selectionName = getSelectionName()
+                if (selectionName == null) {
+                    return@setOnClickListener
+                }
+                bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
                 navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
             }
         }
     }
 
-    private fun adapterOnClick(setItem: SetItem) {
-    }
+    private fun adapterOnClick(setItem: SetItem) { }
 }
 
 // Classes for the selection tracker

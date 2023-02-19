@@ -98,8 +98,8 @@
             android:id="@+id/action_SetFragment_to_SetFragment"
             app:destination="@id/SetFragment" />
         <action
-            android:id="@+id/action_SetFragment_to_CreateCardFragment"
-            app:destination="@id/CreateCardFragment" />
+            android:id="@+id/action_SetFragment_to_SelectPlayerFragment"
+            app:destination="@id/SelectPlayerFragment" />
     </fragment>
 
     <!-- SourcesFragment -->
@@ -110,12 +110,12 @@
         android:label="SourcesFragment">
     </fragment>
 
-    <!-- CreateCardFragment -->
+    <!-- SelectPlayerFragment -->
     <fragment
-        android:id="@+id/CreateCardFragment"
-        android:name="com.example.tradingcards.ui.main.CreateCardFragment"
-        tools:layout="@layout/fragment_create_card"
-        android:label="CreateCardFragment">
+        android:id="@+id/SelectPlayerFragment"
+        android:name="com.example.tradingcards.ui.main.SelectPlayerFragment"
+        tools:layout="@layout/fragment_select_player"
+        android:label="SelectPlayerFragment">
     </fragment>
 
 </navigation>

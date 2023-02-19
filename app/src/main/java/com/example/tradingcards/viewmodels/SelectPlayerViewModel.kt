@@ -2,9 +2,6 @@ package com.example.tradingcards.viewmodels
 
 import androidx.lifecycle.ViewModel
 
-class CreateSetViewModel : ViewModel() {
-    var name = ""
+class SelectPlayerViewModel : ViewModel() {
     var currentDirectory = ""
-    var absolutePath = ""
-    var activeDesign = 0
 }
