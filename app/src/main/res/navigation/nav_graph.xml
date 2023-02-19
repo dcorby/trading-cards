@@ -69,14 +69,6 @@
         android:label="ExampleFragment">
     </fragment>
 
-    <!-- SearchPlayersFragment -->
-    <fragment
-        android:id="@+id/SearchPlayersFragment"
-        android:name="com.example.tradingcards.ui.main.SearchPlayersFragment"
-        tools:layout="@layout/fragment_search_players"
-        android:label="SearchPlayersFragment">
-    </fragment>
-
     <!-- SelectImageFragment -->
     <fragment
         android:id="@+id/SelectImageFragment"
