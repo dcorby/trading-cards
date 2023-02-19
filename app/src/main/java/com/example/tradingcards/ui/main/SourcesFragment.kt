@@ -3,7 +3,6 @@ package com.example.tradingcards.ui.main
 import android.content.ContentValues
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +20,6 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.HashMap
 

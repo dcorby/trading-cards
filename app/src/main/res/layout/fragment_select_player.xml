@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/blue1"
+        android:inputType="textNoSuggestions"
         app:layout_constraintWidth_percent="0.90"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"

@@ -5,12 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.databinding.FragmentSelectPlayerBinding
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.viewmodels.SelectPlayerViewModel
+import kotlinx.coroutines.*
 
 class SelectPlayerFragment : Fragment() {
 
@@ -45,12 +48,23 @@ class SelectPlayerFragment : Fragment() {
 
         // Get the set data, to find out the source
         val set = dbManager.fetch("SELECT * FROM sets WHERE path = ?", arrayOf(viewModel.currentDirectory))[0]
-        val source = set.getValue("source")
+        val source = set.getValue("source").toString()
 
-        // Create recycler view, and populate with async database search results from edittext.
-        // Max 50 results in recycler view
-        // Use SearchView with RecyclerView
-        // https://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
+        binding.editText.addTextChangedListener {
+            if (viewModel.job.isActive) {
+                viewModel.job.cancel()
+            }
+            viewModel.job = viewModel.viewModelScope.launch(Dispatchers.IO) {
+                withTimeout(5000) {
+                    val params = arrayOf(source, it.toString() + "%")
+                    val cards = dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params)
+                    //delay(2000)
+                }
+            }
+            viewModel.job.invokeOnCompletion {
+                
+            }
+        }
     }
 }
 
