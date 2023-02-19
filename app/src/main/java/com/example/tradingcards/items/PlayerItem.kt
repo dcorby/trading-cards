@@ -1,5 +1,5 @@
 package com.example.tradingcards.items
 
-class PlayerItem() {
-    val name = "Player Name"
+class PlayerItem(n: String) {
+    val name = n
 }

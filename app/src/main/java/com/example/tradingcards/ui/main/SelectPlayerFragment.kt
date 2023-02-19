@@ -92,19 +92,22 @@ class SelectPlayerFragment : Fragment() {
             if (viewModel.job.isActive) {
                 viewModel.job.cancel()
             }
+            var players: MutableList<PlayerItem> = mutableListOf()
             viewModel.job = viewModel.viewModelScope.launch(Dispatchers.IO) {
                 withTimeout(5000) {
                     val params = arrayOf(source, it.toString() + "%")
-                    val players = dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params)
-                    //delay(2000)
-
-                    playerAdapter.submitList(players)
-                    //binding.recyclerView.
-
+                    players = dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params).map {
+                        PlayerItem(it.getValue("name").toString())
+                    }.toMutableList()
+                    // delay(2000)
+                    // Switch back to the main application thread
+                    withContext(Dispatchers.Main) {
+                        playerAdapter.submitList(players)
+                    }
                 }
             }
             viewModel.job.invokeOnCompletion {
-
+                // anything we need to do here??
             }
         }
     }

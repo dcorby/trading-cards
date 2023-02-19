@@ -16,6 +16,7 @@ import com.example.tradingcards.databinding.ActivityMainBinding
 import com.example.tradingcards.db.DBManager
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 
 class MainActivity : AppCompatActivity(), MainReceiver {
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity(), MainReceiver {
     private lateinit var sources: Map<String, *>
     private lateinit var dbManager: DBManager
     private lateinit var screenDims: HashMap<String, Int>
+
+    private var DELETE_SETS_ON_LOAD = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +68,14 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         //val appBarConfiguration = AppBarConfiguration(navGraph)
         //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        dbManager.exec("DELETE FROM sets", arrayOf())
+        if (DELETE_SETS_ON_LOAD) {
+            dbManager.exec("DELETE FROM sets", arrayOf())
+            filesDir.walkTopDown().forEach { file ->
+                if (file != filesDir) {
+                    file.deleteRecursively()
+                }
+            }
+        }
 
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
