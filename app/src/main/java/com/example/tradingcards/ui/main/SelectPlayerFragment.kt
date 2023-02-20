@@ -28,9 +28,7 @@ class SelectPlayerFragment : Fragment() {
     private lateinit var viewModel: SelectPlayerViewModel
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
-
-    lateinit var playerAdapter: PlayerAdapter
-    lateinit var tracker: SelectionTracker<String>
+    private lateinit var playerAdapter: PlayerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

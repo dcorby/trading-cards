@@ -1,6 +1,5 @@
 package com.example.tradingcards.ui.main
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,15 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.tradingcards.BuildConfig
-import com.example.tradingcards.FindAll
-import com.example.tradingcards.Sources
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.Utils
+import com.example.tradingcards.adapters.ImageAdapter
 import com.example.tradingcards.databinding.FragmentSelectImageBinding
+import com.example.tradingcards.items.ImageItem
 import com.example.tradingcards.viewmodels.SelectImageViewModel
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.URL
 
 class SelectImageFragment : Fragment() {
 
@@ -24,6 +22,7 @@ class SelectImageFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: SelectImageViewModel
+    private lateinit var imageAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +49,15 @@ class SelectImageFragment : Fragment() {
 
         binding.textView.text = "${viewModel.name} (${viewModel.id})"
 
+        imageAdapter = ImageAdapter { imageItem -> adapterOnClick(imageItem) }
+        val recyclerView: RecyclerView = binding.recyclerView
+        recyclerView.adapter = imageAdapter
+
         val images = downloadImages()
-        images.forEach {
-            Log.v("TEST", "image=${it.link}")
-        }
+        imageAdapter.submitList(images)
     }
 
-    data class Image(val link: String, val width: Int, val height: Int, val thumbnailLink: String,
-                     val thumbnailWidth: Int, val thumbnailHeight: Int)
-    private fun downloadImages() : MutableList<Image> {
+    private fun downloadImages() : MutableList<ImageItem> {
         // Live
         //val url = "https://customsearch.googleapis.com/customsearch/v1?imgType=photo&q=${viewModel.name.toLowerCase().replace(" ", "+")}+baseball&searchType=image&cx=${BuildConfig.SEARCH_ENGINE_ID}&key=${BuildConfig.SEARCH_API_KEY}"
         //val response = URL(url)
@@ -67,7 +66,7 @@ class SelectImageFragment : Fragment() {
         // Testing
         val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sample-api-response.json"))
 
-        val images = mutableListOf<Image>()
+        val images = mutableListOf<ImageItem>()
         val items = Images.toMap(jsonObject).getValue("items") as ArrayList<HashMap<String, *>>
         items.forEach { item ->
             val link = item.getValue("link").toString()
@@ -77,10 +76,14 @@ class SelectImageFragment : Fragment() {
             val thumbnailLink = img.getValue("thumbnailLink").toString()
             val thumbnailWidth = img.getValue("thumbnailWidth") as Int
             val thumbnailHeight = img.getValue("thumbnailHeight") as Int
-            val image = Image(link, width, height, thumbnailLink, thumbnailWidth, thumbnailHeight)
+            val image = ImageItem(link, width, height, thumbnailLink, thumbnailWidth, thumbnailHeight)
             images.add(image)
         }
         return images
+    }
+
+    private fun adapterOnClick(imageItem: ImageItem) {
+        Log.v("TEST", "Click image with link=${imageItem.link}")
     }
 }
 
