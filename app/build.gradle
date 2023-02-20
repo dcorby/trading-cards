@@ -3,6 +3,12 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+// https://appunite.com/blog/how-to-securely-use-google-maps-api-key-in-android-i-os-or-flutter-project
+// https://guides.codepath.com/android/storing-secret-keys-in-android
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+
 android {
     namespace 'com.example.tradingcards'
     compileSdk 32
@@ -15,6 +21,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // https://guides.codepath.com/android/storing-secret-keys-in-android
+        buildConfigField("String", "SEARCH_API_KEY", localProperties["searchApiKey"])
+        buildConfigField("String", "SEARCH_ENGINE_ID", localProperties["searchEngineId"])
     }
 
     buildTypes {
@@ -60,3 +70,5 @@ dependencies {
     implementation "com.github.skydoves:colorpickerview:2.2.4"
     // https://github.com/skydoves/ColorPickerView#colorpickerdialog
 }
+
+
