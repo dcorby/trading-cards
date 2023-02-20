@@ -1,9 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
@@ -14,13 +12,10 @@ import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.adapters.PlayerAdapter
-import com.example.tradingcards.adapters.SetAdapter
 import com.example.tradingcards.databinding.FragmentSelectPlayerBinding
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.PlayerItem
-import com.example.tradingcards.items.SetItem
 import com.example.tradingcards.viewmodels.SelectPlayerViewModel
-import com.example.tradingcards.viewmodels.SetViewModel
 import kotlinx.coroutines.*
 
 class SelectPlayerFragment : Fragment() {
@@ -57,29 +52,6 @@ class SelectPlayerFragment : Fragment() {
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = playerAdapter
 
-        // Init the selection library
-        tracker = SelectionTracker.Builder<String>(
-            "selectionItem",
-            binding.recyclerView,
-            PlayerItemKeyProvider(playerAdapter),
-            PlayerItemDetailsLookup(binding.recyclerView),
-            StorageStrategy.createStringStorage()
-        ).withSelectionPredicate(
-            SelectionPredicates.createSelectAnything()
-        ).build()
-        playerAdapter.tracker = tracker
-
-        // Watch for location selection
-        tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<String>() {
-                override fun onSelectionChanged() {
-                }
-                override fun onItemStateChanged(key: String, selected: Boolean) {
-                    if (tracker.hasSelection()) { }
-                    super.onItemStateChanged(key, !selected)
-                }
-            })
-
         // Get the current directory
         viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
         requireActivity().title = "Select Player (${viewModel.currentDirectory})"
@@ -97,8 +69,9 @@ class SelectPlayerFragment : Fragment() {
                 withTimeout(5000) {
                     val params = arrayOf(source, it.toString() + "%")
                     players = dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params).map {
-                        PlayerItem(it.getValue("name").toString())
+                        PlayerItem(it.getValue("id").toString(), it.getValue("name").toString())
                     }.toMutableList()
+                    players.add(0, PlayerItem("henderi01", "Rickey Henderson"))
                     // delay(2000)
                     // Switch back to the main application thread
                     withContext(Dispatchers.Main) {
@@ -112,25 +85,6 @@ class SelectPlayerFragment : Fragment() {
         }
     }
 
-    private fun adapterOnClick(playerItem: PlayerItem) { }
-}
-
-// Classes for the selection tracker
-class PlayerItemKeyProvider(private val playerAdapter: PlayerAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
-    override fun getKey(position: Int): String {
-        return playerAdapter.currentList[position].name
-    }
-    override fun getPosition(key: String): Int {
-        return playerAdapter.currentList.indexOfFirst { it.name == key }
-    }
-}
-
-class PlayerItemDetailsLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<String>() {
-    override fun getItemDetails(event: MotionEvent): ItemDetails<String>? {
-        val view = recyclerView.findChildViewUnder(event.x, event.y)
-        if (view != null) {
-            return (recyclerView.getChildViewHolder(view) as PlayerAdapter.PlayerItemViewHolder).getItemDetails()
-        }
-        return null
+    private fun adapterOnClick(playerItem: PlayerItem) {
     }
 }
