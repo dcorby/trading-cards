@@ -2,6 +2,7 @@ package com.example.tradingcards.ui.main
 
 import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,9 +45,15 @@ class SelectImageFragment : Fragment() {
         viewModel.id = arguments?.getString("id", "") ?: ""
         viewModel.name = arguments?.getString("name", "") ?: ""
 
+        Log.v("TEST", "id=${viewModel.id}")
+        Log.v("TEST", "name=${viewModel.name}")
+
         binding.textView.text = "${viewModel.name} (${viewModel.id})"
 
         val images = downloadImages()
+        images.forEach {
+            Log.v("TEST", "image=${it.link}")
+        }
     }
 
     data class Image(val link: String, val width: Int, val height: Int, val thumbnailLink: String,
@@ -61,16 +68,15 @@ class SelectImageFragment : Fragment() {
         val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sample-api-response.json"))
 
         val images = mutableListOf<Image>()
-        val items = Images.toMap(jsonObject).getValue("items") as HashMap<*, *>
-        items.keys.forEach {
-            val item = id as HashMap<String, *>
+        val items = Images.toMap(jsonObject).getValue("items") as ArrayList<HashMap<String, *>>
+        items.forEach { item ->
             val link = item.getValue("link").toString()
-            val img = item.getValue("image") as HashMap<String, String>
-            val width = img.getValue("width").toInt()
-            val height = img.getValue("height").toInt()
+            val img = item.getValue("image") as HashMap<String, *>
+            val width = img.getValue("width") as Int
+            val height = img.getValue("height") as Int
             val thumbnailLink = img.getValue("thumbnailLink").toString()
-            val thumbnailWidth = img.getValue("thumbnailWidth").toInt()
-            val thumbnailHeight = img.getValue("thumbnailHeight").toInt()
+            val thumbnailWidth = img.getValue("thumbnailWidth") as Int
+            val thumbnailHeight = img.getValue("thumbnailHeight") as Int
             val image = Image(link, width, height, thumbnailLink, thumbnailWidth, thumbnailHeight)
             images.add(image)
         }
