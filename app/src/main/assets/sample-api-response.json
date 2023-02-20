@@ -1,0 +1,250 @@
+{
+  "kind": "customsearch#search",
+  "url": {
+    "type": "application/json",
+    "template": "https://www.googleapis.com/customsearch/v1?q={searchTerms}&num={count?}&start={startIndex?}&lr={language?}&safe={safe?}&cx={cx?}&sort={sort?}&filter={filter?}&gl={gl?}&cr={cr?}&googlehost={googleHost?}&c2coff={disableCnTwTranslation?}&hq={hq?}&hl={hl?}&siteSearch={siteSearch?}&siteSearchFilter={siteSearchFilter?}&exactTerms={exactTerms?}&excludeTerms={excludeTerms?}&linkSite={linkSite?}&orTerms={orTerms?}&relatedSite={relatedSite?}&dateRestrict={dateRestrict?}&lowRange={lowRange?}&highRange={highRange?}&searchType={searchType}&fileType={fileType?}&rights={rights?}&imgSize={imgSize?}&imgType={imgType?}&imgColorType={imgColorType?}&imgDominantColor={imgDominantColor?}&alt=json"
+  },
+  "queries": {
+    "request": [
+      {
+        "title": "Google Custom Search - rickey henderson baseball",
+        "totalResults": "6710000",
+        "searchTerms": "rickey henderson baseball",
+        "count": 10,
+        "startIndex": 1,
+        "inputEncoding": "utf8",
+        "outputEncoding": "utf8",
+        "safe": "off",
+        "cx": "f5afdcb01397a43f6",
+        "searchType": "image",
+        "imgType": "photo"
+      }
+    ],
+    "nextPage": [
+      {
+        "title": "Google Custom Search - rickey henderson baseball",
+        "totalResults": "6710000",
+        "searchTerms": "rickey henderson baseball",
+        "count": 10,
+        "startIndex": 11,
+        "inputEncoding": "utf8",
+        "outputEncoding": "utf8",
+        "safe": "off",
+        "cx": "f5afdcb01397a43f6",
+        "searchType": "image",
+        "imgType": "photo"
+      }
+    ]
+  },
+  "context": {
+    "title": "trading-cards"
+  },
+  "searchInformation": {
+    "searchTime": 0.31483,
+    "formattedSearchTime": "0.31",
+    "totalResults": "6710000",
+    "formattedTotalResults": "6,710,000"
+  },
+  "items": [
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson | American baseball player | Britannica",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e | American \u003cb\u003ebaseball\u003c/b\u003e player | Britannica",
+      "link": "https://cdn.britannica.com/35/1235-004-BCC3675A/Rickey-Henderson-base-May-1-1991.jpg",
+      "displayLink": "www.britannica.com",
+      "snippet": "Rickey Henderson | American baseball player | Britannica",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e | American \u003cb\u003ebaseball\u003c/b\u003e player | Britannica",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://www.britannica.com/biography/Rickey-Henderson",
+        "height": 300,
+        "width": 225,
+        "byteSize": 15248,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK6F73BKpYGl-7UtlFyCq2uFZ-YVea4CwoerWqw4u2kB-OyuyY-EK_&s",
+        "thumbnailHeight": 116,
+        "thumbnailWidth": 87
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson Yankees career",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e Yankees career",
+      "link": "https://img.mlbstatic.com/mlb-images/image/private/t_16x9/t_w1024/mlb/t4mtxyvb3zxchsxhnft2",
+      "displayLink": "www.mlb.com",
+      "snippet": "Rickey Henderson Yankees career",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e Yankees career",
+      "mime": "image/",
+      "fileFormat": "image/",
+      "image": {
+        "contextLink": "https://www.mlb.com/news/rickey-henderson-yankees-career-c259150158",
+        "height": 576,
+        "width": 1024,
+        "byteSize": 98600,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw-VpkdGgZQrwZAKAJKwMgoRLR6TKW5P0we27s2Z_u-XorbHTXJKeFyng&s",
+        "thumbnailHeight": 84,
+        "thumbnailWidth": 150
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson - Wikipedia",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e - Wikipedia",
+      "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Rickey_Henderson_%28New_York_Mets_coach%29.jpg/220px-Rickey_Henderson_%28New_York_Mets_coach%29.jpg",
+      "displayLink": "en.wikipedia.org",
+      "snippet": "Rickey Henderson - Wikipedia",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e - Wikipedia",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://en.wikipedia.org/wiki/Rickey_Henderson",
+        "height": 330,
+        "width": 220,
+        "byteSize": 24689,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqe8-JGPf_dJXo9Kshb8xGf0fX4W3bWfCMzImLCMMEiYgL_Jw7OiOA&s",
+        "thumbnailHeight": 119,
+        "thumbnailWidth": 79
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson | American baseball player | Britannica",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e | American \u003cb\u003ebaseball\u003c/b\u003e player | Britannica",
+      "link": "https://cdn.britannica.com/35/1235-004-BCC3675A/Rickey-Henderson-base-May-1-1991.jpg?w=400&h=300&c=crop",
+      "displayLink": "www.britannica.com",
+      "snippet": "Rickey Henderson | American baseball player | Britannica",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e | American \u003cb\u003ebaseball\u003c/b\u003e player | Britannica",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://www.britannica.com/biography/Rickey-Henderson",
+        "height": 169,
+        "width": 224,
+        "byteSize": 8351,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRecK_wU00ot4V2tdSJbb_soRQZWj6aweJAYoGcvp8v6Bbi5QFXZKkA&s",
+        "thumbnailHeight": 81,
+        "thumbnailWidth": 108
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson - Wikipedia",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e - Wikipedia",
+      "link": "https://upload.wikimedia.org/wikipedia/commons/5/56/Rickey_Henderson_Day_Saturday%2C_Aug._1.jpg",
+      "displayLink": "en.wikipedia.org",
+      "snippet": "Rickey Henderson - Wikipedia",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e - Wikipedia",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://en.wikipedia.org/wiki/Rickey_Henderson",
+        "height": 1461,
+        "width": 978,
+        "byteSize": 179816,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ-xIN9rEtQKJl9QbjRFWaA8qxErBH_ATrUozrwx2JUPnbJdmRK3fmRoI&s",
+        "thumbnailHeight": 150,
+        "thumbnailWidth": 100
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Joe Posnanski: Oh, Rickey, you're so fine - Sports Illustrated",
+      "htmlTitle": "Joe Posnanski: Oh, \u003cb\u003eRickey\u003c/b\u003e, you&#39;re so fine - Sports Illustrated",
+      "link": "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg",
+      "displayLink": "www.si.com",
+      "snippet": "Joe Posnanski: Oh, Rickey, you're so fine - Sports Illustrated",
+      "htmlSnippet": "Joe Posnanski: Oh, \u003cb\u003eRickey\u003c/b\u003e, you&#39;re so fine - Sports Illustrated",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://www.si.com/more-sports/2008/12/11/rickey-henderson",
+        "height": 1200,
+        "width": 776,
+        "byteSize": 153578,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCBBTDjB_gzTYhiAHvoHGWT1HaYVsc74heMNOSqLVgZS417l3vjd29LMw&s",
+        "thumbnailHeight": 150,
+        "thumbnailWidth": 97
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson – Society for American Baseball Research",
+      "htmlTitle": "\u003cb\u003eRickey Henderson\u003c/b\u003e – Society for American \u003cb\u003eBaseball\u003c/b\u003e Research",
+      "link": "https://sabr.org/sites/default/files/HendersonRickey-Topps.jpg",
+      "displayLink": "sabr.org",
+      "snippet": "Rickey Henderson – Society for American Baseball Research",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson\u003c/b\u003e – Society for American \u003cb\u003eBaseball\u003c/b\u003e Research",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://sabr.org/bioproj/person/rickey-henderson/",
+        "height": 350,
+        "width": 252,
+        "byteSize": 19126,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk-oGeM03sUNwgvBXyXf4o6U1FZlCupOiy6TmqDgA1SCNzIlIMUAaAAA&s",
+        "thumbnailHeight": 120,
+        "thumbnailWidth": 86
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "A Baseball Trivia Quiz for the Holidays (and Rickey Henderson's ...",
+      "htmlTitle": "A \u003cb\u003eBaseball\u003c/b\u003e Trivia Quiz for the Holidays (and \u003cb\u003eRickey Henderson&#39;s\u003c/b\u003e ...",
+      "link": "https://static01.nyt.com/images/2018/12/25/sports/25christmastrivia-rickey1/merlin_148296450_5f20b452-00b5-40a5-a941-f26e4bb607b7-superJumbo.jpg",
+      "displayLink": "www.nytimes.com",
+      "snippet": "A Baseball Trivia Quiz for the Holidays (and Rickey Henderson's ...",
+      "htmlSnippet": "A \u003cb\u003eBaseball\u003c/b\u003e Trivia Quiz for the Holidays (and \u003cb\u003eRickey Henderson&#39;s\u003c/b\u003e ...",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://www.nytimes.com/2018/12/23/sports/baseball/-trivia-quiz-holidays-.html",
+        "height": 1373,
+        "width": 2048,
+        "byteSize": 1366176,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuoS6rscRHjUR9GvKo6T-WKCNd5Hwi80BxZrtogqQ8TpfeSwxEbFi0QwE&s",
+        "thumbnailHeight": 101,
+        "thumbnailWidth": 150
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "The MVP award former Yankee outfielder Rickey Henderson should ...",
+      "htmlTitle": "The MVP award former Yankee outfielder \u003cb\u003eRickey Henderson\u003c/b\u003e should ...",
+      "link": "https://cdn.vox-cdn.com/thumbor/i6UgzrrlHb1lNYf_qfTkvZFNchg=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/22646518/510902722.jpg",
+      "displayLink": "www.pinstripealley.com",
+      "snippet": "The MVP award former Yankee outfielder Rickey Henderson should ...",
+      "htmlSnippet": "The MVP award former Yankee outfielder \u003cb\u003eRickey Henderson\u003c/b\u003e should ...",
+      "mime": "image/jpeg",
+      "fileFormat": "image/jpeg",
+      "image": {
+        "contextLink": "https://www.pinstripealley.com/2021/6/9/22525309/yankees-history-mlb-hall-of-fame-rickey-hendersons-1985-underrated-season-steals-slugging",
+        "height": 1400,
+        "width": 1400,
+        "byteSize": 319998,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6ql99rL-7bOSg7XDItNzIw69vavcHKxT3yxiMmXAHz_mNVrzDQfZASXfT&s",
+        "thumbnailHeight": 150,
+        "thumbnailWidth": 150
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Rickey Henderson's plate approach | 01/22/2022 | MLB.com",
+      "htmlTitle": "\u003cb\u003eRickey Henderson&#39;s\u003c/b\u003e plate approach | 01/22/2022 | \u003cb\u003eMLB\u003c/b\u003e.com",
+      "link": "https://img.mlbstatic.com/mlb-images/image/private/ar_16:9,g_auto,q_auto:good,w_1536,c_fill,f_jpg/mlb/dwq5ttydnr4v21iyidp0",
+      "displayLink": "www.mlb.com",
+      "snippet": "Rickey Henderson's plate approach | 01/22/2022 | MLB.com",
+      "htmlSnippet": "\u003cb\u003eRickey Henderson&#39;s\u003c/b\u003e plate approach | 01/22/2022 | \u003cb\u003eMLB\u003c/b\u003e.com",
+      "mime": "image/",
+      "fileFormat": "image/",
+      "image": {
+        "contextLink": "https://www.mlb.com/video/rollins-on-henderson-s-approach",
+        "height": 864,
+        "width": 1536,
+        "byteSize": 157439,
+        "thumbnailLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNf33LcgHpY7NPWpTPN_IR15laxaoz_VjEVVoiqabRrzfl9vv04RsUbw&s",
+        "thumbnailHeight": 84,
+        "thumbnailWidth": 150
+      }
+    }
+  ]
+}

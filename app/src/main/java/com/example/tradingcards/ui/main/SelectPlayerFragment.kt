@@ -8,9 +8,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.MainReceiver
+import com.example.tradingcards.R
 import com.example.tradingcards.adapters.PlayerAdapter
 import com.example.tradingcards.databinding.FragmentSelectPlayerBinding
 import com.example.tradingcards.db.DBManager
@@ -86,5 +88,12 @@ class SelectPlayerFragment : Fragment() {
     }
 
     private fun adapterOnClick(playerItem: PlayerItem) {
+        val bundle = Bundle()
+        bundle.putString("id", playerItem.id)
+        bundle.putString("name", playerItem.name)
+
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+        navController.navigate(R.id.action_SelectPlayerFragment_to_SelectImageFragment, bundle)
     }
 }
