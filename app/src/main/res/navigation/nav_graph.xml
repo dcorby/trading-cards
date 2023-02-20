@@ -75,6 +75,9 @@
         android:name="com.example.tradingcards.ui.main.SelectImageFragment"
         tools:layout="@layout/fragment_select_image"
         android:label="SelectImageFragment">
+        <action
+            android:id="@+id/action_SelectImageFragment_to_SaveImageFragment"
+            app:destination="@id/SelectImageFragment" />
     </fragment>
 
     <!-- SetFragment -->
@@ -111,6 +114,14 @@
         <action
             android:id="@+id/action_SelectPlayerFragment_to_SelectImageFragment"
             app:destination="@id/SelectImageFragment" />
+    </fragment>
+
+    <!-- SaveImageFragment -->
+    <fragment
+        android:id="@+id/SaveImageFragment"
+        android:name="com.example.tradingcards.ui.main.SaveImageFragment"
+        tools:layout="@layout/fragment_save_image"
+        android:label="SaveImageFragment">
     </fragment>
 
 </navigation>

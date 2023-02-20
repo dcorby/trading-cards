@@ -1,13 +1,14 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.ImageAdapter
 import com.example.tradingcards.databinding.FragmentSelectImageBinding
@@ -40,13 +41,8 @@ class SelectImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Need id and name
         viewModel.id = arguments?.getString("id", "") ?: ""
         viewModel.name = arguments?.getString("name", "") ?: ""
-
-        Log.v("TEST", "id=${viewModel.id}")
-        Log.v("TEST", "name=${viewModel.name}")
-
         binding.textView.text = "${viewModel.name} (${viewModel.id})"
 
         imageAdapter = ImageAdapter { imageItem -> adapterOnClick(imageItem) }
@@ -83,7 +79,14 @@ class SelectImageFragment : Fragment() {
     }
 
     private fun adapterOnClick(imageItem: ImageItem) {
-        Log.v("TEST", "Click image with link=${imageItem.link}")
+        val bundle = Bundle()
+        bundle.putString("id", viewModel.id)
+        bundle.putString("name", viewModel.name)
+        bundle.putString("link", imageItem.link)
+
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+        navController.navigate(R.id.action_SelectImageFragment_to_SaveImageFragment, bundle)
     }
 }
 

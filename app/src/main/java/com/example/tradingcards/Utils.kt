@@ -2,11 +2,12 @@ package com.example.tradingcards
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.util.DisplayMetrics
 import android.widget.RelativeLayout.LayoutParams
 import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.items.SetItem
 import java.io.File
-import kotlin.math.abs
+
 
 class Utils {
     companion object {
@@ -98,6 +99,14 @@ class Utils {
                 setItems.add(setItem)
             }
             return setItems
+        }
+
+        fun convertDpToPx(context: Context, dp: Float) : Float {
+            return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        }
+
+        fun convertPxToDp(context: Context, px: Float) : Float {
+            return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
     }
 }
