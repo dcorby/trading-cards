@@ -83,6 +83,8 @@ class SelectImageFragment : Fragment() {
         bundle.putString("id", viewModel.id)
         bundle.putString("name", viewModel.name)
         bundle.putString("link", imageItem.link)
+        bundle.putInt("width", imageItem.width)
+        bundle.putInt("height", imageItem.height)
 
         val navController =
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)

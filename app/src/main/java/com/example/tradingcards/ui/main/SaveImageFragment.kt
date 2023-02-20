@@ -32,8 +32,10 @@ class SaveImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.id = arguments?.getString("id", "") ?: ""
-        viewModel.name = arguments?.getString("name", "") ?: ""
-        viewModel.link = arguments?.getString("link", "") ?: ""
+        viewModel.id = arguments?.getString("id") ?: ""
+        viewModel.name = arguments?.getString("name") ?: ""
+        viewModel.link = arguments?.getString("link") ?: ""
+        viewModel.width = arguments?.getInt("width") ?: -1
+        viewModel.height = arguments?.getInt("height") ?: -1
     }
 }
