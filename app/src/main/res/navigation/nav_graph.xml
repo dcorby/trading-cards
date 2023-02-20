@@ -77,7 +77,7 @@
         android:label="SelectImageFragment">
         <action
             android:id="@+id/action_SelectImageFragment_to_SaveImageFragment"
-            app:destination="@id/SelectImageFragment" />
+            app:destination="@id/SaveImageFragment" />
     </fragment>
 
     <!-- SetFragment -->

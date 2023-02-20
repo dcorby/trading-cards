@@ -6,6 +6,6 @@ class SaveImageViewModel : ViewModel() {
     var id = ""
     var name = ""
     var link = ""
-    var width = -1
-    var height = -1
+    var width = 0.toFloat()
+    var height = 0.toFloat()
 }
