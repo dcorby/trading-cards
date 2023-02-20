@@ -10,10 +10,12 @@
     tools:context=".ui.main.SelectImageFragment">
 
     <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/image"
             android:layout_width="0dp"
             android:layout_height="0dp">
         </ImageView>
@@ -51,8 +53,5 @@
                 app:layout_constraintStart_toStartOf="parent">
             </Button>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </FrameLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
