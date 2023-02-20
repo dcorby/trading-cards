@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RelativeLayout.LayoutParams
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +14,6 @@ import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentSaveImageBinding
 import com.example.tradingcards.viewmodels.SaveImageViewModel
-
 
 class SaveImageFragment : Fragment() {
 
@@ -61,7 +59,6 @@ class SaveImageFragment : Fragment() {
         // ^ Not reliable, because onDraw() might come later, and because of keyboard
         val frameWidth = (mainReceiver.getScreenDims().getValue("width") - 32).toFloat()
         val frameHeight = (mainReceiver.getScreenDims().getValue("height") - 32 - 100).toFloat()
-
         Log.v("TEST", "frameWidth=${frameWidth}")
         Log.v("TEST", "frameHeight=${frameHeight}")
 
@@ -71,8 +68,9 @@ class SaveImageFragment : Fragment() {
         Log.v("TEST", "origWidth=${origWidth}")
         Log.v("TEST", "origHeight=${origHeight}")
 
-        // Get the actual image dimensions to render
-        // Shrink if either width or height is larger than frame
+        /* Get the actual image dimensions to render
+         * Shrink if either width or height is larger than frame
+         */
         var imageWidth = origWidth
         var imageHeight = origHeight
         if (origWidth > frameWidth) {
@@ -91,5 +89,15 @@ class SaveImageFragment : Fragment() {
         params.height = imageHeight.toInt()
         params.leftMargin = ((frameWidth - imageWidth) / 2.0).toInt()
         params.topMargin = ((frameHeight - imageHeight) / 2.0).toInt()
+
+
+        /*  Now add green cropper to select the cutout
+         *  It will have the aspect ratio of the root view (screenDims)
+         *  1) If the orig is smaller than the screen (both width and height),
+         *     size the cropper entirely within the image
+         *  2) If the orig is larger than the screen (width or height)
+         *     make the cropper as large as possible, and shrink by
+         *     ratio of image:orig
+         */
     }
 }
