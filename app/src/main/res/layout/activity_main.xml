@@ -10,7 +10,8 @@
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:layout_height="100dp"
+        android:layout_height="0dp"
+        android:padding="0dp"
         android:layout_width="match_parent"
         android:background="@color/blue4"
         android:id="@+id/toolbar"

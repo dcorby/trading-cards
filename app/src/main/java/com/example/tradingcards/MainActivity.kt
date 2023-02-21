@@ -12,6 +12,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 const val DELETE_SETS_ON_LOAD = false
+const val TOOLBAR_HEIGHT = 100
 
 class MainActivity : AppCompatActivity(), MainReceiver {
 
@@ -54,7 +55,11 @@ class MainActivity : AppCompatActivity(), MainReceiver {
 
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                setScreenDims()
+                setScreenDims(TOOLBAR_HEIGHT)
+                /* https://stackoverflow.com/questions/41659338/how-to-set-layoutparams-height-width-in-dp-value
+                 * "When you specify values programmatically in the LayoutParams, those values are expected to be pixels"
+                 */
+                binding.toolbar.layoutParams.height = (TOOLBAR_HEIGHT * resources.displayMetrics.density).toInt()
             }
         })
     }
@@ -86,13 +91,14 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         return screenDims
     }
 
-    fun setScreenDims() {
+    fun setScreenDims(toolbarHeight: Int) {
         if (this::screenDims.isInitialized && screenDims.get("width") != null) {
             return
         }
         screenDims = hashMapOf(
             "width" to binding.root.width,
-            "height" to binding.root.height
+            "height" to binding.root.height,
+            "toolbar_height" to toolbarHeight
         )
     }
 
