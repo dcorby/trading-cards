@@ -20,6 +20,7 @@ import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.PlayerItem
 import com.example.tradingcards.viewmodels.SelectPlayerViewModel
 import kotlinx.coroutines.*
+import java.io.File
 
 class SelectPlayerFragment : Fragment() {
 
@@ -70,9 +71,13 @@ class SelectPlayerFragment : Fragment() {
                 withTimeout(5000) {
                     val params = arrayOf(source, it.toString() + "%")
                     players = dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params).map {
-                        PlayerItem(it.getValue("id").toString(), it.getValue("name").toString())
+                        val id = it.getValue("id").toString()
+                        val name = it.getValue("name").toString()
+                        val imagePath = requireContext().filesDir.toString() + viewModel.currentDirectory + id + ".jpg"
+                        val hasImage = File(imagePath).exists()
+                        PlayerItem(id, name, hasImage)
                     }.toMutableList()
-                    players.add(0, PlayerItem("henderi01", "Rickey Henderson"))
+                    // players.add(0, PlayerItem("henderi01", "Rickey Henderson"))
                     // delay(2000)
                     // Switch back to the main application thread
                     withContext(Dispatchers.Main) {
