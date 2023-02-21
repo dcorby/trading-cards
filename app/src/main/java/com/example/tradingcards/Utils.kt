@@ -3,25 +3,13 @@ package com.example.tradingcards
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.RelativeLayout.LayoutParams
-import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.items.SetItem
 import java.io.File
 
-
 class Utils {
     companion object {
-        fun getRelativePath(context: Context, absolutePath: String) : String {
-            var relativePath = absolutePath.replace(context.filesDir.absolutePath, "", false)
-            if (relativePath == "") {
-                return "/"
-            }
-            if (relativePath.first().toString() != "/") {
-                relativePath = "/" + relativePath
-            }
-            return relativePath
-        }
-
         fun getRandomHexCode() : String {
             val list = listOf("#831576", "#75a354", "#10933f", "#95e8db", "#a399dc", "#edf76a", "#b6fc8f", "#6e910e", "#31bb33", "#cc7484", "#4abf78", "#819248", "#c18bd3", "#3eafd9", "#957f92", "#7c8292", "#107fa0")
             return list.random()
@@ -68,33 +56,17 @@ class Utils {
             return assetManager.open(filename).bufferedReader().use { it.readText() }
         }
 
-        fun getRecursivePaths(context: Context, absolutePath: String, onlyDirectories: Boolean) : MutableList<String> {
-            val paths = mutableListOf<String>()
-            File(absolutePath).walkTopDown().forEach {
-                if (!onlyDirectories || it.isDirectory) {
-                    paths.add(it.absolutePath)
-                }
-            }
-            return paths
-        }
-
-        fun getLocationItems(context: Context, absolutePath: String) : MutableList<LocationItem> {
-            val locationItems = mutableListOf<LocationItem>()
-            getRecursivePaths(context, absolutePath, true).forEach {
-                val locationItem = LocationItem(context, it)
-                locationItems.add(locationItem)
-            }
-            return locationItems
-        }
-
         fun getSetItems(context: Context, path: File) : MutableList<SetItem> {
             val setItems = mutableListOf<SetItem>()
-            //getRecursivePaths(context, absolutePath, false).forEach {
             val list = path.listFiles()
             if (list == null) {
                 return setItems
             }
-            list.forEach {
+            list.forEach loop@ {
+                // /images is a special folder
+                if (it.toString().endsWith("/images")) {
+                    return@loop
+                }
                 val setItem = SetItem(it.toString())
                 setItems.add(setItem)
             }

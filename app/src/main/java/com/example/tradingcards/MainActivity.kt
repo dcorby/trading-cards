@@ -1,41 +1,30 @@
 package com.example.tradingcards
 
 import android.content.ContentValues
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
-import android.view.View
 import android.view.ViewTreeObserver
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnAttach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
 import com.example.tradingcards.db.DBManager
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 
+const val DELETE_SETS_ON_LOAD = false
 
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var sources: Map<String, *>
     private lateinit var dbManager: DBManager
     private lateinit var screenDims: HashMap<String, Int>
-
-    private var DELETE_SETS_ON_LOAD = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         dbManager = DBManager(this)
         dbManager.open()
-
         populateSources()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -46,16 +35,6 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             R.id.SetFragment
         }
 
-        // Required below, to use action bar
-        // + supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        // + setupActionBarWithNavController(navController)
-        // - setSupportActionBar(binding.toolbar)
-        // - setTitle("Home")
-        // - NavigationUI.setupWithNavController(binding.toolbar, navController)
-        // Then in themes.xml
-        // - <item name="windowActionBar">false</item>
-        // - <item name="windowNoTitle">true</item>
-
         setSupportActionBar(binding.toolbar)
         setTitle("Home") // first screen ignores nav_graph.xml
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -63,10 +42,6 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         navGraph.setStartDestination(startDestinationId)
         navController.setGraph(navGraph, null)
         NavigationUI.setupWithNavController(binding.toolbar, navController)
-
-        // don't need this
-        //val appBarConfiguration = AppBarConfiguration(navGraph)
-        //binding.toolbar.setupWithNavController(navController, appBarConfiguration)
 
         if (DELETE_SETS_ON_LOAD) {
             dbManager.exec("DELETE FROM sets", arrayOf())
@@ -84,11 +59,12 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         })
     }
 
-
     private fun populateSources() {
-        // For now, just return if table is already populated
+        // Return if table is already populated
         val tmp = dbManager.fetch("SELECT * FROM sources", null)
-        if (tmp.size > 0) { return }
+        if (tmp.size > 0) {
+            return
+        }
 
         val jsonObject = JSONObject(Utils.readAssetsFile(this, "sources.json"))
         val sources = Sources.toMap(jsonObject)

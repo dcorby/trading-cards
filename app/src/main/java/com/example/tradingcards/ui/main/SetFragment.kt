@@ -23,10 +23,9 @@ class SetFragment : Fragment() {
 
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
-
-    lateinit var setAdapter: SetAdapter
+    private lateinit var setAdapter: SetAdapter
     private lateinit var viewModel: SetViewModel
-    lateinit var tracker: SelectionTracker<String>
+    private lateinit var tracker: SelectionTracker<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
