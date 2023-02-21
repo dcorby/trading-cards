@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +17,8 @@ class PlayerAdapter(private val onClick: (PlayerItem) -> Unit) :
     ListAdapter<PlayerItem, PlayerAdapter.PlayerItemViewHolder>(PlayerItemDiffCallback) {
 
     inner class PlayerItemViewHolder(
-        private val itemView: View,
-        val onClick: (PlayerItem) -> Unit) : RecyclerView.ViewHolder(itemView) {
+            private val itemView: View,
+            val onClick: (PlayerItem) -> Unit) : RecyclerView.ViewHolder(itemView) {
 
         private val textView: TextView = itemView.findViewById(R.id.text_view)
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
@@ -26,7 +27,8 @@ class PlayerAdapter(private val onClick: (PlayerItem) -> Unit) :
         fun bind(playerItem: PlayerItem) {
             textView.text = playerItem.name
             if (playerItem.hasImage) {
-                imageView.visibility = View.VISIBLE
+                val greenIcon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_baseline_image_32_green)
+                imageView.setImageDrawable(greenIcon)
             }
 
             // An active selection tracker really messes with this

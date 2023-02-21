@@ -11,11 +11,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.SetAdapter
 import com.example.tradingcards.items.SetItem
 import com.example.tradingcards.databinding.FragmentSetBinding
+import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.viewmodels.SetViewModel
 import java.io.File
 
@@ -26,9 +28,13 @@ class SetFragment : Fragment() {
     private lateinit var setAdapter: SetAdapter
     private lateinit var viewModel: SetViewModel
     private lateinit var tracker: SelectionTracker<String>
+    private lateinit var mainReceiver: MainReceiver
+    private lateinit var dbManager: DBManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainReceiver = requireActivity() as MainReceiver
+        dbManager = mainReceiver.getDBManager()
         viewModel = ViewModelProvider(this).get(SetViewModel::class.java)
     }
 
@@ -49,17 +55,30 @@ class SetFragment : Fragment() {
             viewModel.currentDirectory += "/"
         }
 
+        /*  The root directory is special and cannot contain cards, just other sets
+            Thus, it has a null source
+         */
+        viewModel.source = if (viewModel.currentDirectory == "/") {
+                null
+            } else {
+                dbManager.fetch(
+                    "SELECT * FROM sets WHERE path = ?",
+                    arrayOf(viewModel.currentDirectory),
+                    "source"
+                )[0].toString()
+            }
+
         setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
 
-        val setDir = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
-        val files = setDir.listFiles()
+        val currentSet = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
+        val files = currentSet.listFiles()
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
             requireActivity().setTitle(viewModel.currentDirectory)
             binding.listParent.visibility = View.VISIBLE
 
-            val setItems = Utils.getSetItems(requireContext(), setDir)
+            val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, currentSet)
             setAdapter.submitList(setItems)
 
             // Init the selection library
@@ -94,8 +113,7 @@ class SetFragment : Fragment() {
                 Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
                 return null
             }
-            val name = tracker.selection.toList()[0]
-            return name
+            return tracker.selection.toList()[0]
         }
 
         // Create
@@ -144,10 +162,10 @@ class SetFragment : Fragment() {
 // Classes for the selection tracker
 class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
     override fun getKey(position: Int): String {
-        return setAdapter.currentList[position].name
+        return setAdapter.currentList[position].pathname
     }
     override fun getPosition(key: String): Int {
-        return setAdapter.currentList.indexOfFirst { it.name == key }
+        return setAdapter.currentList.indexOfFirst { it.pathname == key }
     }
 }
 

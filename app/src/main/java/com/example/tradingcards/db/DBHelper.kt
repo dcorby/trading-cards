@@ -30,7 +30,8 @@ const val CREATE_PLAYERS = """
 CREATE TABLE IF NOT EXISTS players (
   source TEXT NOT NULL,
   id TEXT NOT NULL,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  PRIMARY KEY (source, id)
 );
 """
 const val CREATE_SETS = """

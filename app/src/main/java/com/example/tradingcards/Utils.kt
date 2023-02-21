@@ -5,6 +5,7 @@ import android.content.res.AssetManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.RelativeLayout.LayoutParams
+import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.SetItem
 import java.io.File
 
@@ -56,18 +57,31 @@ class Utils {
             return assetManager.open(filename).bufferedReader().use { it.readText() }
         }
 
-        fun getSetItems(context: Context, path: File) : MutableList<SetItem> {
+        fun getSetItems(context: Context, dbManager: DBManager, source: String?, path: File) : MutableList<SetItem> {
             val setItems = mutableListOf<SetItem>()
             val list = path.listFiles()
             if (list == null) {
                 return setItems
             }
-            list.forEach loop@ {
+            list.forEach loop@ { file ->
                 // /images is a special folder
-                if (it.toString().endsWith("/images")) {
+                if (file.toString().endsWith("/images")) {
                     return@loop
                 }
-                val setItem = SetItem(it.toString())
+
+                val isCard = file.extension == "jpg"
+
+                val label = if (isCard) {
+                    val id = file.toString().split("/").last().replace(".jpg", "")
+                    dbManager.fetch(
+                        "SELECT * FROM players WHERE source = ? AND id = ?",
+                        arrayOf(source!!, id),
+                        "name")[0].toString()
+                } else {
+                    file.toString().split("/").last()
+                }
+
+                val setItem = SetItem(file, isCard, label)
                 setItems.add(setItem)
             }
             return setItems

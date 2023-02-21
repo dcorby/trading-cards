@@ -20,15 +20,13 @@ import com.example.tradingcards.designviews.PartnerView
 import com.example.tradingcards.designviews.RectangleView
 import com.skydoves.colorpickerview.listeners.ColorListener
 
-
 class CreateDesignFragment : Fragment() {
 
     private var _binding: FragmentCreateDesignBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var activeView: PartnerView
+    public lateinit var activeView: PartnerView
     private lateinit var center: Pair<Int, Int>
-
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
 
