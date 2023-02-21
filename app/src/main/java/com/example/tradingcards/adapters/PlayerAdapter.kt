@@ -47,10 +47,10 @@ class PlayerAdapter(private val onClick: (PlayerItem) -> Unit) :
 
 object PlayerItemDiffCallback : DiffUtil.ItemCallback<PlayerItem>() {
     override fun areItemsTheSame(oldItem: PlayerItem, newItem: PlayerItem): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: PlayerItem, newItem: PlayerItem): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.id == newItem.id
     }
 }

@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,8 +88,9 @@ class SelectPlayerFragment : Fragment() {
 
     private fun adapterOnClick(playerItem: PlayerItem) {
         val bundle = Bundle()
-        bundle.putString("id", playerItem.id)
+        bundle.putString("id", playerItem.id.toString())
         bundle.putString("name", playerItem.name)
+        bundle.putString("currentDirectory", viewModel.currentDirectory)
 
         val navController =
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)

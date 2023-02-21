@@ -8,4 +8,5 @@ class SaveImageViewModel : ViewModel() {
     var link = ""
     var width = 0.toFloat()
     var height = 0.toFloat()
+    var currentDirectory = ""
 }

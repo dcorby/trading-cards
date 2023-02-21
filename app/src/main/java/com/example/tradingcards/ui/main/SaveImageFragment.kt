@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,12 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
-import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentSaveImageBinding
 import com.example.tradingcards.viewmodels.SaveImageViewModel
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.file.Files
+import kotlin.io.path.Path
+import kotlin.io.path.createSymbolicLinkPointingTo
 
 
 class SaveImageFragment : Fragment() {
@@ -53,6 +52,7 @@ class SaveImageFragment : Fragment() {
         viewModel.link = arguments?.getString("link") ?: ""
         viewModel.width = (arguments?.getInt("width") ?: 0).toFloat()
         viewModel.height = (arguments?.getInt("height") ?: 0).toFloat()
+        viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
 
         // For testing
         viewModel.link = "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg"
@@ -138,14 +138,19 @@ class SaveImageFragment : Fragment() {
             val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
             val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
 
-            Log.v("TEST", "Writing to=${requireContext().filesDir.toString() + "/images/henderi01.jpg"}")
-            val file = File(requireContext().filesDir.toString() + "/images/henderi01.jpg")
+            Log.v("TEST", "Writing to=${requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"}")
+            val file = File(requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg")
             if (!file.parentFile.exists()) {
                 file.parentFile.mkdir()
             }
             val fos = FileOutputStream(file)
             resized.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             fos.close()
+
+            // Create symlink in set
+            val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
+            val sympath = Path(symlink)
+            sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
         }
     }
 }

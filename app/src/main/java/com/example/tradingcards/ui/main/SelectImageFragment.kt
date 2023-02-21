@@ -44,6 +44,8 @@ class SelectImageFragment : Fragment() {
 
         viewModel.id = arguments?.getString("id", "") ?: ""
         viewModel.name = arguments?.getString("name", "") ?: ""
+        viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
+
         binding.textView.text = "${viewModel.name} (${viewModel.id})"
 
         imageAdapter = ImageAdapter { imageItem -> adapterOnClick(imageItem) }
@@ -86,6 +88,7 @@ class SelectImageFragment : Fragment() {
         bundle.putString("link", imageItem.link)
         bundle.putInt("width", imageItem.width)
         bundle.putInt("height", imageItem.height)
+        bundle.putString("currentDirectory", viewModel.currentDirectory)
 
         val navController =
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
