@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -61,14 +60,14 @@ class SetFragment : Fragment() {
             Thus, it has a null source
          */
         viewModel.source = if (viewModel.currentDirectory == "/") {
-                null
-            } else {
-                dbManager.fetch(
-                    "SELECT * FROM sets WHERE path = ?",
-                    arrayOf(viewModel.currentDirectory),
-                    "source"
-                )[0].toString()
-            }
+            null
+        } else {
+            dbManager.fetch(
+                "SELECT * FROM sets WHERE path = ?",
+                arrayOf(viewModel.currentDirectory),
+                "source"
+            )[0].toString()
+        }
 
         setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
         val recyclerView: RecyclerView = binding.recyclerView
@@ -79,6 +78,7 @@ class SetFragment : Fragment() {
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
             requireActivity().title = ""
             val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+            toolbar.removeAllViews()
             toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory))
             binding.listParent.visibility = View.VISIBLE
 
@@ -95,29 +95,23 @@ class SetFragment : Fragment() {
             ).withSelectionPredicate(
                 SelectionPredicates.createSelectAnything()
             ).build()
-            setAdapter.tracker = tracker
+            //setAdapter.tracker = tracker
 
             // Watch for location selection
             tracker.addObserver(
                 object : SelectionTracker.SelectionObserver<String>() {
                     override fun onSelectionChanged() {
                     }
+
                     override fun onItemStateChanged(key: String, selected: Boolean) {
-                        if (tracker.hasSelection()) { }
+                        if (tracker.hasSelection()) {
+                        }
                         super.onItemStateChanged(key, !selected)
                     }
                 })
         } else {
             requireActivity().title = "Get Started"
             binding.gettingStarted.visibility = View.VISIBLE
-        }
-
-        fun getSelectionName() : String? {
-            if (tracker.selection.size() == 0) {
-                Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
-                return null
-            }
-            return tracker.selection.toList()[0]
         }
 
         // Create
@@ -128,6 +122,7 @@ class SetFragment : Fragment() {
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment, bundle)
         }
         binding.create.setOnClickListener { create() }
+        binding.addSet.setOnClickListener { create() }
 
         // Add
         if (viewModel.currentDirectory == "/") {
@@ -142,26 +137,27 @@ class SetFragment : Fragment() {
                 navController.navigate(R.id.action_SetFragment_to_SelectPlayerFragment, bundle)
             }
         }
-
-        // Open
-//        binding.open.setOnClickListener {
-//            val isDir = true
-//            if (isDir) {
-//                val bundle = Bundle()
-//                val selectionName = getSelectionName()
-//                if (selectionName == null) {
-//                    return@setOnClickListener
-//                }
-//                bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
-//                val navController =
-//                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-//                navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
-//            }
-//        }
     }
 
-    private fun adapterOnClick(setItem: SetItem) { }
+    fun getSelectionName(): String? {
+        if (tracker.selection.size() == 0) {
+            Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
+            return null
+        }
+        return tracker.selection.toList()[0]
+    }
+
+    // Click to open
+    private fun adapterOnClick(setItem: SetItem) {
+        val bundle = Bundle()
+        val selectionName = getSelectionName()
+        bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
+        val navController =
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+        navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
+    }
 }
+
 
 // Classes for the selection tracker
 class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {

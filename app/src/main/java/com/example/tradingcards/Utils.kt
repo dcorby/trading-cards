@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Color
 import android.util.Log
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -117,16 +118,21 @@ class Utils {
             if (currentDirectory == "/") {
                 return linearLayout
             }
-            currentDirectory.split("/").forEach { text ->
+            Log.v("TEXT", "currentDirectory=${currentDirectory}")
+
+            currentDirectory.trim('/').split("/").forEach { text ->
+                Log.v("TEST", "text=${text}")
                 val arrowDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_arrow_right_32)
-                val imageView: ImageView = ImageView(context)
+                val imageView = ImageView(context)
                 imageView.setImageDrawable(arrowDrawable)
                 linearLayout.addView(imageView)
 
-                val textView: TextView = TextView(context)
+                val textView = TextView(context)
                 textView.text = text
                 textView.setTextColor(Color.WHITE)
-                textViews.add(textView)
+                textView.textSize = 22.toFloat()
+                textView.gravity = Gravity.CENTER_VERTICAL
+                linearLayout.addView(textView)
             }
             return linearLayout
         }

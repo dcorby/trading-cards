@@ -14,13 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
+import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentSaveImageBinding
 import com.example.tradingcards.viewmodels.SaveImageViewModel
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.io.path.Path
 import kotlin.io.path.createSymbolicLinkPointingTo
-
 
 class SaveImageFragment : Fragment() {
 
@@ -62,15 +62,17 @@ class SaveImageFragment : Fragment() {
         // https://stackoverflow.com/questions/2025282/what-is-the-difference-between-px-dip-dp-and-sp
 
         // Get screen dims
-        val screenWidth = mainReceiver.getScreenDims().getValue("width").toFloat()
-        val screenHeight = mainReceiver.getScreenDims().getValue("height").toFloat()
+        val screenWidth = mainReceiver.getScreenDims().getValue("width")
+        val screenHeight = mainReceiver.getScreenDims().getValue("height")
+        val density = mainReceiver.getScreenDims().getValue("density")
+        var toolbarHeight = mainReceiver.getScreenDims().getValue("toolbar_height")
 
         // Get frame dims
         // Log.v("TEST", "width=${binding.frame.width}")
         // Log.v("TEST", "height=${binding.frame.height}")
         // ^ Not reliable, because onDraw() might come later, and because of keyboard
-        val frameWidth = (screenWidth - 32).toFloat()
-        val frameHeight = (screenHeight - 32 - 100).toFloat()
+        val frameWidth = screenWidth - Utils.dpToPx(density,32)
+        val frameHeight = screenHeight - Utils.dpToPx(density,32) - Utils.dpToPx(density, toolbarHeight.toInt())
 
         // Get original dims
         val origWidth = viewModel.width.toFloat()
