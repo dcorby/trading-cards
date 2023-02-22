@@ -41,7 +41,7 @@ class DisplaySetFragment : Fragment() {
         val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
         toolbar.visibility = View.GONE
 
-        Log.v("TEST", "DisplayCardsFragment")
+        Log.v("TEST", "DisplaySetFragment")
 
         viewModel.id = arguments?.getString("id") ?: ""
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""

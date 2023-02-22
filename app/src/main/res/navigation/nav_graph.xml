@@ -34,20 +34,13 @@
             app:destination="@id/SourcesFragment" />
     </fragment>
 
-    <!-- DisplayBackFragment -->
-    <fragment
-        android:id="@+id/DisplayBackFragment"
-        android:name="com.example.tradingcards.ui.main.DisplayBackFragment"
-        tools:layout="@layout/fragment_display_back"
-        android:label="DisplayBackFragment">
-    </fragment>
 
-    <!-- DisplayCardsFragment -->
+    <!-- DisplaySetFragment -->
     <fragment
-        android:id="@+id/DisplayCardsFragment"
+        android:id="@+id/DisplaySetFragment"
         android:name="com.example.tradingcards.ui.main.DisplaySetFragment"
         tools:layout="@layout/fragment_display_set"
-        android:label="DisplayCardsFragment">
+        android:label="DisplaySetFragment">
     </fragment>
 
     <!-- DisplayFrontFragment -->
@@ -104,8 +97,8 @@
             android:id="@+id/action_SetFragment_to_SelectPlayerFragment"
             app:destination="@id/SelectPlayerFragment" />
         <action
-            android:id="@+id/action_SetFragment_to_DisplayCardsFragment"
-            app:destination="@id/DisplayCardsFragment" />
+            android:id="@+id/action_SetFragment_to_DisplaySetFragment"
+            app:destination="@id/DisplaySetFragment" />
     </fragment>
 
     <!-- SourcesFragment -->

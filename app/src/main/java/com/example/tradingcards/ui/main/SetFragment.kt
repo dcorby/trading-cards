@@ -17,7 +17,6 @@ import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.SetAdapter
-import com.example.tradingcards.items.SetItem
 import com.example.tradingcards.databinding.FragmentSetBinding
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.viewmodels.SetViewModel
@@ -144,10 +143,23 @@ class SetFragment : Fragment() {
         }
 
         binding.view.setOnClickListener {
+            // Don't use nav controller for this because when you spring from the set, you'll leave the
+            // destination as DisplaySetFragment
+
+            //val bundle = Bundle()
+            //bundle.putString("currentDirectory", viewModel.currentDirectory)
+            //val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            //navController.navigate(R.id.action_SetFragment_to_DisplaySetFragment, bundle)
+
             val bundle = Bundle()
             bundle.putString("currentDirectory", viewModel.currentDirectory)
-            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_SetFragment_to_DisplayCardsFragment, bundle)
+            val fragment = DisplaySetFragment()
+            fragment.arguments = bundle
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, fragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -169,7 +181,6 @@ class SetFragment : Fragment() {
         navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
     }
 }
-
 
 // Classes for the selection tracker
 class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
