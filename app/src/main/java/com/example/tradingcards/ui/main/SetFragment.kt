@@ -142,6 +142,13 @@ class SetFragment : Fragment() {
                 navController.navigate(R.id.action_SetFragment_to_SelectPlayerFragment, bundle)
             }
         }
+
+        binding.view.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("currentDirectory", viewModel.currentDirectory)
+            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_DisplayCardsFragment, bundle)
+        }
     }
 
     fun getSelectionName(): String? {

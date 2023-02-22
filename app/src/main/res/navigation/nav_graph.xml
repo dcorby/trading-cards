@@ -42,6 +42,14 @@
         android:label="DisplayBackFragment">
     </fragment>
 
+    <!-- DisplayCardsFragment -->
+    <fragment
+        android:id="@+id/DisplayCardsFragment"
+        android:name="com.example.tradingcards.ui.main.DisplayCardsFragment"
+        tools:layout="@layout/fragment_display_cards"
+        android:label="DisplayCardsFragment">
+    </fragment>
+
     <!-- DisplayFrontFragment -->
     <fragment
         android:id="@+id/DisplayFrontFragment"
@@ -95,6 +103,9 @@
         <action
             android:id="@+id/action_SetFragment_to_SelectPlayerFragment"
             app:destination="@id/SelectPlayerFragment" />
+        <action
+            android:id="@+id/action_SetFragment_to_DisplayCardsFragment"
+            app:destination="@id/DisplayCardsFragment" />
     </fragment>
 
     <!-- SourcesFragment -->
