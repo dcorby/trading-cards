@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.os.Bundle
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.tradingcards.databinding.ActivityMainBinding
@@ -12,13 +13,13 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 const val DELETE_SETS_ON_LOAD = false
-const val TOOLBAR_HEIGHT = 100
+const val TOOLBAR_HEIGHT = 50
 
 class MainActivity : AppCompatActivity(), MainReceiver {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbManager: DBManager
-    private lateinit var screenDims: HashMap<String, Int>
+    private lateinit var screenDims: HashMap<String, Float>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +60,10 @@ class MainActivity : AppCompatActivity(), MainReceiver {
                 /* https://stackoverflow.com/questions/41659338/how-to-set-layoutparams-height-width-in-dp-value
                  * "When you specify values programmatically in the LayoutParams, those values are expected to be pixels"
                  */
-                binding.toolbar.layoutParams.height = (TOOLBAR_HEIGHT * resources.displayMetrics.density).toInt()
+                //binding.toolbar.layoutParams.height = (TOOLBAR_HEIGHT * resources.displayMetrics.density).toInt()
+                binding.toolbar.layoutParams.height = 75
+
+                window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.blue)
             }
         })
     }
@@ -87,7 +91,7 @@ class MainActivity : AppCompatActivity(), MainReceiver {
     }
 
     // MainReceiver methods
-    override fun getScreenDims() : HashMap<String, Int> {
+    override fun getScreenDims() : HashMap<String, Float> {
         return screenDims
     }
 
@@ -96,9 +100,10 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             return
         }
         screenDims = hashMapOf(
-            "width" to binding.root.width,
-            "height" to binding.root.height,
-            "toolbar_height" to toolbarHeight
+            "width" to binding.root.width.toFloat(),
+            "height" to binding.root.height.toFloat(),
+            "density" to resources.displayMetrics.density,
+            "toolbar_height" to toolbarHeight.toFloat()
         )
     }
 

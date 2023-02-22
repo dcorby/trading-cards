@@ -20,7 +20,7 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
     ListAdapter<SetItem, SetAdapter.SetItemViewHolder>(SetItemDiffCallback) {
 
     lateinit var tracker: SelectionTracker<String>
-    var prevName = ""
+    var prevFilename = ""
 
     inner class SetItemViewHolder(
             private val itemView: View,
@@ -41,12 +41,12 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
                 })
 
             tracker.let {
-                if (it.isSelected(getItem(position).pathname)) {
-                    if (getItem(position).pathname != prevName) {
-                        tracker.deselect(prevName)
+                if (it.isSelected(getItem(position).filename)) {
+                    if (getItem(position).filename != prevFilename) {
+                        tracker.deselect(prevFilename)
                     }
                     itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.blue1))
-                    prevName = getItem(position).pathname
+                    prevFilename = getItem(position).filename
                 } else {
                     itemView.setBackgroundColor(Color.parseColor("#ffffff"))
                 }
@@ -58,7 +58,7 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
                 override fun getPosition(): Int {
                     return adapterPosition
                 }
-                override fun getSelectionKey(): String = currentList[adapterPosition].pathname
+                override fun getSelectionKey(): String = currentList[adapterPosition].filename
                 override fun inSelectionHotspot(e: MotionEvent): Boolean { return true }
                 // this will override an existing itemView.setOnClickListener()
             }
@@ -79,10 +79,10 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
 
 object SetItemDiffCallback : DiffUtil.ItemCallback<SetItem>() {
     override fun areItemsTheSame(oldItem: SetItem, newItem: SetItem): Boolean {
-        return oldItem.pathname == newItem.pathname
+        return oldItem.filename == newItem.filename
     }
 
     override fun areContentsTheSame(oldItem: SetItem, newItem: SetItem): Boolean {
-        return oldItem.pathname == newItem.pathname
+        return oldItem.filename == newItem.filename
     }
 }

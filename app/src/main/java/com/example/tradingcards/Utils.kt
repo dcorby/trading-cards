@@ -2,9 +2,15 @@ package com.example.tradingcards
 
 import android.content.Context
 import android.content.res.AssetManager
-import android.util.DisplayMetrics
+import android.graphics.Color
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.SetItem
 import java.io.File
@@ -16,26 +22,30 @@ class Utils {
             return list.random()
         }
 
-        fun getLayoutParams(key: String, screenDims: HashMap<String, Int>): LayoutParams {
+        fun getLayoutParams(key: String, screenDims: HashMap<String, Float>): LayoutParams {
             when(key) {
                 "full" -> {
-                    val params = LayoutParams(screenDims.getValue("width"), screenDims.getValue("height"))
+                    val params = LayoutParams(
+                        screenDims.getValue("width").toInt(),
+                        screenDims.getValue("height").toInt())
                     params.leftMargin = 0
                     params.topMargin = 0
                     return params
                 }
                 "design" -> {
-                    val potentialWidth = screenDims.getValue("width") - 32
-                    val potentialHeight = screenDims.getValue("height") - 100 - 32 - 50
+                    val density = screenDims.getValue("density").toFloat()
+                    val potentialWidth = screenDims.getValue("width") - dpToPx(density,32)
+                    val potentialHeight = (screenDims.getValue("height") - screenDims.getValue("toolbar_height")
+                                            - dpToPx(density,32) - dpToPx(density,50)).toFloat()
                     var width = potentialWidth
-                    var height = (screenDims.getValue("height") * (width / screenDims.getValue("width").toFloat())).toInt()
+                    var height = screenDims.getValue("height") * width / screenDims.getValue("width")
                     if (height > potentialHeight) {
-                        width = (width * (potentialHeight / height.toFloat())).toInt()
+                        width = width * potentialHeight / height
                         height = potentialHeight
                     }
-                    val params = LayoutParams(width, height)
-                    params.leftMargin = (potentialWidth - width) / 2
-                    params.topMargin = (potentialHeight - height) / 2
+                    val params = LayoutParams(width.toInt(), height.toInt())
+                    params.leftMargin = ((potentialWidth - width) / 2).toInt()
+                    params.topMargin = ((potentialHeight - height) / 2).toInt()
                     params.rightMargin = params.leftMargin // why is this necessary?
                     params.bottomMargin = params.topMargin
                     return params
@@ -87,12 +97,38 @@ class Utils {
             return setItems
         }
 
-        fun convertDpToPx(context: Context, dp: Float) : Float {
-            return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        fun dpToPx(density: Float, dp: Int) : Float {
+            return dp * density
         }
 
-        fun convertPxToDp(context: Context, px: Float) : Float {
-            return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        fun pxToDp(density: Float, px: Int) : Float {
+            return px / density
+        }
+
+        fun getTitleView(context: Context, currentDirectory: String): ViewGroup {
+            val linearLayout = LinearLayout(context)
+
+            val homeDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_home_32)
+            val imageView: ImageView = ImageView(context)
+            imageView.setImageDrawable(homeDrawable)
+            linearLayout.addView(imageView)
+
+            val textViews = mutableListOf<TextView>()
+            if (currentDirectory == "/") {
+                return linearLayout
+            }
+            currentDirectory.split("/").forEach { text ->
+                val arrowDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_arrow_right_32)
+                val imageView: ImageView = ImageView(context)
+                imageView.setImageDrawable(arrowDrawable)
+                linearLayout.addView(imageView)
+
+                val textView: TextView = TextView(context)
+                textView.text = text
+                textView.setTextColor(Color.WHITE)
+                textViews.add(textView)
+            }
+            return linearLayout
         }
     }
 }

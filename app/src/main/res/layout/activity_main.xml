@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:padding="0dp"
         android:layout_width="match_parent"
-        android:background="@color/blue4"
+        android:background="@color/green2"
         android:id="@+id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/nav_host_fragment_content_main"
         app:layout_constraintEnd_toEndOf="parent"

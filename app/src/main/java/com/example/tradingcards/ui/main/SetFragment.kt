@@ -1,11 +1,13 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -75,7 +77,9 @@ class SetFragment : Fragment() {
         val currentSet = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
         val files = currentSet.listFiles()
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
-            requireActivity().setTitle(viewModel.currentDirectory)
+            requireActivity().title = ""
+            val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+            toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory))
             binding.listParent.visibility = View.VISIBLE
 
             val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, currentSet)
@@ -123,15 +127,15 @@ class SetFragment : Fragment() {
             val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             navController.navigate(R.id.action_SetFragment_to_CreateSetFragment, bundle)
         }
-        binding.create1.setOnClickListener { create() }
-        binding.create2.setOnClickListener { create() }
+        binding.create.setOnClickListener { create() }
 
         // Add
         if (viewModel.currentDirectory == "/") {
-            // Can't create cards in root, because it's not a set
-            binding.add.visibility = View.GONE
+            // Can't create or view cards in root, because it's not a set
+            binding.addCard.visibility = View.GONE
+            binding.view.visibility = View.GONE
         } else {
-            binding.add.setOnClickListener {
+            binding.addCard.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("currentDirectory", viewModel.currentDirectory)
                 val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
@@ -140,20 +144,20 @@ class SetFragment : Fragment() {
         }
 
         // Open
-        binding.open.setOnClickListener {
-            val isDir = true
-            if (isDir) {
-                val bundle = Bundle()
-                val selectionName = getSelectionName()
-                if (selectionName == null) {
-                    return@setOnClickListener
-                }
-                bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
-                val navController =
-                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-                navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
-            }
-        }
+//        binding.open.setOnClickListener {
+//            val isDir = true
+//            if (isDir) {
+//                val bundle = Bundle()
+//                val selectionName = getSelectionName()
+//                if (selectionName == null) {
+//                    return@setOnClickListener
+//                }
+//                bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
+//                val navController =
+//                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+//                navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
+//            }
+//        }
     }
 
     private fun adapterOnClick(setItem: SetItem) { }
@@ -162,10 +166,10 @@ class SetFragment : Fragment() {
 // Classes for the selection tracker
 class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
     override fun getKey(position: Int): String {
-        return setAdapter.currentList[position].pathname
+        return setAdapter.currentList[position].filename
     }
     override fun getPosition(key: String): Int {
-        return setAdapter.currentList.indexOfFirst { it.pathname == key }
+        return setAdapter.currentList.indexOfFirst { it.filename == key }
     }
 }
 
