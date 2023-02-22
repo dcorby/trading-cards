@@ -11,32 +11,29 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.databinding.FragmentSetBinding
-import com.example.tradingcards.db.DBManager
-import com.example.tradingcards.viewmodels.DisplayCardsViewModel
-import com.example.tradingcards.viewmodels.DisplayFrontViewModel
+import com.example.tradingcards.viewmodels.DisplaySetViewModel
 import java.io.File
 
-class DisplayCardsFragment : Fragment() {
+class DisplaySetFragment : Fragment() {
 
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: DisplayCardsViewModel
+    private lateinit var viewModel: DisplaySetViewModel
 
     private lateinit var cardsPagerAdapter: CardsPagerAdapter
     private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DisplayCardsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DisplaySetViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_display_cards, container, false)
+        return inflater.inflate(R.layout.fragment_display_set, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +73,7 @@ class DisplayCardsFragment : Fragment() {
         override fun getCount(): Int  = 10
 
         override fun getItem(i: Int): Fragment {
-            val fragment = DisplayFrontFragment()
+            val fragment = DisplayCardFragment()
             fragment.arguments = Bundle().apply {
                 putInt("cardNum", i + 1)
             }

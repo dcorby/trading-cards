@@ -2,7 +2,7 @@ package com.example.tradingcards.viewmodels
 
 import androidx.lifecycle.ViewModel
 
-class DisplayFrontViewModel : ViewModel() {
+class DisplayCardViewModel : ViewModel() {
     var id = ""
     var currentDirectory = ""
 }

@@ -45,16 +45,16 @@
     <!-- DisplayCardsFragment -->
     <fragment
         android:id="@+id/DisplayCardsFragment"
-        android:name="com.example.tradingcards.ui.main.DisplayCardsFragment"
-        tools:layout="@layout/fragment_display_cards"
+        android:name="com.example.tradingcards.ui.main.DisplaySetFragment"
+        tools:layout="@layout/fragment_display_set"
         android:label="DisplayCardsFragment">
     </fragment>
 
     <!-- DisplayFrontFragment -->
     <fragment
         android:id="@+id/DisplayFrontFragment"
-        android:name="com.example.tradingcards.ui.main.DisplayFrontFragment"
-        tools:layout="@layout/fragment_display_front"
+        android:name="com.example.tradingcards.ui.main.DisplayCardFragment"
+        tools:layout="@layout/fragment_display_card"
         android:label="DisplayFrontFragment">
     </fragment>
 
