@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:background="@color/green2"
         android:id="@+id/toolbar"
+        android:theme="@style/ToolbarStyles"
         app:layout_constraintBottom_toTopOf="@id/nav_host_fragment_content_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

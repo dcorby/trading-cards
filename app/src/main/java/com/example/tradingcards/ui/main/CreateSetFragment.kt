@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
@@ -56,7 +57,15 @@ class CreateSetFragment : Fragment() {
 
         // Get the current directory
         viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
-        requireActivity().title = "Create Set (${viewModel.currentDirectory})"
+
+        requireActivity().title = ""
+        val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+        toolbar.children.forEach { view ->
+            if (view.tag == "title") {
+                toolbar.removeView(view)
+            }
+        }
+        toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory, "Create Set"))
 
         // Get the current absolute path + name
         val pathParts = listOf(requireContext().filesDir.absolutePath, viewModel.currentDirectory, viewModel.name)

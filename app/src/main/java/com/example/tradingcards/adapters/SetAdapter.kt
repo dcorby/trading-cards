@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.R
 import com.example.tradingcards.items.SetItem
 
-class SetAdapter(private val onClick: (SetItem) -> Unit) :
+class SetAdapter(private val onClick: (String) -> Unit) :
     ListAdapter<SetItem, SetAdapter.SetItemViewHolder>(SetItemDiffCallback) {
 
     private var prevFilename = ""
@@ -26,12 +26,10 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
 
     inner class SetItemViewHolder(
             private val itemView: View,
-            val onClick: (SetItem) -> Unit) : RecyclerView.ViewHolder(itemView) {
+            val onClick: (String) -> Unit) : RecyclerView.ViewHolder(itemView) {
 
         private val textView: TextView = itemView.findViewById(R.id.text_view)
         private val imageView: ImageView = itemView.findViewById(R.id.image_view)
-
-
 
         // Bind data to view
         fun bind(setItem: SetItem) {
@@ -118,11 +116,11 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
 
         var callback = Runnable {
             Log.v("TEST", "long click")
-            isLongClick = true
+            //isLongClick = true
             // Put the view in edit mode (can delete, basically). Once it's in edit mode, it's locked to single clicks
         }
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            if (event == null) {
+            if (event == null || v == null) {
                 return true
             }
             when (event.action) {
@@ -139,7 +137,8 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
                     handler.removeCallbacks(callback)
                     isPosting = false
                     if (!isLongClick) {
-                        Log.v("TEST", "normal click")
+                        val itemView = v.findViewById(R.id.text_view) as TextView
+                        onClick(itemView.text.toString())
                     }
                     return true
                 }

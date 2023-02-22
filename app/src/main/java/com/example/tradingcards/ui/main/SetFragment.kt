@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -69,7 +70,7 @@ class SetFragment : Fragment() {
             )[0].toString()
         }
 
-        setAdapter = SetAdapter { setItem -> adapterOnClick(setItem) }
+        setAdapter = SetAdapter { name -> adapterOnClick(name) }
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
 
@@ -78,8 +79,12 @@ class SetFragment : Fragment() {
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
             requireActivity().title = ""
             val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
-            toolbar.removeAllViews()
-            toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory))
+            toolbar.children.forEach { view ->
+                if (view.tag == "title") {
+                    toolbar.removeView(view)
+                }
+            }
+            toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory, null))
             binding.listParent.visibility = View.VISIBLE
 
             val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, currentSet)
@@ -148,10 +153,10 @@ class SetFragment : Fragment() {
     }
 
     // Click to open
-    private fun adapterOnClick(setItem: SetItem) {
+    private fun adapterOnClick(name: String) {
         val bundle = Bundle()
-        val selectionName = getSelectionName()
-        bundle.putString("currentDirectory", viewModel.currentDirectory + selectionName)
+        //val selectionName = getSelectionName()
+        bundle.putString("currentDirectory", viewModel.currentDirectory + name)
         val navController =
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
         navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)

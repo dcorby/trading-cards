@@ -8,9 +8,9 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat.OrientationMode
 import androidx.core.content.ContextCompat
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.SetItem
@@ -106,8 +106,12 @@ class Utils {
             return px / density
         }
 
-        fun getTitleView(context: Context, currentDirectory: String): ViewGroup {
+        fun getTitleView(context: Context, currentDirectory: String, title: String?): ViewGroup {
             val linearLayout = LinearLayout(context)
+            val params = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            linearLayout.layoutParams = params
+            linearLayout.tag = "title"
+            linearLayout.orientation = LinearLayout.HORIZONTAL
 
             val homeDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_home_32)
             val imageView: ImageView = ImageView(context)
@@ -132,6 +136,20 @@ class Utils {
                 textView.setTextColor(Color.WHITE)
                 textView.textSize = 22.toFloat()
                 textView.gravity = Gravity.CENTER_VERTICAL
+                linearLayout.addView(textView)
+            }
+            if (title != null) {
+                val textView = TextView(context)
+                textView.text = title
+                textView.setTextColor(Color.WHITE)
+                textView.textSize = 22.toFloat()
+                textView.gravity = Gravity.RIGHT
+                val params = LinearLayout.LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    999.0f
+                )
+                textView.layoutParams = params
                 linearLayout.addView(textView)
             }
             return linearLayout
