@@ -1,8 +1,7 @@
-package com.example.tradingcards
+package com.example.tradingcards.views
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.view.children
@@ -26,7 +25,7 @@ class MiniView : RelativeLayout {
     private fun convertMapToView(viewData: HashMap<String, Any?>) : View {
 
         val params = LayoutParams(viewData.getValue("width") as Int, viewData.getValue("height") as Int)
-        params.leftMargin  = viewData.getValue("margin_left") as Int
+        params.leftMargin = viewData.getValue("margin_left") as Int
         params.topMargin = viewData.getValue("margin_top") as Int
 
         val view = RelativeLayout(mContext)

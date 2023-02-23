@@ -1,16 +1,10 @@
 package com.example.tradingcards.ui.main
 
 import android.content.ContentValues
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import android.widget.RelativeLayout.LayoutParams
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -21,13 +15,13 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.MainReceiver
-import com.example.tradingcards.MiniView
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.LocationsAdapter
 import com.example.tradingcards.databinding.FragmentCreateSetBinding
 import com.example.tradingcards.items.LocationItem
 import com.example.tradingcards.viewmodels.CreateSetViewModel
+import com.example.tradingcards.views.MiniView
 import java.io.File
 
 class CreateSetFragment : Fragment() {
@@ -127,8 +121,6 @@ class CreateSetFragment : Fragment() {
         // Select design
         binding.scrollviewLayout.children.forEach { miniView ->
             miniView.setOnClickListener {
-                //(binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign)
-                    //.setBackgroundColor(Color.parseColor("#ffffff"))
                 (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign)
                     .background = ContextCompat.getDrawable(requireContext(), R.drawable.border_gray)
                 viewModel.activeDesign = (it.parent as ViewGroup).indexOfChild(it)

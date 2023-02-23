@@ -17,9 +17,9 @@ import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.example.tradingcards.db.DBManager
-import com.example.tradingcards.designviews.DataView
-import com.example.tradingcards.designviews.PartnerView
-import com.example.tradingcards.designviews.RectangleView
+import com.example.tradingcards.views.DataView
+import com.example.tradingcards.views.PartnerView
+import com.example.tradingcards.views.RectangleView
 import com.skydoves.colorpickerview.listeners.ColorListener
 
 class CreateDesignFragment : Fragment() {
@@ -111,7 +111,8 @@ class CreateDesignFragment : Fragment() {
                     return
                 }
 
-                val dataView = DataView(requireContext(), this@CreateDesignFragment, "Foo Bar")
+                val label = resources.getStringArray(R.array.data_map_labels)[position]
+                val dataView = DataView(requireContext(), this@CreateDesignFragment, label)
                 if (this@CreateDesignFragment::activeView.isInitialized) {
                     activeView.anchors.hide()
                 }
@@ -123,11 +124,10 @@ class CreateDesignFragment : Fragment() {
                 binding.design.addView(dataView.anchors.top)
                 binding.design.addView(dataView.anchors.right)
                 binding.design.addView(dataView.anchors.bottom)
-
                 binding.dataMappings.setSelection(0)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) { }
         }
 
         // Save the view
@@ -150,14 +150,6 @@ class CreateDesignFragment : Fragment() {
                 contentValues.put("margin_top", params.topMargin)
                 contentValues.put("hexadecimal", "#" + Integer.toHexString((view.background as ColorDrawable).color))
                 val id = dbManager.insert("card_views", contentValues)
-
-                // Log.v("TEST", "Saving:")
-                // Log.v("TEST", "card=${card}, id=${id}")
-                // Log.v("TEST", "marginLeft=${params.leftMargin}")
-                // Log.v("TEST", "marginTop=${params.topMargin}")
-                // Log.v("TEST", "width=${params.width}")
-                // Log.v("TEST", "height=${params.height}")
-                // Log.v("TEST", "color=#${Integer.toHexString((view.background as ColorDrawable).color)}")
             }
             dbManager.commitTransaction()
             dbManager.endTransaction()

@@ -1,10 +1,13 @@
-package com.example.tradingcards.designviews
+package com.example.tradingcards.views
 
 import android.content.Context
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.ui.main.CreateDesignFragment
 
@@ -24,10 +27,10 @@ open class PartnerView : RelativeLayout {
         anchors.top.tag = "top"
         anchors.right.tag = "right"
         anchors.bottom.tag = "bottom"
-        anchors.left.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.top.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.right.setBackgroundColor(Color.parseColor("#0000FF"))
-        anchors.bottom.setBackgroundColor(Color.parseColor("#0000FF"))
+        anchors.left.background = ContextCompat.getDrawable(context, R.drawable.border_light_blue)
+        anchors.top.background = ContextCompat.getDrawable(context, R.drawable.border_light_blue)
+        anchors.right.background = ContextCompat.getDrawable(context, R.drawable.border_light_blue)
+        anchors.bottom.background = ContextCompat.getDrawable(context, R.drawable.border_light_blue)
         anchors.left.partnerView = this
         anchors.top.partnerView = this
         anchors.right.partnerView = this

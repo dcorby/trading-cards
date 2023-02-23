@@ -1,4 +1,4 @@
-package com.example.tradingcards.designviews
+package com.example.tradingcards.views
 
 import android.content.Context
 import android.graphics.Canvas
@@ -26,7 +26,7 @@ class DataView: PartnerView {
         canvas?.drawPaint(paint)
         paint.setColor(Color.WHITE)
         paint.setTextSize(20.toFloat())
-        canvas?.drawText("Some Text", 10.toFloat(), 25.toFloat(), paint)
+        canvas?.drawText(mText, 10.toFloat(), 25.toFloat(), paint)
     }
 
     fun setText(text: String) {

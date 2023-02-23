@@ -53,7 +53,7 @@ class SetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Get the currentDirectory, and always display with a trailing slash
-        viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
+        viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
         if (viewModel.currentDirectory == "" || viewModel.currentDirectory.last().toString() != "/") {
             viewModel.currentDirectory += "/"
         }
@@ -149,6 +149,10 @@ class SetFragment : Fragment() {
     }
 
     private fun viewSet() {
+        if (viewModel.currentSet.listFiles().size == 0) {
+            Toast.makeText(requireContext(), "Add cards to the set", Toast.LENGTH_SHORT).show()
+            return
+        }
         val bundle = Bundle()
         bundle.putString("currentDirectory", viewModel.currentDirectory)
         val fragment = DisplaySetFragment()
@@ -161,7 +165,6 @@ class SetFragment : Fragment() {
     }
 
     private fun adapterOnClick(setItem: SetItem) {
-        Log.v("TEST", "onclick")
         val bundle = Bundle()
         if (setItem.file.extension == "jpg") {
             viewSet()
