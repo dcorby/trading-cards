@@ -10,52 +10,70 @@
     tools:context=".ui.main.CreateDesignFragment">
 
     <RelativeLayout
-        android:id="@+id/design_view_parent"
+        android:id="@+id/design_parent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/pink1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/controls_view"
+        app:layout_constraintBottom_toTopOf="@id/controls"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <RelativeLayout
-            android:id="@+id/design_view"
+            android:id="@+id/design"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/border_black">
+            android:background="@drawable/border_gray">
         </RelativeLayout>
     </RelativeLayout>
+
     <LinearLayout
-        android:id="@+id/controls_view"
-        android:background="@color/blue3"
+        android:id="@+id/controls"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/design_view_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintTop_toBottomOf="@id/design_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/rectangle"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:text="Rect"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_weight="1">
-        </Button>
-        <com.skydoves.colorpickerview.ColorPickerView
-            android:id="@+id/color_picker"
+            <Button
+                android:id="@+id/rectangle"
+                android:layout_width="44dp"
+                android:layout_height="50dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@color/blue"
+                app:icon="@drawable/ic_baseline_add_24"
+                android:layout_weight="0">
+            </Button>
+            <com.skydoves.colorpickerview.ColorPickerView
+                android:id="@+id/color_picker"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
         <Spinner
             android:id="@+id/data_mappings"
             android:entries="@array/data_map_labels"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1" />
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
         <Button
             android:id="@+id/save"
+            android:backgroundTint="@color/blue"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="Save"

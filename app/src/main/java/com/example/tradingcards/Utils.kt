@@ -106,24 +106,26 @@ class Utils {
             return px / density
         }
 
-        fun getTitleView(context: Context, currentDirectory: String, title: String?): ViewGroup {
+        fun getTitleView(context: Context, currentDirectory: String?, title: String?): ViewGroup {
             val linearLayout = LinearLayout(context)
             val params = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             linearLayout.layoutParams = params
             linearLayout.tag = "title"
             linearLayout.orientation = LinearLayout.HORIZONTAL
 
-            val homeDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_home_32)
-            val imageView = ImageView(context)
-            imageView.setImageDrawable(homeDrawable)
-            linearLayout.addView(imageView)
+            if (currentDirectory != null) {
+                val homeDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_home_32)
+                val imageView = ImageView(context)
+                imageView.setImageDrawable(homeDrawable)
+                linearLayout.addView(imageView)
+            }
 
-            currentDirectory.trim('/').split("/").forEach loop@ { text ->
+            currentDirectory?.trim('/')?.split("/")?.forEach loop@{ text ->
                 if (text == "") {
                     return@loop
                 }
-                Log.v("TEST", "text=${text}")
-                val arrowDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_arrow_right_32)
+                val arrowDrawable =
+                    ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_arrow_right_32)
                 val imageView = ImageView(context)
                 imageView.setImageDrawable(arrowDrawable)
                 linearLayout.addView(imageView)
@@ -135,6 +137,7 @@ class Utils {
                 textView.gravity = Gravity.CENTER_VERTICAL
                 linearLayout.addView(textView)
             }
+
             if (title != null) {
                 val textView = TextView(context)
                 textView.text = title

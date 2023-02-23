@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.AdapterView
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.example.tradingcards.MainReceiver
+import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.example.tradingcards.db.DBManager
@@ -40,10 +42,6 @@ class CreateDesignFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //viewModel = ViewModelProvider(this).get(CreateDesignViewModel::class.java)
-
-        // Set title
-        //requireActivity().title = "Create Design"
         mainReceiver = requireActivity() as MainReceiver
         dbManager = mainReceiver.getDBManager()
     }
@@ -51,9 +49,18 @@ class CreateDesignFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Layout designView
+        requireActivity().title = ""
+        val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+        toolbar.children.forEach { view ->
+            if (view.tag == "title") {
+                toolbar.removeView(view)
+            }
+        }
+        toolbar.addView(Utils.getTitleView(requireContext(), null, "Design Set"))
 
-        binding.designView.layoutParams = Utils.getLayoutParams("design", mainReceiver.getScreenDims())
+        // Layout designView
+        binding.design.layoutParams = Utils.getLayoutParams("design", mainReceiver.getScreenDims())
+        binding.controls.layoutParams.width = binding.design.layoutParams.width
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
@@ -62,13 +69,13 @@ class CreateDesignFragment : Fragment() {
                 activeView.anchors.hide()
             }
             activeView = rectangleView
-            binding.designView.addView(rectangleView)
+            binding.design.addView(rectangleView)
             rectangleView.show(center)
             rectangleView.anchors.show(true)
-            binding.designView.addView(rectangleView.anchors.left)
-            binding.designView.addView(rectangleView.anchors.top)
-            binding.designView.addView(rectangleView.anchors.right)
-            binding.designView.addView(rectangleView.anchors.bottom)
+            binding.design.addView(rectangleView.anchors.left)
+            binding.design.addView(rectangleView.anchors.top)
+            binding.design.addView(rectangleView.anchors.right)
+            binding.design.addView(rectangleView.anchors.bottom)
         }
 
         // Init the color picker
@@ -79,7 +86,7 @@ class CreateDesignFragment : Fragment() {
         })
 
         // Get designView clicks, which will hide activeView anchors
-        binding.designView.setOnClickListener {
+        binding.design.setOnClickListener {
             if (this::activeView.isInitialized) {
                 activeView.anchors.hide()
             }
@@ -87,12 +94,12 @@ class CreateDesignFragment : Fragment() {
 
         // Get the designView width and height, in order to size added rectangleViews
         // https://stackoverflow.com/questions/3591784/views-getwidth-and-getheight-returns-0
-        binding.designView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        binding.design.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 center = Pair(
-                    binding.designView.width / 2,
-                    binding.designView.height / 2
+                    binding.design.width / 2,
+                    binding.design.height / 2
                 )
             }
         })
@@ -109,13 +116,13 @@ class CreateDesignFragment : Fragment() {
                     activeView.anchors.hide()
                 }
                 activeView = dataView
-                binding.designView.addView(dataView)
+                binding.design.addView(dataView)
                 dataView.show(center)
                 dataView.anchors.show(true)
-                binding.designView.addView(dataView.anchors.left)
-                binding.designView.addView(dataView.anchors.top)
-                binding.designView.addView(dataView.anchors.right)
-                binding.designView.addView(dataView.anchors.bottom)
+                binding.design.addView(dataView.anchors.left)
+                binding.design.addView(dataView.anchors.top)
+                binding.design.addView(dataView.anchors.right)
+                binding.design.addView(dataView.anchors.bottom)
 
                 binding.dataMappings.setSelection(0)
             }
@@ -125,7 +132,7 @@ class CreateDesignFragment : Fragment() {
 
         // Save the view
         binding.save.setOnClickListener {
-            val children = binding.designView.children
+            val children = binding.design.children
             dbManager.beginTransaction()
 
             // Insert the card record
