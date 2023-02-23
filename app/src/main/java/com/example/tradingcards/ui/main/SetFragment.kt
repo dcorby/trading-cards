@@ -79,6 +79,7 @@ class SetFragment : Fragment() {
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
             requireActivity().title = ""
             val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+            // This won't display if user clicks from SetFragment to SetFragment. Display it manually
             if (parentFragmentManager.backStackEntryCount > 0) {
                 toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             }
