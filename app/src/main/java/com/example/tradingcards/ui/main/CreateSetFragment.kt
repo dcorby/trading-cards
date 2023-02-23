@@ -8,11 +8,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.*
 import android.widget.RelativeLayout.LayoutParams
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -77,10 +74,10 @@ class CreateSetFragment : Fragment() {
         viewModel.absolutePath = absolutePath
 
         // Get the name and location, and listen for edits
-        binding.nameEditText.setText(viewModel.name, TextView.BufferType.EDITABLE)
-        binding.nameEditText.addTextChangedListener {
-            viewModel.name = binding.nameEditText.text.toString().trim()
-            binding.locationLiveView.text = viewModel.currentDirectory + viewModel.name
+        binding.name.setText(viewModel.name, TextView.BufferType.EDITABLE)
+        binding.name.addTextChangedListener {
+            viewModel.name = binding.name.text.toString().trim()
+            binding.location.text = viewModel.currentDirectory + viewModel.name
         }
 
         // Create design
@@ -118,15 +115,22 @@ class CreateSetFragment : Fragment() {
             val view = MiniView(requireContext(), design)
             view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
             val miniView = view.shrink(shrinkFactor)
-            //miniView.tag = design[0]["card"] ?: 0
+            miniView.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_gray)
             binding.scrollviewLayout.addView(miniView)
+        }
+
+        // Create some spacing
+        binding.scrollviewLayout.children.forEach {
+            ((it as RelativeLayout).layoutParams as LinearLayout.LayoutParams).rightMargin = 50
         }
 
         // Select design
         binding.scrollviewLayout.children.forEach { miniView ->
             miniView.setOnClickListener {
+                //(binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign)
+                    //.setBackgroundColor(Color.parseColor("#ffffff"))
                 (binding.scrollview.getChildAt(0) as ViewGroup).getChildAt(viewModel.activeDesign)
-                    .setBackgroundColor(Color.parseColor("#ffffff"))
+                    .background = ContextCompat.getDrawable(requireContext(), R.drawable.border_gray)
                 viewModel.activeDesign = (it.parent as ViewGroup).indexOfChild(it)
                 it.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_black)
             }
@@ -142,13 +146,12 @@ class CreateSetFragment : Fragment() {
             "SELECT id, COUNT(*) AS count FROM sources WHERE date IS NOT NULL GROUP BY id HAVING COUNT(*) > 0", null, "id")
         if (sources.size == 0) {
             sources.add("Add a source")
-            binding.sourcesManage.text = "Add"
             binding.sourcesSpinner.isEnabled = false
         }
 
         val adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
+            R.layout.item_spinner,
             sources)
         binding.sourcesSpinner.adapter = adapter
         binding.sourcesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -159,11 +162,11 @@ class CreateSetFragment : Fragment() {
         }
 
         // Manage/add source
-        binding.sourcesManage.setOnClickListener {
-            val navController =
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            navController.navigate(R.id.action_CreateSetFragment_to_SourcesFragment)
-        }
+//        binding.sourcesManage.setOnClickListener {
+//            val navController =
+//                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+//            navController.navigate(R.id.action_CreateSetFragment_to_SourcesFragment)
+//        }
 
         // Create set
         binding.createSet.setOnClickListener {
@@ -218,7 +221,6 @@ class CreateSetFragment : Fragment() {
 
             // ************ TODO: This needs to be set on create **************
             userDesignView.set("type", "ShapeView")
-
             currentDesign.add(userDesignView as kotlin.collections.HashMap<String, Any?>)
         }
         userDesigns.add(ArrayList(currentDesign))

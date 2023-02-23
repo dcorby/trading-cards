@@ -23,6 +23,10 @@
     <color name="green2">#007500</color>
     <color name="blue">#385499</color>
 
+    <color name="gray">#CCCCCC</color>
+
     <color name="graybeige">#f0ece8</color>
+    <color name="grayblue">#EFF1F5</color>
+
 
 </resources>
