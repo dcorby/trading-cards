@@ -58,6 +58,7 @@
         android:layout_height="40dp"
         android:background="@color/grayblue"
         android:paddingLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:inputType="textNoSuggestions"
         app:layout_constraintWidth_percent="0.90"
         app:layout_constraintTop_toBottomOf="@+id/source_parent"
