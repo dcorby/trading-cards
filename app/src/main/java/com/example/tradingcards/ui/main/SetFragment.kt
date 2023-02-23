@@ -30,7 +30,6 @@ class SetFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var setAdapter: SetAdapter
     private lateinit var viewModel: SetViewModel
-    private lateinit var tracker: SelectionTracker<String>
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
     private lateinit var toolbar: Toolbar
@@ -77,7 +76,17 @@ class SetFragment : Fragment() {
         recyclerView.adapter = setAdapter
 
         viewModel.currentSet = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
+
+        val files = viewModel.currentSet.listFiles()
+        viewModel.isHome = viewModel.currentDirectory == "/" && files.isEmpty()
+        toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
         setToolbar()
+
+        if (!viewModel.isHome!!) {
+            binding.listParent.visibility = View.VISIBLE
+            val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, viewModel.currentSet)
+            setAdapter.submitList(setItems)
+        }
 
         // Create
         fun create() {
@@ -121,11 +130,11 @@ class SetFragment : Fragment() {
     }
 
     private fun setToolbar() {
-        Log.v("TEST", "setting toolbar")
-        val files = viewModel.currentSet.listFiles()
-        if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
+        if (viewModel.isHome!!) {
+            requireActivity().title = "Get Started"
+            binding.gettingStarted.visibility = View.VISIBLE
+        } else {
             requireActivity().title = ""
-            toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
             // This won't display if user clicks from SetFragment to SetFragment. Display it manually
             if (parentFragmentManager.backStackEntryCount > 0) {
                 toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
@@ -136,14 +145,6 @@ class SetFragment : Fragment() {
                 }
             }
             toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory, null))
-            binding.listParent.visibility = View.VISIBLE
-
-            val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, viewModel.currentSet)
-            setAdapter.submitList(setItems)
-
-        } else {
-            requireActivity().title = "Get Started"
-            binding.gettingStarted.visibility = View.VISIBLE
         }
     }
 

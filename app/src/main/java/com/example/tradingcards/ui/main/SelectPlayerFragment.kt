@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +14,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
+import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.PlayerAdapter
 import com.example.tradingcards.databinding.FragmentSelectPlayerBinding
 import com.example.tradingcards.db.DBManager
@@ -28,6 +31,7 @@ class SelectPlayerFragment : Fragment() {
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
     private lateinit var playerAdapter: PlayerAdapter
+    private lateinit var toolbar: Toolbar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +57,8 @@ class SelectPlayerFragment : Fragment() {
 
         // Get the current directory
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
-        requireActivity().title = "Select Player (${viewModel.currentDirectory})"
+        toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+        setToolbar()
 
         // Get the set data, to find out the source
         val set = dbManager.fetch("SELECT * FROM sets WHERE path = ?", arrayOf(viewModel.currentDirectory))[0]
@@ -98,5 +103,14 @@ class SelectPlayerFragment : Fragment() {
         val navController =
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
         navController.navigate(R.id.action_SelectPlayerFragment_to_SelectImageFragment, bundle)
+    }
+
+    private fun setToolbar() {
+        toolbar.children.forEach { view ->
+            if (view.tag == "title") {
+                toolbar.removeView(view)
+            }
+        }
+        toolbar.addView(Utils.getTitleView(requireContext(), null, "Select Player"))
     }
 }

@@ -7,4 +7,5 @@ class SetViewModel : ViewModel() {
     var currentDirectory = ""
     var source: String? = ""
     lateinit var currentSet: File
+    var isHome: Boolean? = null
 }
