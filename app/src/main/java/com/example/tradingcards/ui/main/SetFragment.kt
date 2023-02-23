@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -78,6 +79,9 @@ class SetFragment : Fragment() {
         if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
             requireActivity().title = ""
             val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+            if (parentFragmentManager.backStackEntryCount > 0) {
+                toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+            }
             toolbar.children.forEach { view ->
                 if (view.tag == "title") {
                     toolbar.removeView(view)

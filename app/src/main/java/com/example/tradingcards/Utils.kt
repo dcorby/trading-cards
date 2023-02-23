@@ -114,17 +114,14 @@ class Utils {
             linearLayout.orientation = LinearLayout.HORIZONTAL
 
             val homeDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_home_32)
-            val imageView: ImageView = ImageView(context)
+            val imageView = ImageView(context)
             imageView.setImageDrawable(homeDrawable)
             linearLayout.addView(imageView)
 
-            val textViews = mutableListOf<TextView>()
-            if (currentDirectory == "/") {
-                return linearLayout
-            }
-            Log.v("TEXT", "currentDirectory=${currentDirectory}")
-
-            currentDirectory.trim('/').split("/").forEach { text ->
+            currentDirectory.trim('/').split("/").forEach loop@ { text ->
+                if (text == "") {
+                    return@loop
+                }
                 Log.v("TEST", "text=${text}")
                 val arrowDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_keyboard_arrow_right_32)
                 val imageView = ImageView(context)

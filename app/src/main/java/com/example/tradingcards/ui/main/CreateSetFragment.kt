@@ -3,6 +3,7 @@ package com.example.tradingcards.ui.main
 import android.content.ContentValues
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.RelativeLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -21,8 +23,8 @@ import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tradingcards.MiniView
 import com.example.tradingcards.MainReceiver
+import com.example.tradingcards.MiniView
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.LocationsAdapter
@@ -60,6 +62,8 @@ class CreateSetFragment : Fragment() {
 
         requireActivity().title = ""
         val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+        val actionBar: android.app.ActionBar? = requireActivity().actionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.children.forEach { view ->
             if (view.tag == "title") {
                 toolbar.removeView(view)

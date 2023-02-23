@@ -64,61 +64,17 @@
         android:text=""
         android:background="@color/blue2"
         app:layout_constraintTop_toBottomOf="@id/location_recycler_view"
-        app:layout_constraintBottom_toTopOf="@id/design_header"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </TextView>
-
-    <LinearLayout
-        android:id="@+id/design_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/location_text_view"
-        app:layout_constraintBottom_toTopOf="@id/scrollview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-        <TextView
-            android:id="@+id/design_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Design">
-        </TextView>
-        <Button
-            android:id="@+id/design_add"
-            android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/purple_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Add">
-        </Button>
-    </LinearLayout>
-
-    <HorizontalScrollView
-        android:id="@+id/scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/design_header"
         app:layout_constraintBottom_toTopOf="@id/sources_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/scrollview_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </HorizontalScrollView>
+    </TextView>
 
     <LinearLayout
         android:id="@+id/sources_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/scrollview"
+        app:layout_constraintTop_toBottomOf="@id/location_live_view"
         app:layout_constraintBottom_toTopOf="@id/sources_spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -146,9 +102,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/sources_header"
-        app:layout_constraintBottom_toTopOf="@id/create_set"
+        app:layout_constraintBottom_toTopOf="@id/design_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/design_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/sources_spinner"
+        app:layout_constraintBottom_toTopOf="@id/scrollview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/design_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Design">
+        </TextView>
+        <Button
+            android:id="@+id/design_add"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/purple_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Add">
+        </Button>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/design_header"
+        app:layout_constraintBottom_toTopOf="@id/create_set"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/scrollview_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </HorizontalScrollView>
 
     <Button
         android:id="@+id/create_set"
@@ -159,7 +159,7 @@
         android:textSize="16sp"
         android:text="Create"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/sources_spinner"
+        app:layout_constraintTop_toBottomOf="@id/scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
     </Button>
