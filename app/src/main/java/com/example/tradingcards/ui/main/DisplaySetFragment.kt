@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,8 +40,6 @@ class DisplaySetFragment : Fragment() {
         val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
         toolbar.visibility = View.GONE
 
-        Log.v("TEST", "DisplaySetFragment")
-
         viewModel.id = arguments?.getString("id") ?: ""
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
 
@@ -51,11 +48,9 @@ class DisplaySetFragment : Fragment() {
         if (viewModel.id != "") {
             ids.add(viewModel.id)
         } else {
-            Log.v("TEST", "Getting files from=${requireContext().filesDir.toString() + viewModel.currentDirectory}")
             val path = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
             path.listFiles().forEach { file ->
                 if (file.extension == "jpg") {
-                    Log.v("TEST", "adding id=${file.name}")
                     ids.add(file.name.replace(".jpg", ""))
                 }
             }
@@ -81,7 +76,7 @@ class DisplaySetFragment : Fragment() {
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return "OBJECT ${(position + 1)}"
+            return ""
         }
     }
 }

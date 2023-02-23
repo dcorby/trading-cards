@@ -20,6 +20,7 @@ import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.SetAdapter
 import com.example.tradingcards.databinding.FragmentSetBinding
 import com.example.tradingcards.db.DBManager
+import com.example.tradingcards.items.SetItem
 import com.example.tradingcards.viewmodels.SetViewModel
 import java.io.File
 
@@ -32,6 +33,7 @@ class SetFragment : Fragment() {
     private lateinit var tracker: SelectionTracker<String>
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,54 +76,8 @@ class SetFragment : Fragment() {
         val recyclerView: RecyclerView = binding.recyclerView
         recyclerView.adapter = setAdapter
 
-        val currentSet = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
-        val files = currentSet.listFiles()
-        if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
-            requireActivity().title = ""
-            val toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
-            // This won't display if user clicks from SetFragment to SetFragment. Display it manually
-            if (parentFragmentManager.backStackEntryCount > 0) {
-                toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-            }
-            toolbar.children.forEach { view ->
-                if (view.tag == "title") {
-                    toolbar.removeView(view)
-                }
-            }
-            toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory, null))
-            binding.listParent.visibility = View.VISIBLE
-
-            val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, currentSet)
-            setAdapter.submitList(setItems)
-
-            // Init the selection library
-            tracker = SelectionTracker.Builder<String>(
-                "selectionItem",
-                binding.recyclerView,
-                SetItemKeyProvider(setAdapter),
-                SetItemDetailsLookup(binding.recyclerView),
-                StorageStrategy.createStringStorage()
-            ).withSelectionPredicate(
-                SelectionPredicates.createSelectAnything()
-            ).build()
-            //setAdapter.tracker = tracker
-
-            // Watch for location selection
-            tracker.addObserver(
-                object : SelectionTracker.SelectionObserver<String>() {
-                    override fun onSelectionChanged() {
-                    }
-
-                    override fun onItemStateChanged(key: String, selected: Boolean) {
-                        if (tracker.hasSelection()) {
-                        }
-                        super.onItemStateChanged(key, !selected)
-                    }
-                })
-        } else {
-            requireActivity().title = "Get Started"
-            binding.gettingStarted.visibility = View.VISIBLE
-        }
+        viewModel.currentSet = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
+        setToolbar()
 
         // Create
         fun create() {
@@ -150,59 +106,69 @@ class SetFragment : Fragment() {
         binding.view.setOnClickListener {
             // Don't use nav controller for this because when you spring from the set, you'll leave the
             // destination as DisplaySetFragment
-
             //val bundle = Bundle()
             //bundle.putString("currentDirectory", viewModel.currentDirectory)
             //val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
             //navController.navigate(R.id.action_SetFragment_to_DisplaySetFragment, bundle)
 
-            val bundle = Bundle()
-            bundle.putString("currentDirectory", viewModel.currentDirectory)
-            val fragment = DisplaySetFragment()
-            fragment.arguments = bundle
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, fragment)
-                .addToBackStack(null)
-                .commit()
+            viewSet()
         }
     }
 
-    fun getSelectionName(): String? {
-        if (tracker.selection.size() == 0) {
-            Toast.makeText(requireContext(), "Select a directory", Toast.LENGTH_SHORT).show()
-            return null
-        }
-        return tracker.selection.toList()[0]
+    override fun onResume() {
+        super.onResume()
+        toolbar.visibility = View.VISIBLE
     }
 
-    // Click to open
-    private fun adapterOnClick(name: String) {
+    private fun setToolbar() {
+        Log.v("TEST", "setting toolbar")
+        val files = viewModel.currentSet.listFiles()
+        if (viewModel.currentDirectory != "/" || files.isNotEmpty()) {
+            requireActivity().title = ""
+            toolbar = requireActivity().findViewById(R.id.toolbar) as Toolbar
+            // This won't display if user clicks from SetFragment to SetFragment. Display it manually
+            if (parentFragmentManager.backStackEntryCount > 0) {
+                toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+            }
+            toolbar.children.forEach { view ->
+                if (view.tag == "title") {
+                    toolbar.removeView(view)
+                }
+            }
+            toolbar.addView(Utils.getTitleView(requireContext(), viewModel.currentDirectory, null))
+            binding.listParent.visibility = View.VISIBLE
+
+            val setItems = Utils.getSetItems(requireContext(), dbManager, viewModel.source, viewModel.currentSet)
+            setAdapter.submitList(setItems)
+
+        } else {
+            requireActivity().title = "Get Started"
+            binding.gettingStarted.visibility = View.VISIBLE
+        }
+    }
+
+    private fun viewSet() {
         val bundle = Bundle()
-        //val selectionName = getSelectionName()
-        bundle.putString("currentDirectory", viewModel.currentDirectory + name)
-        val navController =
-            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-        navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
+        bundle.putString("currentDirectory", viewModel.currentDirectory)
+        val fragment = DisplaySetFragment()
+        fragment.arguments = bundle
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment_content_main, fragment)
+            .addToBackStack(null)
+            .commit()
     }
-}
 
-// Classes for the selection tracker
-class SetItemKeyProvider(private val setAdapter: SetAdapter) : ItemKeyProvider<String>(SCOPE_CACHED) {
-    override fun getKey(position: Int): String {
-        return setAdapter.currentList[position].filename
-    }
-    override fun getPosition(key: String): Int {
-        return setAdapter.currentList.indexOfFirst { it.filename == key }
-    }
-}
-
-class SetItemDetailsLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<String>() {
-    override fun getItemDetails(event: MotionEvent): ItemDetails<String>? {
-        val view = recyclerView.findChildViewUnder(event.x, event.y)
-        if (view != null) {
-            return (recyclerView.getChildViewHolder(view) as SetAdapter.SetItemViewHolder).getItemDetails()
+    private fun adapterOnClick(setItem: SetItem) {
+        Log.v("TEST", "onclick")
+        val bundle = Bundle()
+        if (setItem.file.extension == "jpg") {
+            viewSet()
+        } else {
+            bundle.putString("currentDirectory", viewModel.currentDirectory + setItem.filename)
+            val navController =
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.action_SetFragment_to_SetFragment, bundle)
         }
-        return null
     }
 }

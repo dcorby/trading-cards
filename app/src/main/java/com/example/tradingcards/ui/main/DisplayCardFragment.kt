@@ -48,7 +48,7 @@ class DisplayCardFragment : Fragment() {
         binding.image.setImageDrawable(drawable)
 
         // Set the title
-        binding.status.text = "${cardNum} of N"
+        binding.status.text = "${cardNum} of 10"
 
         // Handle close
         binding.close.setOnClickListener {
