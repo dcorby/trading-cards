@@ -66,14 +66,15 @@ class SaveImageFragment : Fragment() {
         // Display the cropper, with the screen's aspect ratio, to max of 80% of image width and height
         displayCropper()
 
-        binding.cropper.setOnTouchListener(onTouchListener)
-
         // Attach the resize view
         val resizeView = ResizeView(requireContext())
         resizeView.cropperView = binding.cropper
         resizeView.show()
         resizeView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
         binding.frame.addView(resizeView)
+
+        // Give cropper a reference to the resize view
+        binding.cropper.resizeView = resizeView
 
         // Save the image
         binding.button.setOnClickListener {
@@ -181,44 +182,5 @@ class SaveImageFragment : Fragment() {
         cropperParams.leftMargin = ((imageWidth - currentCropperWidth) / 2.0).toInt() + imageParams.leftMargin
         cropperParams.topMargin = ((imageHeight - currentCropperHeight) / 2.0).toInt() + imageParams.topMargin
         binding.cropper.layoutParams = cropperParams
-    }
-}
-
-val onTouchListener = object : View.OnTouchListener {
-    // https://stackoverflow.com/questions/7892853/how-to-use-correct-dragging-of-a-view-on-android/18806475#18806475
-    var prevX = 0
-    var prevY = 0
-    var params: FrameLayout.LayoutParams? = null
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        if (v == null || event == null) { return false }
-        params = v.layoutParams as FrameLayout.LayoutParams
-
-        when (event.action) {
-            MotionEvent.ACTION_MOVE -> {
-                // Get the diff
-                val diffX = event.rawX.toInt() - prevX
-                val diffY = event.rawY.toInt() - prevY
-                params!!.leftMargin += diffX
-                params!!.topMargin += diffY
-                prevX = event.rawX.toInt()
-                prevY = event.rawY.toInt()
-                v.layoutParams = params
-                return true
-            }
-            MotionEvent.ACTION_UP -> {
-                return true
-            }
-            MotionEvent.ACTION_DOWN -> {
-                prevX = event.rawX.toInt()
-                prevY = event.rawY.toInt()
-
-                // little confused about bottom/right margins and the values??
-                params!!.bottomMargin = -2 * v.height
-                params!!.rightMargin = -2 * v.width
-                v.layoutParams = params
-                return true
-            }
-        }
-        return false
     }
 }

@@ -22,12 +22,12 @@
             android:layout_height="0dp">
         </ImageView>
 
-        <RelativeLayout
+        <com.example.tradingcards.views.CropperView
             android:id="@+id/cropper"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/border_green">
-        </RelativeLayout>
+        </com.example.tradingcards.views.CropperView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
