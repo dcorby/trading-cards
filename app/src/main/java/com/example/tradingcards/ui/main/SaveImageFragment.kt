@@ -17,6 +17,7 @@ import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentSaveImageBinding
 import com.example.tradingcards.viewmodels.SaveImageViewModel
+import com.example.tradingcards.views.ResizeView
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.io.path.Path
@@ -58,71 +59,26 @@ class SaveImageFragment : Fragment() {
         viewModel.link = "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg"
         viewModel.width = 776.toFloat()
         viewModel.height = 1200.toFloat()
-        // Fire is an HDPI device, and width will be ~511 dp
-        // https://stackoverflow.com/questions/2025282/what-is-the-difference-between-px-dip-dp-and-sp
 
-        // Get screen dims
-        val screenWidth = mainReceiver.getScreenDims().getValue("width")
-        val screenHeight = mainReceiver.getScreenDims().getValue("height")
-        val density = mainReceiver.getScreenDims().getValue("density")
-        var toolbarHeight = mainReceiver.getScreenDims().getValue("toolbar_height")
+        // Display the image, with its own aspect ratio, to max of 80% of frame width and height
+        displayImage()
 
-        // Get frame dims
-        // Log.v("TEST", "width=${binding.frame.width}")
-        // Log.v("TEST", "height=${binding.frame.height}")
-        // ^ Not reliable, because onDraw() might come later, and because of keyboard
-        val frameWidth = screenWidth - Utils.dpToPx(density,32)
-        val frameHeight = screenHeight - Utils.dpToPx(density,32) - Utils.dpToPx(density, toolbarHeight.toInt())
+        // Display the cropper, with the screen's aspect ratio, to max of 80% of image width and height
+        displayCropper()
 
-        // Get original dims
-        val origWidth = viewModel.width.toFloat()
-        val origHeight = viewModel.height.toFloat()
-
-        // Get image (actual) dims
-        var imageWidth = origWidth
-        var imageHeight = origHeight
-        var shrink: Float
-        // the 2/3 factor is arbitrary, to leave some padding
-        if (origWidth > frameWidth) {
-            shrink = frameWidth / origWidth * (2/3)
-            imageHeight *= shrink
-            imageWidth = frameWidth
-        } else if (origHeight > frameHeight) {
-            shrink = frameHeight / origHeight * (2/3)
-            imageWidth *= shrink
-            imageHeight = frameHeight
-        }
-
-        // Set image dims
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
-        binding.image.setImageDrawable(drawable)
-        //binding.image.setImageResource(R.drawable.henderi01)
-        val imageParams = binding.image.layoutParams as FrameLayout.LayoutParams
-        imageParams.width = imageWidth.toInt()
-        imageParams.height = imageHeight.toInt()
-        imageParams.leftMargin = ((frameWidth - imageWidth) / 2.0).toInt()
-        imageParams.topMargin = ((frameHeight - imageHeight) / 2.0).toInt()
-
-        // Get cropper dims
-        var cropperWidth = screenWidth
-        var cropperHeight = screenHeight
-        while (cropperWidth > imageWidth || cropperHeight > imageHeight) {
-            cropperWidth -= 1
-            cropperHeight = cropperWidth * (screenHeight / screenWidth)
-        }
-
-        // Set cropper dims
-        val cropperParams = binding.cropper.layoutParams as FrameLayout.LayoutParams
-        cropperParams.width = cropperWidth.toInt()
-        cropperParams.height = cropperHeight.toInt()
-        cropperParams.leftMargin = ((frameWidth - cropperWidth) / 2.0).toInt()
-        cropperParams.topMargin = ((frameHeight - cropperHeight) / 2.0).toInt()
-        binding.cropper.layoutParams = cropperParams
         binding.cropper.setOnTouchListener(onTouchListener)
+
+        // Attach the resize view
+        val resizeView = ResizeView(requireContext())
+        resizeView.cropperView = binding.cropper
+        resizeView.show()
+        resizeView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+        binding.frame.addView(resizeView)
 
         // Save the image
         binding.button.setOnClickListener {
 
+            /*
             // Crop the orig
             val cropperOrigin = IntArray(2)
             binding.cropper.getLocationOnScreen(cropperOrigin)
@@ -153,7 +109,78 @@ class SaveImageFragment : Fragment() {
             val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
             val sympath = Path(symlink)
             sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
+
+             */
         }
+    }
+
+    private fun displayImage() {
+        val screenDims = mainReceiver.getScreenDims()
+        val screenWidth = screenDims.getValue("width")
+        val screenHeight = screenDims.getValue("height")
+
+        val imageAspectRatio = viewModel.width / viewModel.height
+        val frameWidth = screenWidth - 32 * resources.displayMetrics.density
+        val frameHeight = screenHeight - 32 * resources.displayMetrics.density - screenDims.getValue("toolbar_height")
+        var currentImageWidth = viewModel.width
+        var currentImageHeight = viewModel.height
+
+        // Ensure that image width and height are greater than corresponding frame dims
+        while (currentImageWidth < frameWidth || currentImageHeight < frameHeight) {
+            currentImageWidth += 1
+            currentImageHeight = currentImageWidth / imageAspectRatio
+        }
+        // Now shrink the image down to <=80% of frame width and height
+        while (currentImageWidth >= frameWidth * 0.80 || currentImageHeight >= frameHeight * 0.80) {
+            currentImageWidth -= 1
+            currentImageHeight = currentImageWidth / imageAspectRatio
+        }
+
+        // Set image dims
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+        binding.image.setImageDrawable(drawable)
+        //binding.image.setImageResource(R.drawable.henderi01)
+        val imageParams = binding.image.layoutParams as FrameLayout.LayoutParams
+        imageParams.width = currentImageWidth.toInt()
+        imageParams.height = currentImageHeight.toInt()
+        imageParams.leftMargin = ((frameWidth - currentImageWidth) / 2.0).toInt()
+        imageParams.topMargin = ((frameHeight - currentImageHeight) / 2.0).toInt()
+    }
+
+    private fun displayCropper() {
+        // Get screen dims
+        val screenDims = mainReceiver.getScreenDims()
+        val screenWidth = screenDims.getValue("width")
+        val screenHeight = screenDims.getValue("height")
+        val screenAspectRatio = screenWidth / screenHeight
+        // Get image dims
+        val imageParams = binding.image.layoutParams as FrameLayout.LayoutParams
+        val imageWidth = imageParams.width
+        val imageHeight = imageParams.height
+
+        // Get cropper dims
+        var currentCropperWidth = 1
+        var currentCropperHeight = currentCropperWidth / screenAspectRatio
+
+        // Ensure that cropper width and height are greater than corresponding image dims
+        while (currentCropperWidth < imageWidth || currentCropperHeight < imageHeight) {
+            currentCropperWidth += 1
+            currentCropperHeight = currentCropperWidth / screenAspectRatio
+        }
+
+        // Now shrink the cropper down to <=80% of image width and height
+        while (currentCropperWidth >= imageWidth * 0.80 || currentCropperHeight >= imageHeight * 0.80) {
+            currentCropperWidth -= 1
+            currentCropperHeight = currentCropperWidth / screenAspectRatio
+        }
+
+        // Set cropper dims
+        val cropperParams = binding.cropper.layoutParams as FrameLayout.LayoutParams
+        cropperParams.width = currentCropperWidth
+        cropperParams.height = currentCropperHeight.toInt()
+        cropperParams.leftMargin = ((imageWidth - currentCropperWidth) / 2.0).toInt() + imageParams.leftMargin
+        cropperParams.topMargin = ((imageHeight - currentCropperHeight) / 2.0).toInt() + imageParams.topMargin
+        binding.cropper.layoutParams = cropperParams
     }
 }
 

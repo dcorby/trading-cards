@@ -6,9 +6,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.RelativeLayout
 
-const val DIM = 40
-
 class AnchorView: RelativeLayout {
+
+    val DIM = 40
 
     lateinit var partnerView: PartnerView
     // Setting this.layoutParams fails per smartcast issue. Get a reference

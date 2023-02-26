@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             "width" to binding.root.width.toFloat(),
             "height" to binding.root.height.toFloat(),
             "density" to resources.displayMetrics.density,
-            "toolbar_height" to toolbarHeight.toFloat()
+            "toolbar_height" to toolbarHeight.toFloat() * resources.displayMetrics.density
         )
     }
 
