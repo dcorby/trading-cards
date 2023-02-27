@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.tradingcards.MainReceiver
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
@@ -114,6 +116,11 @@ class SaveImageFragment : Fragment() {
             val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
             val sympath = Path(symlink)
             sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
+            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+            val bundle = Bundle()
+            bundle.putString("currentDirectory", viewModel.currentDirectory)
+            navController.navigate(R.id.action_SaveImageFragment_to_SetFragment, bundle)
+            //navController.popBackStack(R.id.SetFragment, false)
         }
     }
 

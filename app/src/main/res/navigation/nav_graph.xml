@@ -126,6 +126,11 @@
         android:name="com.example.tradingcards.ui.main.SaveImageFragment"
         tools:layout="@layout/fragment_save_image"
         android:label="SaveImageFragment">
+        <action
+            android:id="@+id/action_SaveImageFragment_to_SetFragment"
+            app:destination="@id/SetFragment"
+            app:popUpTo="@+id/SetFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
 
 </navigation>

@@ -31,7 +31,6 @@ class SetAdapter(private val onClick: (SetItem) -> Unit) :
             textView.text = setItem.label
 
             itemView.setOnClickListener {
-                Log.v("TEST", "sdfdsf")
                 onClick(setItem)
             }
 
