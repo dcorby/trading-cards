@@ -19,8 +19,8 @@ class DisplaySetFragment : Fragment() {
 
     private var _binding: FragmentSetBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: DisplaySetViewModel
 
+    private lateinit var viewModel: DisplaySetViewModel
     private lateinit var cardsPagerAdapter: CardsPagerAdapter
     private lateinit var viewPager: ViewPager
 
@@ -44,14 +44,13 @@ class DisplaySetFragment : Fragment() {
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
 
         // Get a list of ids representing the cards to display
-        val ids = mutableListOf<String>()
         if (viewModel.id != "") {
-            ids.add(viewModel.id)
+            viewModel.ids.add(viewModel.id)
         } else {
             val path = File(requireContext().filesDir.toString() + viewModel.currentDirectory)
             path.listFiles().forEach { file ->
                 if (file.extension == "jpg") {
-                    ids.add(file.name.replace(".jpg", ""))
+                    viewModel.ids.add(file.name.replace(".jpg", ""))
                 }
             }
         }
@@ -65,12 +64,13 @@ class DisplaySetFragment : Fragment() {
     // and NOT a FragmentPagerAdapter.
     inner class CardsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
-        override fun getCount(): Int  = 10
+        override fun getCount(): Int = viewModel.ids.size
 
         override fun getItem(i: Int): Fragment {
             val fragment = DisplayCardFragment()
             fragment.arguments = Bundle().apply {
-                putInt("cardNum", i + 1)
+                putInt("idx", i)
+                putStringArrayList("ids", viewModel.ids as ArrayList<String>)
             }
             return fragment
         }

@@ -3,6 +3,7 @@ package com.example.tradingcards.ui.main
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +42,17 @@ class DisplayCardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cardNum = arguments?.getInt("cardNum")
+        viewModel.idx = arguments?.getInt("idx")!!
+        viewModel.num = viewModel.idx + 1
+        viewModel.ids = arguments?.getStringArrayList("ids")!!
 
         // Set the image
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
         binding.image.setImageDrawable(drawable)
 
         // Set the title
-        binding.status.text = "${cardNum} of 10"
+        binding.status.text = "${viewModel.num} of ${viewModel.ids.size}"
+        Log.v("TEST", "id=${viewModel.ids[viewModel.idx]}")
 
         // Handle close
         binding.close.setOnClickListener {
