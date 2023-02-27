@@ -60,6 +60,10 @@ class SaveImageFragment : Fragment() {
         viewModel.width = 776.toFloat()
         viewModel.height = 1200.toFloat()
 
+        // Get the original width and height
+        val origWidth = viewModel.width
+        val origHeight = viewModel.height
+
         // Display the image, with its own aspect ratio, to max of 80% of frame width and height
         displayImage()
 
@@ -79,21 +83,21 @@ class SaveImageFragment : Fragment() {
         // Save the image
         binding.button.setOnClickListener {
 
-            /*
             // Crop the orig
             val cropperOrigin = IntArray(2)
             binding.cropper.getLocationOnScreen(cropperOrigin)
             val imageOrigin = IntArray(2)
             binding.image.getLocationOnScreen(imageOrigin)
 
-            val pctLeft = (cropperOrigin[0] - imageOrigin[0]) / imageWidth
-            val pctTop = (cropperOrigin[1] - imageOrigin[1]) / imageHeight
+            val pctLeft = (cropperOrigin[0] - imageOrigin[0]) / binding.image.width.toFloat()
+            val pctTop = (cropperOrigin[1] - imageOrigin[1]) / binding.image.height.toFloat()
 
             val left = pctLeft * origWidth
             val top = pctTop * origHeight
-            val width = (binding.cropper.width / imageWidth) * origWidth
-            val height = (binding.cropper.height / imageHeight) * origHeight
+            val width = (binding.cropper.width / binding.image.width.toFloat()) * origWidth
+            val height = (binding.cropper.height / binding.image.height.toFloat()) * origHeight
 
+            val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
             val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
             val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
 
@@ -110,8 +114,6 @@ class SaveImageFragment : Fragment() {
             val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
             val sympath = Path(symlink)
             sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
-
-             */
         }
     }
 
