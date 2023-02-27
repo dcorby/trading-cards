@@ -1,6 +1,7 @@
 package com.example.tradingcards.ui.main
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.tradingcards.MainReceiver
@@ -20,8 +22,14 @@ import com.example.tradingcards.Utils
 import com.example.tradingcards.databinding.FragmentSaveImageBinding
 import com.example.tradingcards.viewmodels.SaveImageViewModel
 import com.example.tradingcards.views.ResizeView
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.URL
 import kotlin.io.path.Path
 import kotlin.io.path.createSymbolicLinkPointingTo
 
@@ -57,74 +65,78 @@ class SaveImageFragment : Fragment() {
         viewModel.height = (arguments?.getInt("height") ?: 0).toFloat()
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
 
+        //Log.v("TEST", "link=${viewModel.link}")
+        //Log.v("TEST", "width=${viewModel.width}")
+        //Log.v("TEST", "height=${viewModel.height}")
+
         // For testing
-        viewModel.link = "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg"
-        viewModel.width = 776.toFloat()
-        viewModel.height = 1200.toFloat()
+        //viewModel.link = "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg"
+        //viewModel.width = 776.toFloat()
+        //viewModel.height = 1200.toFloat()
 
         // Get the original width and height
         val origWidth = viewModel.width
         val origHeight = viewModel.height
 
         // Display the image, with its own aspect ratio, to max of 80% of frame width and height
-        displayImage()
+        displayImage {
+            // Display the cropper, with the screen's aspect ratio, to max of 80% of image width and height
+            displayCropper()
 
-        // Display the cropper, with the screen's aspect ratio, to max of 80% of image width and height
-        displayCropper()
+            // Attach the resize view
+            val resizeView = ResizeView(requireContext())
+            resizeView.cropperView = binding.cropper
+            resizeView.show()
+            resizeView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+            binding.frame.addView(resizeView)
 
-        // Attach the resize view
-        val resizeView = ResizeView(requireContext())
-        resizeView.cropperView = binding.cropper
-        resizeView.show()
-        resizeView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-        binding.frame.addView(resizeView)
+            // Give cropper a reference to the resize view
+            binding.cropper.resizeView = resizeView
 
-        // Give cropper a reference to the resize view
-        binding.cropper.resizeView = resizeView
+            // Save the image
+            binding.button.setOnClickListener {
 
-        // Save the image
-        binding.button.setOnClickListener {
+                // Crop the orig
+                val cropperOrigin = IntArray(2)
+                binding.cropper.getLocationOnScreen(cropperOrigin)
+                val imageOrigin = IntArray(2)
+                binding.image.getLocationOnScreen(imageOrigin)
 
-            // Crop the orig
-            val cropperOrigin = IntArray(2)
-            binding.cropper.getLocationOnScreen(cropperOrigin)
-            val imageOrigin = IntArray(2)
-            binding.image.getLocationOnScreen(imageOrigin)
+                val pctLeft = (cropperOrigin[0] - imageOrigin[0]) / binding.image.width.toFloat()
+                val pctTop = (cropperOrigin[1] - imageOrigin[1]) / binding.image.height.toFloat()
 
-            val pctLeft = (cropperOrigin[0] - imageOrigin[0]) / binding.image.width.toFloat()
-            val pctTop = (cropperOrigin[1] - imageOrigin[1]) / binding.image.height.toFloat()
+                val left = pctLeft * origWidth
+                val top = pctTop * origHeight
+                val width = (binding.cropper.width / binding.image.width.toFloat()) * origWidth
+                val height = (binding.cropper.height / binding.image.height.toFloat()) * origHeight
 
-            val left = pctLeft * origWidth
-            val top = pctTop * origHeight
-            val width = (binding.cropper.width / binding.image.width.toFloat()) * origWidth
-            val height = (binding.cropper.height / binding.image.height.toFloat()) * origHeight
+                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+                val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
+                val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
 
-            val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
-            val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
-            val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
+                Log.v("TEST", "Writing to=${requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"}")
+                val file = File(requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg")
+                if (!file.parentFile.exists()) {
+                    file.parentFile.mkdir()
+                }
+                val fos = FileOutputStream(file)
+                resized.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.close()
 
-            Log.v("TEST", "Writing to=${requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"}")
-            val file = File(requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg")
-            if (!file.parentFile.exists()) {
-                file.parentFile.mkdir()
+                // Create symlink in set
+                val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
+                val sympath = Path(symlink)
+                sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
+                val bundle = Bundle()
+                bundle.putString("currentDirectory", viewModel.currentDirectory)
+                navController.navigate(R.id.action_SaveImageFragment_to_SetFragment, bundle)
+                //navController.popBackStack(R.id.SetFragment, false)
             }
-            val fos = FileOutputStream(file)
-            resized.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            fos.close()
-
-            // Create symlink in set
-            val symlink = requireContext().filesDir.toString() + viewModel.currentDirectory + "${viewModel.id}.jpg"
-            val sympath = Path(symlink)
-            sympath.createSymbolicLinkPointingTo(Path(file.absolutePath))
-            val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-            val bundle = Bundle()
-            bundle.putString("currentDirectory", viewModel.currentDirectory)
-            navController.navigate(R.id.action_SaveImageFragment_to_SetFragment, bundle)
-            //navController.popBackStack(R.id.SetFragment, false)
         }
     }
 
-    private fun displayImage() {
+    private fun displayImage(callback: (() -> Unit)) {
         val screenDims = mainReceiver.getScreenDims()
         val screenWidth = screenDims.getValue("width")
         val screenHeight = screenDims.getValue("height")
@@ -147,14 +159,24 @@ class SaveImageFragment : Fragment() {
         }
 
         // Set image dims
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
-        binding.image.setImageDrawable(drawable)
-        //binding.image.setImageResource(R.drawable.henderi01)
-        val imageParams = binding.image.layoutParams as FrameLayout.LayoutParams
-        imageParams.width = currentImageWidth.toInt()
-        imageParams.height = currentImageHeight.toInt()
-        imageParams.leftMargin = ((frameWidth - currentImageWidth) / 2.0).toInt()
-        imageParams.topMargin = ((frameHeight - currentImageHeight) / 2.0).toInt()
+        // val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+        // https://stackoverflow.com/questions/45830529/how-to-convert-image-url-into-drawable-int
+        viewModel.job = viewModel.viewModelScope.launch(Dispatchers.IO) {
+            val stream = URL(viewModel.link).content as InputStream
+            val drawable = Drawable.createFromStream(stream, null)
+            withContext(Dispatchers.Main) {
+                binding.image.setImageDrawable(drawable)
+                //binding.image.setImageResource(R.drawable.henderi01)
+                val imageParams = binding.image.layoutParams as FrameLayout.LayoutParams
+                imageParams.width = currentImageWidth.toInt()
+                imageParams.height = currentImageHeight.toInt()
+                imageParams.leftMargin = ((frameWidth - currentImageWidth) / 2.0).toInt()
+                imageParams.topMargin = ((frameHeight - currentImageHeight) / 2.0).toInt()
+            }
+        }
+        viewModel.job.invokeOnCompletion {
+            callback()
+        }
     }
 
     private fun displayCropper() {
