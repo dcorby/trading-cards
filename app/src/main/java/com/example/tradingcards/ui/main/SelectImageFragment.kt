@@ -1,7 +1,6 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tradingcards.BuildConfig
 import com.example.tradingcards.R
 import com.example.tradingcards.Utils
 import com.example.tradingcards.adapters.ImageAdapter
@@ -17,6 +17,7 @@ import com.example.tradingcards.items.ImageItem
 import com.example.tradingcards.viewmodels.SelectImageViewModel
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URL
 
 class SelectImageFragment : Fragment() {
 
@@ -58,12 +59,12 @@ class SelectImageFragment : Fragment() {
 
     private fun downloadImages() : MutableList<ImageItem> {
         // Live
-        //val url = "https://customsearch.googleapis.com/customsearch/v1?imgType=photo&q=${viewModel.name.toLowerCase().replace(" ", "+")}+baseball&searchType=image&cx=${BuildConfig.SEARCH_ENGINE_ID}&key=${BuildConfig.SEARCH_API_KEY}"
-        //val response = URL(url)
-        //val jsonObject = JSONObject(response.readText())
+        val url = "https://customsearch.googleapis.com/customsearch/v1?imgType=photo&q=${viewModel.name.toLowerCase().replace(" ", "+")}+baseball&searchType=image&cx=${BuildConfig.SEARCH_ENGINE_ID}&key=${BuildConfig.SEARCH_API_KEY}"
+        val response = URL(url)
+        val jsonObject = JSONObject(response.readText())
 
         // Testing
-        val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sample-api-response.json"))
+        //val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sample-api-response.json"))
 
         val images = mutableListOf<ImageItem>()
         val items = Images.toMap(jsonObject).getValue("items") as ArrayList<HashMap<String, *>>

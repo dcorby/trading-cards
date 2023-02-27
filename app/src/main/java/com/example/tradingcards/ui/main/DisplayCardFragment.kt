@@ -2,12 +2,12 @@ package com.example.tradingcards.ui.main
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tradingcards.MainReceiver
@@ -45,9 +45,12 @@ class DisplayCardFragment : Fragment() {
         viewModel.idx = arguments?.getInt("idx")!!
         viewModel.num = viewModel.idx + 1
         viewModel.ids = arguments?.getStringArrayList("ids")!!
+        viewModel.id = viewModel.ids[viewModel.idx]
 
         // Set the image
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+        //val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+        val pathname = requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"
+        val drawable = Drawable.createFromPath(pathname)
         binding.image.setImageDrawable(drawable)
 
         // Set the title

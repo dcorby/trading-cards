@@ -79,7 +79,7 @@ class SaveImageFragment : Fragment() {
         val origHeight = viewModel.height
 
         // Display the image, with its own aspect ratio, to max of 80% of frame width and height
-        displayImage {
+        displayImage { drawable ->
             // Display the cropper, with the screen's aspect ratio, to max of 80% of image width and height
             displayCropper()
 
@@ -110,7 +110,7 @@ class SaveImageFragment : Fragment() {
                 val width = (binding.cropper.width / binding.image.width.toFloat()) * origWidth
                 val height = (binding.cropper.height / binding.image.height.toFloat()) * origHeight
 
-                val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
+                //val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
                 val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
                 val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
 
@@ -136,7 +136,7 @@ class SaveImageFragment : Fragment() {
         }
     }
 
-    private fun displayImage(callback: (() -> Unit)) {
+    private fun displayImage(callback: ((Drawable?) -> Unit)) {
         val screenDims = mainReceiver.getScreenDims()
         val screenWidth = screenDims.getValue("width")
         val screenHeight = screenDims.getValue("height")
@@ -161,9 +161,10 @@ class SaveImageFragment : Fragment() {
         // Set image dims
         // val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
         // https://stackoverflow.com/questions/45830529/how-to-convert-image-url-into-drawable-int
+        var drawable: Drawable? = null
         viewModel.job = viewModel.viewModelScope.launch(Dispatchers.IO) {
             val stream = URL(viewModel.link).content as InputStream
-            val drawable = Drawable.createFromStream(stream, null)
+            drawable = Drawable.createFromStream(stream, null)
             withContext(Dispatchers.Main) {
                 binding.image.setImageDrawable(drawable)
                 //binding.image.setImageResource(R.drawable.henderi01)
@@ -175,7 +176,7 @@ class SaveImageFragment : Fragment() {
             }
         }
         viewModel.job.invokeOnCompletion {
-            callback()
+            callback(drawable)
         }
     }
 
