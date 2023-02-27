@@ -55,7 +55,6 @@ class DisplayCardFragment : Fragment() {
 
         // Set the title
         binding.status.text = "${viewModel.num} of ${viewModel.ids.size}"
-        Log.v("TEST", "id=${viewModel.ids[viewModel.idx]}")
 
         // Handle close
         binding.close.setOnClickListener {

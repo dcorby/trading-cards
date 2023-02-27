@@ -51,7 +51,7 @@ class SelectImageFragment : Fragment() {
         viewModel.name = arguments?.getString("name", "") ?: ""
         viewModel.currentDirectory = arguments?.getString("currentDirectory", "") ?: ""
 
-        binding.textView.text = "${viewModel.name} (${viewModel.id})"
+        binding.textView.text = viewModel.name
 
         imageAdapter = ImageAdapter { imageItem -> adapterOnClick(imageItem) }
         val recyclerView: RecyclerView = binding.recyclerView

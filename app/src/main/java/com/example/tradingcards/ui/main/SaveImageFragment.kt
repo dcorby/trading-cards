@@ -65,15 +65,6 @@ class SaveImageFragment : Fragment() {
         viewModel.height = (arguments?.getInt("height") ?: 0).toFloat()
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
 
-        //Log.v("TEST", "link=${viewModel.link}")
-        //Log.v("TEST", "width=${viewModel.width}")
-        //Log.v("TEST", "height=${viewModel.height}")
-
-        // For testing
-        //viewModel.link = "https://www.si.com/.image/t_share/MTY4MjYxMDk5MDc5NTQyMDM3/rickey-henderson-getty3jpg.jpg"
-        //viewModel.width = 776.toFloat()
-        //viewModel.height = 1200.toFloat()
-
         // Get the original width and height
         val origWidth = viewModel.width
         val origHeight = viewModel.height
@@ -114,7 +105,6 @@ class SaveImageFragment : Fragment() {
                 val bitmap = drawable!!.toBitmap(origWidth.toInt(), origHeight.toInt())
                 val resized = Bitmap.createBitmap(bitmap, left.toInt(), top.toInt(), width.toInt(), height.toInt())
 
-                Log.v("TEST", "Writing to=${requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"}")
                 val file = File(requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg")
                 if (!file.parentFile.exists()) {
                     file.parentFile.mkdir()
