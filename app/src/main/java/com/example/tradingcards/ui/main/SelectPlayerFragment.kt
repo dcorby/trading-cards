@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -70,33 +72,53 @@ class SelectPlayerFragment : Fragment() {
         // Get the set data, to find out the source
         val set = dbManager.fetch("SELECT * FROM sets WHERE path = ?", arrayOf(viewModel.currentDirectory))[0]
         val source = set.getValue("source").toString()
-        binding.sourceLabel.text = source
+        binding.label.text = source
 
         // Populate the batches menu
+        val batches = dbManager.fetch("SELECT * FROM sources WHERE id = ?", arrayOf(source), "batch") as MutableList<String>
         var verticalLayout: LinearLayout? = null
-        brYears.reversed().forEachIndexed { index, text ->
+        brYears.reversed().forEachIndexed { index, batch ->
             if (verticalLayout == null) {
                 verticalLayout = getVerticalLayout()
             }
-            val season = layoutInflater.inflate(R.layout.item_season, null)
-            val checkbox = season.findViewById<CheckBox>(R.id.checkbox)
-            val textview = season.findViewById<TextView>(R.id.textview)
-            textview.text = text.toString()
-            verticalLayout!!.addView(season)
+            val view = layoutInflater.inflate(R.layout.item_season, null)
+            val checkbox = view.findViewById<CheckBox>(R.id.checkbox)
+            checkbox.tag = batch.toString()
+            if (batches.contains(batch.toString())) {
+                checkbox.isChecked = true
+            }
+            checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
+                val batch = buttonView.tag.toString()
+                if (isChecked && !batches.contains(batch)) {
+                    (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.lightgreen))
+                }
+                if (isChecked && batches.contains(batch)) {
+                    (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                }
+                if (!isChecked && batches.contains(batch)) {
+                    (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.lightred))
+                }
+                if (!isChecked && !batches.contains(batch)) {
+                    (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                }
+            }
+            val textview = view.findViewById<TextView>(R.id.textview)
+            textview.text = batch.toString()
+            verticalLayout!!.addView(view)
             if (verticalLayout!!.childCount >= 10 || index == brYears.size - 1) {
-                binding.sourceBatches.addView(verticalLayout)
+                binding.batches.addView(verticalLayout)
                 verticalLayout = null
             }
         }
 
         // Toggle the batches menu
-        binding.sourceToggle.setOnClickListener {
-            if (binding.sourceBatches.visibility == View.VISIBLE) {
-                binding.sourceBatches.visibility = View.GONE
-                binding.sourceToggle.text = "[+]"
+        binding.toggle.setOnClickListener {
+            if (binding.wrapper.visibility == View.VISIBLE) {
+                binding.wrapper.visibility = View.GONE
+                binding.toggle.text = "[+]"
             } else {
-                binding.sourceBatches.visibility = View.VISIBLE
-                binding.sourceToggle.text = "[-]"
+                binding.wrapper.visibility = View.VISIBLE
+                binding.toggle.text = "[-]"
             }
         }
 

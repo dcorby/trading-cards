@@ -28,5 +28,7 @@
     <color name="graybeige">#f0ece8</color>
     <color name="grayblue">#EFF1F5</color>
 
+    <color name="lightgreen">#DAFFD5</color>
+    <color name="lightred">#FA6B84</color>
 
 </resources>

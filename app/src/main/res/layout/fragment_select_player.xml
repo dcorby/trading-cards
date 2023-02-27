@@ -10,7 +10,7 @@
     tools:context=".ui.main.SelectPlayerFragment">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/source_parent"
+        android:id="@+id/source_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:id="@+id/source_label"
+                android:id="@+id/label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
@@ -34,7 +34,7 @@
                 android:textSize="20sp">
             </TextView>
             <Button
-                android:id="@+id/source_toggle"
+                android:id="@+id/toggle"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="0dp"
@@ -44,18 +44,33 @@
                 android:text="[+]">
             </Button>
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <HorizontalScrollView
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/wrapper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/source_batches"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal">
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </HorizontalScrollView>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/batches"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </HorizontalScrollView>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/blue"
+                android:text="Sync">
+            </Button>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <EditText
@@ -68,7 +83,7 @@
         android:layout_marginBottom="10dp"
         android:inputType="textNoSuggestions"
         app:layout_constraintWidth_percent="0.90"
-        app:layout_constraintTop_toBottomOf="@+id/source_parent"
+        app:layout_constraintTop_toBottomOf="@+id/source_root"
         app:layout_constraintBottom_toTopOf="@+id/recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
