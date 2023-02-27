@@ -1,9 +1,14 @@
 package com.example.tradingcards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
@@ -32,6 +37,8 @@ class SelectPlayerFragment : Fragment() {
     private lateinit var dbManager: DBManager
     private lateinit var playerAdapter: PlayerAdapter
     private lateinit var toolbar: Toolbar
+
+    private val brYears = (1901..2022).toList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +72,34 @@ class SelectPlayerFragment : Fragment() {
         val source = set.getValue("source").toString()
         binding.sourceLabel.text = source
 
+        // Populate the batches menu
+        var verticalLayout: LinearLayout? = null
+        brYears.reversed().forEachIndexed { index, text ->
+            if (verticalLayout == null) {
+                verticalLayout = getVerticalLayout()
+            }
+            val season = layoutInflater.inflate(R.layout.item_season, null)
+            val checkbox = season.findViewById<CheckBox>(R.id.checkbox)
+            val textview = season.findViewById<TextView>(R.id.textview)
+            textview.text = text.toString()
+            verticalLayout!!.addView(season)
+            if (verticalLayout!!.childCount >= 10 || index == brYears.size - 1) {
+                binding.sourceBatches.addView(verticalLayout)
+                verticalLayout = null
+            }
+        }
+
+        // Toggle the batches menu
+        binding.sourceToggle.setOnClickListener {
+            if (binding.sourceBatches.visibility == View.VISIBLE) {
+                binding.sourceBatches.visibility = View.GONE
+                binding.sourceToggle.text = "[+]"
+            } else {
+                binding.sourceBatches.visibility = View.VISIBLE
+                binding.sourceToggle.text = "[-]"
+            }
+        }
+
         binding.search.addTextChangedListener { text ->
             if (viewModel.job.isActive) {
                 viewModel.job.cancel()
@@ -92,6 +127,15 @@ class SelectPlayerFragment : Fragment() {
             }
             viewModel.job.invokeOnCompletion { }
         }
+    }
+
+    private fun getVerticalLayout() : LinearLayout {
+        val layout = LinearLayout(requireContext())
+        layout.layoutParams = LinearLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT)
+        layout.orientation = LinearLayout.VERTICAL
+        return layout
     }
 
     private fun adapterOnClick(playerItem: PlayerItem) {
