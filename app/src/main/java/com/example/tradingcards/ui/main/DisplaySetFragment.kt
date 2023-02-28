@@ -42,6 +42,7 @@ class DisplaySetFragment : Fragment() {
 
         viewModel.id = arguments?.getString("id") ?: ""
         viewModel.currentDirectory = arguments?.getString("currentDirectory") ?: ""
+        viewModel.card = arguments?.getInt("card") ?: -1
 
         // Get a list of ids representing the cards to display
         if (viewModel.id != "") {
@@ -71,6 +72,7 @@ class DisplaySetFragment : Fragment() {
             fragment.arguments = Bundle().apply {
                 putInt("idx", i)
                 putStringArrayList("ids", viewModel.ids as ArrayList<String>)
+                putInt("card", viewModel.card)
             }
             return fragment
         }

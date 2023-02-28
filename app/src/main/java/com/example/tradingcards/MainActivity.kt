@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         dbManager = DBManager(this)
         dbManager.open()
         populateSources()
+        populateDefaultDesign()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -90,6 +91,39 @@ class MainActivity : AppCompatActivity(), MainReceiver {
         }
     }
 
+    private fun populateDefaultDesign() {
+        val result = dbManager.fetch("SELECT * FROM cards", null)
+        if (result.size > 0) {
+            return
+        }
+
+        // Insert the card
+        var contentValues = ContentValues()
+        contentValues.put("dummy", "") // dummy value just to get id autoincrement
+        val card = dbManager.insert("cards", contentValues)
+
+        // Add ShapeView along bottom (solid gray)
+        contentValues = ContentValues()
+        contentValues.put("card", card)
+        contentValues.put("type", "ShapeView")
+        contentValues.put("width", 1.0f)
+        contentValues.put("height", 0.10f)
+        contentValues.put("margin_left", 0.0f)
+        contentValues.put("margin_top", 0.90f)
+        contentValues.put("hexadecimal", "#FFCCCCCC")
+        dbManager.insert("card_views", contentValues)
+
+        contentValues = ContentValues()
+        contentValues.put("card", card)
+        contentValues.put("type", "DataView")
+        contentValues.put("data", "name")
+        contentValues.put("width", 0.40f)
+        contentValues.put("height", 0.10f)
+        contentValues.put("margin_left", 0.30f)
+        contentValues.put("margin_top", 0.90f)
+        dbManager.insert("card_views", contentValues)
+    }
+
     // MainReceiver methods
     override fun getScreenDims() : HashMap<String, Float> {
         return screenDims
@@ -104,29 +138,6 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             "height" to binding.root.height.toFloat(),
             "density" to resources.displayMetrics.density,
             "toolbar_height" to toolbarHeight.toFloat() * resources.displayMetrics.density
-        )
-    }
-
-    override fun getDefaultDesign(width: Int, height: Int) : ArrayList<HashMap<String, Any?>> {
-        return arrayListOf(
-            // Add ShapeView along bottom (solid gray)
-            hashMapOf(
-                "type" to "ShapeView",
-                "width" to 1.0f,
-                "height" to 0.10f,
-                "margin_left" to 0.0f,
-                "margin_top" to 0.90f,
-                "hexadecimal" to "#FFCCCCCC"
-            ),
-            // Add DataView (player name)
-            hashMapOf(
-              "type" to "DataView",
-              "data" to "name",
-              "width" to 0.40f,
-              "height" to 0.10f,
-              "margin_left" to 0.30f,
-              "margin_top" to 0.90f
-            )
         )
     }
 

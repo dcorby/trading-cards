@@ -14,11 +14,12 @@ CREATE TABLE IF NOT EXISTS card_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   card INTEGER NOT NULL,
   type TEXT NOT NULL,
+  data TEXT,
   width REAL NOT NULL,
   height REAL NOT NULL,
   margin_left REAL NOT NULL,
   margin_top REAL NOT NULL,
-  hexadecimal TEXT NOT NULL,
+  hexadecimal TEXT,
   FOREIGN KEY(card) REFERENCES cards(id)
 );"""
 const val CREATE_SOURCES = """
@@ -47,7 +48,7 @@ const val CREATE_SETS = """
 CREATE TABLE IF NOT EXISTS sets (
   path TEXT PRIMARY KEY,
   source TEXT NOT NULL,
-  design INT NOT NULL
+  card INT NOT NULL
 );
 """
 

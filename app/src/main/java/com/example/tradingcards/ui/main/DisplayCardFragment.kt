@@ -2,12 +2,15 @@ package com.example.tradingcards.ui.main
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tradingcards.MainReceiver
@@ -46,12 +49,49 @@ class DisplayCardFragment : Fragment() {
         viewModel.num = viewModel.idx + 1
         viewModel.ids = arguments?.getStringArrayList("ids")!!
         viewModel.id = viewModel.ids[viewModel.idx]
+        viewModel.card = arguments?.getInt("card") ?: -1
+
+        val screenDims = mainReceiver.getScreenDims()
 
         // Set the image
-        //val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.henderi01)
         val pathname = requireContext().filesDir.toString() + "/images/${viewModel.id}.jpg"
         val drawable = Drawable.createFromPath(pathname)
         binding.image.setImageDrawable(drawable)
+
+        // Add the ShapeViews
+        val dbManager = mainReceiver.getDBManager()
+        var maps = dbManager.fetch("SELECT * FROM card_views WHERE card = ? AND type = 'ShapeView'",
+            arrayOf(viewModel.card.toString()))
+        maps.forEach { map ->
+            val subview = RelativeLayout(requireContext())
+            val width = screenDims.getValue("width") * map.getValue("width") as Float
+            val height = screenDims.getValue("height") * map.getValue("height") as Float
+            val leftMargin = screenDims.getValue("width") * map.getValue("margin_left") as Float
+            val topMargin = screenDims.getValue("height") * map.getValue("margin_top") as Float
+            val params = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
+            params.leftMargin = leftMargin.toInt()
+            params.topMargin = topMargin.toInt()
+            subview.layoutParams = params
+            subview.setBackgroundColor(Color.parseColor(map.getValue("hexadecimal") as String))
+            binding.front.addView(subview)
+        }
+
+        // Add the DataViews
+        maps = dbManager.fetch("SELECT * FROM card_views WHERE card = ? AND type = 'DataView'",
+            arrayOf(viewModel.card.toString()))
+        maps.forEach { map ->
+            val subview = TextView(requireContext())
+            val width = screenDims.getValue("width") * map.getValue("width") as Float
+            val height = screenDims.getValue("height") * map.getValue("height") as Float
+            val leftMargin = screenDims.getValue("width") * map.getValue("margin_left") as Float
+            val topMargin = screenDims.getValue("height") * map.getValue("margin_top") as Float
+            val params = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
+            params.leftMargin = leftMargin.toInt()
+            params.topMargin = topMargin.toInt()
+            subview.layoutParams = params
+            subview.text = viewModel.id
+            binding.front.addView(subview)
+        }
 
         // Set the title
         binding.status.text = "${viewModel.num} of ${viewModel.ids.size}"

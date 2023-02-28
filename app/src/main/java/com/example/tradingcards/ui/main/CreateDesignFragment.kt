@@ -112,7 +112,9 @@ class CreateDesignFragment : Fragment() {
                 }
 
                 val label = resources.getStringArray(R.array.data_map_labels)[position]
+                val tag = resources.getStringArray(R.array.data_map_ids)[position]
                 val dataView = DataView(requireContext(), this@CreateDesignFragment, label)
+                dataView.tag = tag
                 if (this@CreateDesignFragment::activeView.isInitialized) {
                     activeView.anchors.hide()
                 }
@@ -150,6 +152,7 @@ class CreateDesignFragment : Fragment() {
                 }
                 if (view is DataView) {
                     contentValues.put("type", "DataView")
+                    contentValues.put("data", view.tag.toString())
                 }
                 contentValues.put("width", params.width / parent.layoutParams.width.toFloat())
                 contentValues.put("height", params.height / parent.layoutParams.height.toFloat())

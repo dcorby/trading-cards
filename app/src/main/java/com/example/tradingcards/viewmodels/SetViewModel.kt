@@ -5,7 +5,8 @@ import java.io.File
 
 class SetViewModel : ViewModel() {
     var currentDirectory = ""
-    var source: String? = ""
+    var source: String? = null
+    var card = -1
     lateinit var currentSet: File
     var isHome: Boolean? = null
 }

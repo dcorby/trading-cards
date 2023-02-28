@@ -7,4 +7,5 @@ class DisplayCardViewModel : ViewModel() {
     var num = -1
     var ids = mutableListOf<String>()
     var id = ""
+    var card = -1
 }

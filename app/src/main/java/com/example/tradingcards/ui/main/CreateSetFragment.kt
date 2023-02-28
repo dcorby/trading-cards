@@ -82,20 +82,11 @@ class CreateSetFragment : Fragment() {
         }
 
         // Display designs
-        // It is safe to call requireActivity() here
-        // https://stackoverflow.com/questions/65863267/is-it-safe-to-call-getactivity-from-oncreateview
         mainReceiver = requireActivity() as MainReceiver
         val screenDims = mainReceiver.getScreenDims()
-        val designParams = Utils.getLayoutParams("design", screenDims)
-
-        // Get the designs
-        val designs = arrayListOf<ArrayList<HashMap<String, Any?>>>()
-
-        // Get the default design
-        designs.add(mainReceiver.getDefaultDesign(designParams.width, designParams.height))
 
         // Get user-generated designs
-        designs += getUserDesigns()
+        val designs = getUserDesigns()
 
         // Get the mini layoutParams
         val miniParams = Utils.getLayoutParams("mini", screenDims)
@@ -105,6 +96,8 @@ class CreateSetFragment : Fragment() {
         val aspectRatio = mainReceiver.getScreenDims().getValue("width") / mainReceiver.getScreenDims().getValue("height")
         designs.forEachIndexed { index, design ->
             val miniView = MiniView(requireContext(), design, miniParams, aspectRatio)
+            val card = design[0].getValue("card") as Int
+            miniView.tag = card
             miniView.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_gray)
             binding.scrollviewLayout.addView(miniView)
         }
@@ -143,10 +136,8 @@ class CreateSetFragment : Fragment() {
             sources)
         binding.sourcesSpinner.adapter = adapter
         binding.sourcesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) { }
+            override fun onNothingSelected(parent: AdapterView<*>) { }
         }
 
         // Create set
@@ -179,7 +170,7 @@ class CreateSetFragment : Fragment() {
             val contentValues = ContentValues()
             contentValues.put("path", currentDirectory)
             contentValues.put("source", source)
-            contentValues.put("design", activeDesign)
+            contentValues.put("card", binding.scrollviewLayout.getChildAt(activeDesign).tag as Int)
             mainReceiver.getDBManager().insert("sets", contentValues)
 
             val bundle = Bundle()

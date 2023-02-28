@@ -61,14 +61,12 @@ class SetFragment : Fragment() {
         /*  The root directory is special and cannot contain cards, just other sets
             Thus, it has a null source
          */
-        viewModel.source = if (viewModel.currentDirectory == "/") {
-            null
+        if (viewModel.currentDirectory == "/") {
+            viewModel.source = null
         } else {
-            dbManager.fetch(
-                "SELECT * FROM sets WHERE path = ?",
-                arrayOf(viewModel.currentDirectory),
-                "source"
-            )[0].toString()
+            val row = dbManager.fetch("SELECT * FROM sets WHERE path = ?", arrayOf(viewModel.currentDirectory))
+            viewModel.source = row[0].getValue("source") as String
+            viewModel.card = row[0].getValue("card") as Int
         }
 
         setAdapter = SetAdapter { name -> adapterOnClick(name) }
@@ -155,6 +153,7 @@ class SetFragment : Fragment() {
         }
         val bundle = Bundle()
         bundle.putString("currentDirectory", viewModel.currentDirectory)
+        bundle.putInt("card", viewModel.card)
         val fragment = DisplaySetFragment()
         fragment.arguments = bundle
         parentFragmentManager
