@@ -30,7 +30,7 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
-
+import androidx.core.view.children
 
 class SelectPlayerFragment : Fragment() {
 
@@ -132,16 +132,47 @@ class SelectPlayerFragment : Fragment() {
             // Get the seasons to remove
             viewModel.toRemove.forEach { batch ->
                 dbManager.exec("DELETE FROM players_batches WHERE source = ? AND batch = ?", arrayOf(viewModel.source, batch))
+                dbManager.exec("UPDATE sources SET date = NULL WHERE id = ? AND batch = ?", arrayOf(viewModel.source, batch))
+                viewModel.toRemove.clear()
             }
 
             // Get the seasons to add
-            viewModel.toAdd.forEach { batch ->
-                syncPlayers(batch, batches.getValue(batch), batch == viewModel.toAdd.last()) { isFinal ->
-                    if (isFinal) {
-                        outAnimation = AlphaAnimation(1f, 0f)
-                        outAnimation!!.duration = 200
-                        binding.progressFrame.animation = outAnimation
-                        binding.progressFrame.visibility = View.GONE
+            if (viewModel.toAdd.size == 0) {
+                outAnimation = AlphaAnimation(1f, 0f)
+                outAnimation!!.duration = 200
+                binding.progressFrame.animation = outAnimation
+                binding.progressFrame.visibility = View.GONE
+            } else {
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    withTimeout(10000) {
+                        viewModel.toAdd.forEach { batch ->
+                            syncPlayers(batch, batches.getValue(batch), batch == viewModel.toAdd.last()) { isFinal ->
+                                if (isFinal) {
+                                    outAnimation = AlphaAnimation(1f, 0f)
+                                    outAnimation!!.duration = 200
+                                    binding.progressFrame.animation = outAnimation
+                                    binding.progressFrame.visibility = View.GONE
+                                    viewModel.toAdd.forEach { batch ->
+                                        currentBatches.add(batch)
+                                    }
+                                    viewModel.toRemove.forEach { batch ->
+                                        currentBatches.remove(batch)
+                                    }
+                                    binding.batches.children.forEach { child ->
+                                        (child as ViewGroup).children.forEach { ll ->
+                                            (ll as ViewGroup).children.first()
+                                                .setBackgroundColor(
+                                                    ContextCompat.getColor(
+                                                        requireContext(),
+                                                        R.color.white
+                                                    )
+                                                )
+                                        }
+                                    }
+                                    viewModel.toAdd.clear()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -235,68 +266,67 @@ class SelectPlayerFragment : Fragment() {
         return data
     }
 
-    private fun syncPlayers(batch: String, urls: MutableList<String>, isFinal: Boolean, callback: ((Boolean) -> Unit)) {
-        val players: HashMap<String, String>? = null
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
-            withTimeout(10000) {
-                urls.forEach { url ->
-                    val response = URL(url)
-                    val content = response.readText()
-                    val tableMatches = FindAll.get("(stats_table\" id=\"players_standard.*?</table>)", content)
-                    val table = tableMatches[0][0]
-                    val playerMatches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", table)
-                    playerMatches.forEach {
-                        players?.set(it[0], it[1].replace("&nbsp;", " "))
-                    }
-                }
+    private suspend fun syncPlayers(batch: String, urls: MutableList<String>, isFinal: Boolean, callback: ((Boolean) -> Unit)) {
+        val players: HashMap<String, String> = HashMap<String, String>()
+        urls.forEach { url ->
+            val response = URL(url)
+            val content = response.readText()
+            val tableMatches = FindAll.get("(stats_table\" id=\"players_standard.*?</table>)", content)
+            val table = tableMatches[0][0]
+            val playerMatches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", table)
+            playerMatches.forEach {
+                players[it[0]] = it[1].replace("&nbsp;", " ")
             }
-        }.invokeOnCompletion {
+        }
 
-            Log.v("TEST", "ok, complete")
+        // Delete current players_batches
+        mainReceiver.getDBManager().exec(
+            "DELETE FROM players_batches WHERE source = ? AND batch = ?",
+            arrayOf(viewModel.source, batch)
+        )
 
-            // Delete current players_batches
+        players.forEach { player ->
+            val id = player.key
+            val name = player.value
+
+            // Update players
             mainReceiver.getDBManager().exec(
-                "DELETE FROM players_batches WHERE source = ? AND batch = ?",
-                arrayOf(viewModel.source, batch)
+                "REPLACE INTO players(source, id, name) VALUES (?, ?, ?)",
+                arrayOf(viewModel.source, id, name)
             )
 
-            Log.v("TEST", "ok, complete2")
-
-            players?.forEach { player ->
-                val id = player.key
-                val name = player.value
-
-                // Update players
-                mainReceiver.getDBManager().exec(
-                    "INSERT INTO players(source, id, name) VALUES (?, ?, ?) ON CONFLICT(source, id) DO NOTHING",
-                    arrayOf(viewModel.source, id, name))
-
-                // Insert to players_batches
-                val contentValues = ContentValues()
-                contentValues.put("source", viewModel.source)
-                contentValues.put("id", id)
-                contentValues.put("batch", batch)
-                dbManager.insert("players_batches", contentValues)
-            }
-
-            // Update sources
-            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time).toString()
+            // Insert to players_batches
             val contentValues = ContentValues()
-            contentValues.put("date", date)
-            dbManager.update("sources",
-                contentValues,
-                "id = ? AND batch = ?",
-                arrayOf(viewModel.source, batch))
+            contentValues.put("source", viewModel.source)
+            contentValues.put("id", id)
+            contentValues.put("batch", batch)
+            dbManager.insert("players_batches", contentValues)
+        }
 
-            // Prune players
-            dbManager.exec("""
+        // Update sources
+        val date =
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time).toString()
+        val contentValues = ContentValues()
+        contentValues.put("date", date)
+        dbManager.update(
+            "sources",
+            contentValues,
+            "id = ? AND batch = ?",
+            arrayOf(viewModel.source, batch)
+        )
+
+        // Prune players
+        dbManager.exec(
+            """
 DELETE FROM players
 WHERE source = ?
 AND id NOT IN (SELECT DISTINCT id 
-             FROM players_batches 
-             WHERE source = ?)
-""", arrayOf(viewModel.source, viewModel.source))
+     FROM players_batches 
+     WHERE source = ?)
+""", arrayOf(viewModel.source, viewModel.source)
+        )
 
+        withContext(Dispatchers.Main) {
             callback(isFinal)
         }
     }
