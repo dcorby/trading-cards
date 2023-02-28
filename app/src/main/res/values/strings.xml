@@ -4,19 +4,23 @@
     <string-array name="data_map_labels">
         <item>Add Data</item>
         <item>Name</item>
+        <!--
         <item>Position</item>
         <item>Team Mascot</item>
         <item>Team Full Name</item>
         <item>Team Logo</item>
+        -->
     </string-array>
 
     <string-array name="data_map_ids" translatable="false">
         <item></item>
         <item>name</item>
+        <!--
         <item>position</item>
         <item>team_mascot</item>
         <item>team_full_name</item>
         <item>team_logo</item>
+        -->
     </string-array>
 
     <string-array name="source_labels">

@@ -19,7 +19,7 @@ import com.example.tradingcards.databinding.FragmentCreateDesignBinding
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.views.DataView
 import com.example.tradingcards.views.PartnerView
-import com.example.tradingcards.views.RectangleView
+import com.example.tradingcards.views.ShapeView
 import com.skydoves.colorpickerview.listeners.ColorListener
 
 class CreateDesignFragment : Fragment() {
@@ -27,7 +27,7 @@ class CreateDesignFragment : Fragment() {
     private var _binding: FragmentCreateDesignBinding? = null
     private val binding get() = _binding!!
 
-    public lateinit var activeView: PartnerView
+    lateinit var activeView: PartnerView
     private lateinit var center: Pair<Int, Int>
     private lateinit var mainReceiver: MainReceiver
     private lateinit var dbManager: DBManager
@@ -64,18 +64,18 @@ class CreateDesignFragment : Fragment() {
 
         // Create a rectangle on click
         binding.rectangle.setOnClickListener {
-            val rectangleView = RectangleView(requireContext(), this)
+            val shapeView = ShapeView(requireContext(), this)
             if (this::activeView.isInitialized) {
                 activeView.anchors.hide()
             }
-            activeView = rectangleView
-            binding.design.addView(rectangleView)
-            rectangleView.show(center)
-            rectangleView.anchors.show(true)
-            binding.design.addView(rectangleView.anchors.left)
-            binding.design.addView(rectangleView.anchors.top)
-            binding.design.addView(rectangleView.anchors.right)
-            binding.design.addView(rectangleView.anchors.bottom)
+            activeView = shapeView
+            binding.design.addView(shapeView)
+            shapeView.show(center)
+            shapeView.anchors.show(true)
+            binding.design.addView(shapeView.anchors.left)
+            binding.design.addView(shapeView.anchors.top)
+            binding.design.addView(shapeView.anchors.right)
+            binding.design.addView(shapeView.anchors.bottom)
         }
 
         // Init the color picker
@@ -92,7 +92,7 @@ class CreateDesignFragment : Fragment() {
             }
         }
 
-        // Get the designView width and height, in order to size added rectangleViews
+        // Get the designView width and height, in order to size added shapeViews
         // https://stackoverflow.com/questions/3591784/views-getwidth-and-getheight-returns-0
         binding.design.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -140,11 +140,17 @@ class CreateDesignFragment : Fragment() {
             contentValues.put("dummy", "") // dummy value just to get id autoincrement
             val card = dbManager.insert("cards", contentValues)
 
-            children.filter { it is RectangleView }.forEachIndexed { index, view ->
+            children.filter { it is ShapeView || it is DataView }.forEachIndexed { index, view ->
                 val params = view.layoutParams as RelativeLayout.LayoutParams
                 val contentValues = ContentValues()
                 val parent = view.parent as ViewGroup
                 contentValues.put("card", card)
+                if (view is ShapeView) {
+                    contentValues.put("type", "ShapeView")
+                }
+                if (view is DataView) {
+                    contentValues.put("type", "DataView")
+                }
                 contentValues.put("width", params.width / parent.layoutParams.width.toFloat())
                 contentValues.put("height", params.height / parent.layoutParams.height.toFloat())
                 contentValues.put("margin_left", params.leftMargin / parent.layoutParams.width.toFloat())

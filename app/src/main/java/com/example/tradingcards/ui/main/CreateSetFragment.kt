@@ -131,7 +131,7 @@ class CreateSetFragment : Fragment() {
 
         // Show sources
         val sources = mainReceiver.getDBManager().fetch(
-            "SELECT id, COUNT(*) AS count FROM sources WHERE date IS NOT NULL GROUP BY id HAVING COUNT(*) > 0", null, "id")
+            "SELECT DISTINCT id FROM sources WHERE id <> 'fangraphs'", null, "id")
         if (sources.size == 0) {
             sources.add("Add a source")
             binding.sourcesSpinner.isEnabled = false
@@ -192,14 +192,13 @@ class CreateSetFragment : Fragment() {
     private fun getUserDesigns() : ArrayList<ArrayList<HashMap<String, Any?>>> {
         val userDesigns = arrayListOf<ArrayList<HashMap<String, Any?>>>()
         val dbManager = mainReceiver.getDBManager()
-        val userDesignViews = dbManager.fetch("SELECT * FROM card_views ORDER BY card ASC", null)
+        val cardViews = dbManager.fetch("SELECT * FROM card_views ORDER BY card ASC", null)
         val currentDesign = ArrayList<HashMap<String, Any?>>()
         val previousView: HashMap<String, *>? = null
-        userDesignViews.forEach { userDesignView ->
+        cardViews.forEach { userDesignView ->
             if (previousView != null && userDesignView.getValue("card") != previousView.getValue("card")) {
                 userDesigns.add(ArrayList(currentDesign))
             }
-            userDesignView.set("type", "ShapeView")
             currentDesign.add(userDesignView as kotlin.collections.HashMap<String, Any?>)
         }
         if (currentDesign.size > 0) {

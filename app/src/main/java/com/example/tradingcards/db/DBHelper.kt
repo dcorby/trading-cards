@@ -13,6 +13,7 @@ const val CREATE_CARD_VIEWS = """
 CREATE TABLE IF NOT EXISTS card_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   card INTEGER NOT NULL,
+  type TEXT NOT NULL,
   width REAL NOT NULL,
   height REAL NOT NULL,
   margin_left REAL NOT NULL,
