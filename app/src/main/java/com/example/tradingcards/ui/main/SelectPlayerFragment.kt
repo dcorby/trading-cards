@@ -1,16 +1,13 @@
 package com.example.tradingcards.ui.main
 
 import android.content.ContentValues
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.view.animation.AlphaAnimation
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -34,6 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
+
 class SelectPlayerFragment : Fragment() {
 
     private var _binding: FragmentSelectPlayerBinding? = null
@@ -43,6 +41,9 @@ class SelectPlayerFragment : Fragment() {
     private lateinit var dbManager: DBManager
     private lateinit var playerAdapter: PlayerAdapter
     private lateinit var toolbar: Toolbar
+
+    var inAnimation: AlphaAnimation? = null
+    var outAnimation: AlphaAnimation? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +79,8 @@ class SelectPlayerFragment : Fragment() {
 
         // Populate the batches menu
         val batches = parseSources()
-        val currentBatches = dbManager.fetch("SELECT * FROM sources WHERE id = ?", arrayOf(viewModel.source), "batch") as MutableList<String>
+        val currentBatches = dbManager.fetch("SELECT * FROM sources WHERE id = ? AND date IS NOT NULL",
+            arrayOf(viewModel.source), "batch") as MutableList<String>
         var verticalLayout: LinearLayout? = null
         batches.keys.sorted().reversed().forEachIndexed { index, batch ->
             if (verticalLayout == null) {
@@ -120,15 +122,28 @@ class SelectPlayerFragment : Fragment() {
 
         // Sync seasons
         binding.sync.setOnClickListener {
+
+            // https://stackoverflow.com/questions/18021148/display-a-loading-overlay-on-android-screen
+            inAnimation = AlphaAnimation(0f, 1f)
+            inAnimation!!.duration = 200
+            binding.progressFrame.animation = inAnimation
+            binding.progressFrame.visibility = View.VISIBLE
+
             // Get the seasons to remove
             viewModel.toRemove.forEach { batch ->
-                dbManager.exec("DELETE FROM players WHERE source = ? AND batch = ?", arrayOf(viewModel.source, batch))
+                dbManager.exec("DELETE FROM players_batches WHERE source = ? AND batch = ?", arrayOf(viewModel.source, batch))
             }
 
             // Get the seasons to add
             viewModel.toAdd.forEach { batch ->
-                val urls = batches.getValue(batch)
-                syncPlayers(batch, urls)
+                syncPlayers(batch, batches.getValue(batch), batch == viewModel.toAdd.last()) { isFinal ->
+                    if (isFinal) {
+                        outAnimation = AlphaAnimation(1f, 0f)
+                        outAnimation!!.duration = 200
+                        binding.progressFrame.animation = outAnimation
+                        binding.progressFrame.visibility = View.GONE
+                    }
+                }
             }
         }
 
@@ -220,53 +235,69 @@ class SelectPlayerFragment : Fragment() {
         return data
     }
 
-    private fun syncPlayers(batch: String, urls: MutableList<String>) {
-        var players: HashMap<String, String>? = null
+    private fun syncPlayers(batch: String, urls: MutableList<String>, isFinal: Boolean, callback: ((Boolean) -> Unit)) {
+        val players: HashMap<String, String>? = null
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             withTimeout(10000) {
-                players = syncBatch(urls)
+                urls.forEach { url ->
+                    val response = URL(url)
+                    val content = response.readText()
+                    val tableMatches = FindAll.get("(stats_table\" id=\"players_standard.*?</table>)", content)
+                    val table = tableMatches[0][0]
+                    val playerMatches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", table)
+                    playerMatches.forEach {
+                        players?.set(it[0], it[1].replace("&nbsp;", " "))
+                    }
+                }
             }
         }.invokeOnCompletion {
+
+            Log.v("TEST", "ok, complete")
+
+            // Delete current players_batches
+            mainReceiver.getDBManager().exec(
+                "DELETE FROM players_batches WHERE source = ? AND batch = ?",
+                arrayOf(viewModel.source, batch)
+            )
+
+            Log.v("TEST", "ok, complete2")
+
             players?.forEach { player ->
-                val source = viewModel.source
                 val id = player.key
                 val name = player.value
+
+                // Update players
+                mainReceiver.getDBManager().exec(
+                    "INSERT INTO players(source, id, name) VALUES (?, ?, ?) ON CONFLICT(source, id) DO NOTHING",
+                    arrayOf(viewModel.source, id, name))
+
+                // Insert to players_batches
                 val contentValues = ContentValues()
-                contentValues.put("source", source)
+                contentValues.put("source", viewModel.source)
                 contentValues.put("id", id)
-                contentValues.put("name", name)
-                mainReceiver.getDBManager().insert("players", contentValues)
+                contentValues.put("batch", batch)
+                dbManager.insert("players_batches", contentValues)
             }
 
+            // Update sources
             val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time).toString()
             val contentValues = ContentValues()
             contentValues.put("date", date)
-            mainReceiver.getDBManager().update(
-                "sources",
+            dbManager.update("sources",
                 contentValues,
                 "id = ? AND batch = ?",
                 arrayOf(viewModel.source, batch))
-        }
-    }
 
-    private suspend fun syncBatch(urls: MutableList<String>) : HashMap<String, String> {
-        val players = HashMap<String, String>()
-        fun downloadUrl(url: String) {
-            val response = URL(url)
-            val content = response.readText()
-            val tableMatches = FindAll.get("stats_table\" id=\"players_standard.*?</table>", content)
-            val table = tableMatches[0][0]
-            val playerMatches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", table)
-            playerMatches.forEach {
-                players[it[0]] = it[1].replace("&nbsp;", " ")
-            }
-        }
+            // Prune players
+            dbManager.exec("""
+DELETE FROM players
+WHERE source = ?
+AND id NOT IN (SELECT DISTINCT id 
+             FROM players_batches 
+             WHERE source = ?)
+""", arrayOf(viewModel.source, viewModel.source))
 
-        suspend fun getData() = coroutineScope {
-            val results = urls.map{ async { downloadUrl(it) } }
-            results.awaitAll()
+            callback(isFinal)
         }
-        getData()
-        return players
     }
 }

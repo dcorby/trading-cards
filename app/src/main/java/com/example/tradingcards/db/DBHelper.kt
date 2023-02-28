@@ -31,9 +31,19 @@ CREATE TABLE IF NOT EXISTS players (
   source TEXT NOT NULL,
   id TEXT NOT NULL,
   name TEXT NOT NULL,
-  batch TEXT,
   PRIMARY KEY (source, id)
 );
+"""
+const val CREATE_PLAYERS_BATCHES = """
+BEGIN;
+CREATE TABLE IF NOT EXISTS players_batches (
+  source TEXT NOT NULL,
+  id TEXT NOT NULL,
+  batch TEXT,
+  PRIMARY KEY (source, id, batch)
+);
+CREATE INDEX source_batch_idx ON players_batches (source, batch);
+COMMIT;
 """
 const val CREATE_SETS = """
 CREATE TABLE IF NOT EXISTS sets (
@@ -50,6 +60,7 @@ class Helper(context: Context) : SQLiteOpenHelper(context, "tradingCards.db", nu
         "card_views" to CREATE_CARD_VIEWS,
         "sources" to CREATE_SOURCES,
         "players" to CREATE_PLAYERS,
+        "players_batches" to CREATE_PLAYERS_BATCHES,
         "sets" to CREATE_SETS
     )
 

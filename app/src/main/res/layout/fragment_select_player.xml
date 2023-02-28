@@ -1,104 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/select_player_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".ui.main.SelectPlayerFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/source_root"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintWidth_percent="0.90"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/black"
-                android:layout_marginRight="20dp"
-                android:textSize="20sp">
-            </TextView>
-            <Button
-                android:id="@+id/toggle"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:textSize="20sp"
-                android:backgroundTint="@color/blue"
-                android:text="[+]">
-            </Button>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/wrapper"
+            android:id="@+id/source_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
-            <HorizontalScrollView
+            android:layout_marginBottom="10dp"
+            app:layout_constraintWidth_percent="0.90"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/search"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/batches"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="horizontal">
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </HorizontalScrollView>
-            <Button
-                android:id="@+id/sync"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:layout_marginRight="20dp"
+                    android:textSize="20sp">
+                </TextView>
+                <Button
+                    android:id="@+id/toggle"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:textSize="20sp"
+                    android:backgroundTint="@color/blue"
+                    android:text="[+]">
+                </Button>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:backgroundTint="@color/blue"
-                android:text="Sync">
-            </Button>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/batches"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal">
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </HorizontalScrollView>
+                <Button
+                    android:id="@+id/sync"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Sync">
+                </Button>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/grayblue"
+            android:paddingLeft="10dp"
+            android:hint="Search players..."
+            android:layout_marginBottom="10dp"
+            android:inputType="textNoSuggestions"
+            app:layout_constraintWidth_percent="0.90"
+            app:layout_constraintTop_toBottomOf="@+id/source_root"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+        </EditText>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <EditText
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/grayblue"
-        android:paddingLeft="10dp"
-        android:hint="Search players..."
-        android:layout_marginBottom="10dp"
-        android:inputType="textNoSuggestions"
-        app:layout_constraintWidth_percent="0.90"
-        app:layout_constraintTop_toBottomOf="@+id/source_root"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </EditText>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/search"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </androidx.recyclerview.widget.RecyclerView>
+    <!-- https://stackoverflow.com/questions/18021148/display-a-loading-overlay-on-android-screen -->
+    <FrameLayout
+    android:id="@+id/progress_frame"
+    android:visibility="gone"
+    android:animateLayoutChanges="true"
+    android:alpha="0.5"
+    android:background="#444444"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center" />
+    </FrameLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

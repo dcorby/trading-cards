@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class FindAll {
 
     public static ArrayList<ArrayList<String>> get(String regex, String content) {
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL | Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(content);
 
         //ArrayList<Pair<String, String>> matches = new ArrayList<Pair<String, String>>();
