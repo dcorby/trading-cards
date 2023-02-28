@@ -13,10 +13,10 @@ const val CREATE_CARD_VIEWS = """
 CREATE TABLE IF NOT EXISTS card_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   card INTEGER NOT NULL,
-  width INTEGER NOT NULL,
-  height INTEGER NOT NULL,
-  margin_left INTEGER NOT NULL,
-  margin_top INTEGER NOT NULL,
+  width REAL NOT NULL,
+  height REAL NOT NULL,
+  margin_left REAL NOT NULL,
+  margin_top REAL NOT NULL,
   hexadecimal TEXT NOT NULL,
   FOREIGN KEY(card) REFERENCES cards(id)
 );"""
@@ -34,17 +34,6 @@ CREATE TABLE IF NOT EXISTS players (
   PRIMARY KEY (source, id)
 );
 """
-//const val CREATE_PLAYERS_BATCHES = """
-//BEGIN;
-//CREATE TABLE IF NOT EXISTS players_batches (
-//  source TEXT NOT NULL,
-//  id TEXT NOT NULL,
-//  batch TEXT,
-//  PRIMARY KEY (source, id, batch)
-//);
-//CREATE INDEX source_batch_idx ON players_batches (source, batch);
-//COMMIT;
-//"""
 const val CREATE_PLAYERS_BATCHES = """
 CREATE TABLE IF NOT EXISTS players_batches (
   source TEXT NOT NULL,

@@ -2,9 +2,9 @@ package com.example.tradingcards.ui.main
 
 import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
-import android.widget.RelativeLayout.LayoutParams
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -100,15 +100,11 @@ class CreateSetFragment : Fragment() {
         // Get the mini layoutParams
         val miniParams = Utils.getLayoutParams("mini", screenDims)
 
-        // Get the shrinkFactor
-        val shrinkFactor = 150 / designParams.width.toFloat()
-
         // Add the designs
         binding.scrollviewLayout.layoutParams.height = miniParams.height
+        val aspectRatio = mainReceiver.getScreenDims().getValue("width") / mainReceiver.getScreenDims().getValue("height")
         designs.forEachIndexed { index, design ->
-            val view = MiniView(requireContext(), design)
-            view.layoutParams = LayoutParams(miniParams.width, miniParams.height)
-            val miniView = view.shrink(shrinkFactor)
+            val miniView = MiniView(requireContext(), design, miniParams, aspectRatio)
             miniView.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_gray)
             binding.scrollviewLayout.addView(miniView)
         }
@@ -152,13 +148,6 @@ class CreateSetFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
-
-        // Manage/add source
-//        binding.sourcesManage.setOnClickListener {
-//            val navController =
-//                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main)
-//            navController.navigate(R.id.action_CreateSetFragment_to_SourcesFragment)
-//        }
 
         // Create set
         binding.createSet.setOnClickListener {
@@ -210,12 +199,12 @@ class CreateSetFragment : Fragment() {
             if (previousView != null && userDesignView.getValue("card") != previousView.getValue("card")) {
                 userDesigns.add(ArrayList(currentDesign))
             }
-
-            // ************ TODO: This needs to be set on create **************
             userDesignView.set("type", "ShapeView")
             currentDesign.add(userDesignView as kotlin.collections.HashMap<String, Any?>)
         }
-        userDesigns.add(ArrayList(currentDesign))
+        if (currentDesign.size > 0) {
+            userDesigns.add(ArrayList(currentDesign))
+        }
         return userDesigns
     }
 }

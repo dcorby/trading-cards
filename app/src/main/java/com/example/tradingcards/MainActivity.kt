@@ -112,20 +112,20 @@ class MainActivity : AppCompatActivity(), MainReceiver {
             // Add ShapeView along bottom (solid gray)
             hashMapOf(
                 "type" to "ShapeView",
-                "width" to width,
-                "height" to 100,
-                "margin_left" to 0,
-                "margin_top" to height - 100,
+                "width" to 1.0f,
+                "height" to 0.10f,
+                "margin_left" to 0.0f,
+                "margin_top" to 0.90f,
                 "hexadecimal" to "#FFCCCCCC"
             ),
             // Add DataView (player name)
             hashMapOf(
               "type" to "DataView",
               "data" to "name",
-              "width" to width - 50,
-              "height" to 100,
-              "margin_left" to 50,
-              "margin_top" to height - 100
+              "width" to 0.40f,
+              "height" to 0.10f,
+              "margin_left" to 0.30f,
+              "margin_top" to 0.90f
             )
         )
     }

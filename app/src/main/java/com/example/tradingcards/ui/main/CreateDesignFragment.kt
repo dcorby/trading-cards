@@ -143,11 +143,12 @@ class CreateDesignFragment : Fragment() {
             children.filter { it is RectangleView }.forEachIndexed { index, view ->
                 val params = view.layoutParams as RelativeLayout.LayoutParams
                 val contentValues = ContentValues()
+                val parent = view.parent as ViewGroup
                 contentValues.put("card", card)
-                contentValues.put("width", params.width)
-                contentValues.put("height", params.height)
-                contentValues.put("margin_left", params.leftMargin)
-                contentValues.put("margin_top", params.topMargin)
+                contentValues.put("width", params.width / parent.layoutParams.width.toFloat())
+                contentValues.put("height", params.height / parent.layoutParams.height.toFloat())
+                contentValues.put("margin_left", params.leftMargin / parent.layoutParams.width.toFloat())
+                contentValues.put("margin_top", params.topMargin / parent.layoutParams.height.toFloat())
                 contentValues.put("hexadecimal", "#" + Integer.toHexString((view.background as ColorDrawable).color))
                 val id = dbManager.insert("card_views", contentValues)
             }
