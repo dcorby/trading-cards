@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS players (
   source TEXT NOT NULL,
   id TEXT NOT NULL,
   name TEXT NOT NULL,
+  batch TEXT,
   PRIMARY KEY (source, id)
 );
 """

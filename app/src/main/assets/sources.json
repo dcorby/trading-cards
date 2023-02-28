@@ -8,6 +8,34 @@
           "https://www.baseball-reference.com/leagues/majors/2022-standard-batting.shtml",
           "https://www.baseball-reference.com/leagues/majors/2022-standard-pitching.shtml"
         ]
+      },
+      {
+        "label": "2021",
+        "urls": [
+          "https://www.baseball-reference.com/leagues/majors/2021-standard-batting.shtml",
+          "https://www.baseball-reference.com/leagues/majors/2021-standard-pitching.shtml"
+        ]
+      },
+      {
+        "label": "2020",
+        "urls": [
+          "https://www.baseball-reference.com/leagues/majors/2020-standard-batting.shtml",
+          "https://www.baseball-reference.com/leagues/majors/2020-standard-pitching.shtml"
+        ]
+      },
+      {
+        "label": "2019",
+        "urls": [
+          "https://www.baseball-reference.com/leagues/majors/2019-standard-batting.shtml",
+          "https://www.baseball-reference.com/leagues/majors/2019-standard-pitching.shtml"
+        ]
+      },
+      {
+        "label": "2018",
+        "urls": [
+          "https://www.baseball-reference.com/leagues/majors/2018-standard-batting.shtml",
+          "https://www.baseball-reference.com/leagues/majors/2018-standard-pitching.shtml"
+        ]
       }
     ]
   },

@@ -1,5 +1,6 @@
 package com.example.tradingcards.ui.main
 
+import android.content.ContentValues
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -19,16 +20,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tradingcards.MainReceiver
-import com.example.tradingcards.R
-import com.example.tradingcards.Utils
+import com.example.tradingcards.*
 import com.example.tradingcards.adapters.PlayerAdapter
 import com.example.tradingcards.databinding.FragmentSelectPlayerBinding
 import com.example.tradingcards.db.DBManager
 import com.example.tradingcards.items.PlayerItem
 import com.example.tradingcards.viewmodels.SelectPlayerViewModel
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import java.io.File
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 class SelectPlayerFragment : Fragment() {
 
@@ -39,8 +43,6 @@ class SelectPlayerFragment : Fragment() {
     private lateinit var dbManager: DBManager
     private lateinit var playerAdapter: PlayerAdapter
     private lateinit var toolbar: Toolbar
-
-    private val brYears = (1901..2022).toList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,43 +73,62 @@ class SelectPlayerFragment : Fragment() {
 
         // Get the set data, to find out the source
         val set = dbManager.fetch("SELECT * FROM sets WHERE path = ?", arrayOf(viewModel.currentDirectory))[0]
-        val source = set.getValue("source").toString()
-        binding.label.text = source
+        viewModel.source = set.getValue("source").toString()
+        binding.label.text = viewModel.source
 
         // Populate the batches menu
-        val batches = dbManager.fetch("SELECT * FROM sources WHERE id = ?", arrayOf(source), "batch") as MutableList<String>
+        val batches = parseSources()
+        val currentBatches = dbManager.fetch("SELECT * FROM sources WHERE id = ?", arrayOf(viewModel.source), "batch") as MutableList<String>
         var verticalLayout: LinearLayout? = null
-        brYears.reversed().forEachIndexed { index, batch ->
+        batches.keys.sorted().reversed().forEachIndexed { index, batch ->
             if (verticalLayout == null) {
                 verticalLayout = getVerticalLayout()
             }
             val view = layoutInflater.inflate(R.layout.item_season, null)
             val checkbox = view.findViewById<CheckBox>(R.id.checkbox)
             checkbox.tag = batch.toString()
-            if (batches.contains(batch.toString())) {
+            if (currentBatches.contains(batch.toString())) {
                 checkbox.isChecked = true
             }
             checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
                 val batch = buttonView.tag.toString()
-                if (isChecked && !batches.contains(batch)) {
+                if (isChecked && !currentBatches.contains(batch)) {
                     (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.lightgreen))
+                    viewModel.toAdd.add(batch)
                 }
-                if (isChecked && batches.contains(batch)) {
+                if (isChecked && currentBatches.contains(batch)) {
                     (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                    viewModel.toRemove.remove(batch)
                 }
-                if (!isChecked && batches.contains(batch)) {
+                if (!isChecked && currentBatches.contains(batch)) {
                     (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.lightred))
+                    viewModel.toRemove.add(batch)
                 }
-                if (!isChecked && !batches.contains(batch)) {
+                if (!isChecked && !currentBatches.contains(batch)) {
                     (buttonView.parent as View).setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                    viewModel.toAdd.remove(batch)
                 }
             }
             val textview = view.findViewById<TextView>(R.id.textview)
             textview.text = batch.toString()
             verticalLayout!!.addView(view)
-            if (verticalLayout!!.childCount >= 10 || index == brYears.size - 1) {
+            if (verticalLayout!!.childCount >= 10 || index == batches.keys.size - 1) {
                 binding.batches.addView(verticalLayout)
                 verticalLayout = null
+            }
+        }
+
+        // Sync seasons
+        binding.sync.setOnClickListener {
+            // Get the seasons to remove
+            viewModel.toRemove.forEach { batch ->
+                dbManager.exec("DELETE FROM players WHERE source = ? AND batch = ?", arrayOf(viewModel.source, batch))
+            }
+
+            // Get the seasons to add
+            viewModel.toAdd.forEach { batch ->
+                val urls = batches.getValue(batch)
+                syncPlayers(batch, urls)
             }
         }
 
@@ -130,7 +151,7 @@ class SelectPlayerFragment : Fragment() {
             viewModel.job = viewModel.viewModelScope.launch(Dispatchers.IO) {
                 withTimeout(5000) {
                     if (text.toString() != "") {
-                        val params = arrayOf(source, text.toString() + "%")
+                        val params = arrayOf(viewModel.source, text.toString() + "%")
                         players =
                             dbManager.fetch("SELECT * FROM players WHERE source = ? AND name LIKE ?", params).map {
                                 val id = it.getValue("id").toString()
@@ -178,5 +199,74 @@ class SelectPlayerFragment : Fragment() {
             }
         }
         toolbar.addView(Utils.getTitleView(requireContext(), null, "Select Player"))
+    }
+
+    private fun parseSources() : HashMap<String, MutableList<String>> {
+        val data = HashMap<String, MutableList<String>>()
+
+        val jsonObject = JSONObject(Utils.readAssetsFile(requireContext(), "sources.json"))
+        val sources = Sources.toMap(jsonObject)
+        val source = sources[viewModel.source] as HashMap<*, *>
+        val batches = source["batches"] as List<*>
+
+        batches.forEach {
+            val batch = it as HashMap<*, *>
+            val urls = mutableListOf<String>()
+            (batch["urls"] as List<*>).forEach { url ->
+                urls.add(url.toString())
+            }
+            data[batch["label"].toString()] = urls
+        }
+        return data
+    }
+
+    private fun syncPlayers(batch: String, urls: MutableList<String>) {
+        var players: HashMap<String, String>? = null
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            withTimeout(10000) {
+                players = syncBatch(urls)
+            }
+        }.invokeOnCompletion {
+            players?.forEach { player ->
+                val source = viewModel.source
+                val id = player.key
+                val name = player.value
+                val contentValues = ContentValues()
+                contentValues.put("source", source)
+                contentValues.put("id", id)
+                contentValues.put("name", name)
+                mainReceiver.getDBManager().insert("players", contentValues)
+            }
+
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time).toString()
+            val contentValues = ContentValues()
+            contentValues.put("date", date)
+            mainReceiver.getDBManager().update(
+                "sources",
+                contentValues,
+                "id = ? AND batch = ?",
+                arrayOf(viewModel.source, batch))
+        }
+    }
+
+    private suspend fun syncBatch(urls: MutableList<String>) : HashMap<String, String> {
+        val players = HashMap<String, String>()
+        fun downloadUrl(url: String) {
+            val response = URL(url)
+            val content = response.readText()
+            val tableMatches = FindAll.get("stats_table\" id=\"players_standard.*?</table>", content)
+            val table = tableMatches[0][0]
+            val playerMatches = FindAll.get("<a.*?/players/.*?/(.*?).shtml\">(.*?)</a>", table)
+            playerMatches.forEach {
+                players[it[0]] = it[1].replace("&nbsp;", " ")
+            }
+        }
+
+        suspend fun getData() = coroutineScope {
+            val results = urls.map{ async { downloadUrl(it) } }
+            results.awaitAll()
+        }
+        getData()
+        return players
     }
 }

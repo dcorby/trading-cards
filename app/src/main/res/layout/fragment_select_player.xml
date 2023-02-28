@@ -63,6 +63,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </HorizontalScrollView>
             <Button
+                android:id="@+id/sync"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:backgroundTint="@color/blue"
